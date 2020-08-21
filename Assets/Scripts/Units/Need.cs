@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public struct Need
+public class Need
 {
-    public enum State { Critical, Low, Normal }
+    public enum State { Critical, Low, Normal, High }
     public delegate void NeedValueHandler(float newValue);
     public event NeedValueHandler OnValueChanged;
     public delegate void NeedStateHandler(State newState);
@@ -15,6 +15,7 @@ public struct Need
     public float needDecreasePerHour;
     public float criticalThreshold;
     public float lowThreshold;
+    public float highThreshold;
 
     float currentValue;
     public float CurrentValue
@@ -56,25 +57,24 @@ public struct Need
         }
     }
 
-    public Need(string name, float needDecreasePerHour, float criticalThreshold, float lowThreshold, float startValue, NeedValueHandler OnNeedValueChanged, NeedStateHandler OnNeedStateChanged)
+    public Need(string name, float needDecreasePerHour, float criticalThreshold, float lowThreshold, float highThreshold, float startValue)
     {
         this.name = name;
         this.needDecreasePerHour = needDecreasePerHour;
         this.criticalThreshold = criticalThreshold;
         this.lowThreshold = lowThreshold;
+        this.highThreshold = highThreshold;
         this.currentValue = startValue;
         this.state = State.Normal;
-        OnValueChanged = OnNeedValueChanged;
-        OnStateChanged = OnNeedStateChanged;
 
         Clock.OnHourChanged += HourProgressed;
     }
 
     private void SetState(float newValue)
     {
-        if (newValue < lowThreshold)
+        if (newValue <= lowThreshold)
         {
-            if (newValue < criticalThreshold)
+            if (newValue <= criticalThreshold)
             {
                 CurrentState = State.Critical;
             }
@@ -82,6 +82,10 @@ public struct Need
             {
                 CurrentState = State.Low;
             }
+        }
+        else if (newValue >= highThreshold)
+        {
+            CurrentState = State.High;
         }
         else
         {

@@ -178,7 +178,7 @@ MonoBehaviour:
   mask: {fileID: 803219267}
   fill: {fileID: 1194590469}
   currentValueText: {fileID: 0}
-  animationTime: 2
+  animationTime: 0.5
   color: {r: 1, g: 0.24705882, b: 0.20392157, a: 1}
 --- !u!114 &3177461
 MonoBehaviour:
@@ -29527,7 +29527,7 @@ MonoBehaviour:
   mask: {fileID: 875829989}
   fill: {fileID: 1279376551}
   currentValueText: {fileID: 0}
-  animationTime: 2
+  animationTime: 0.5
   color: {r: 1, g: 0.24705882, b: 0.20392157, a: 1}
 --- !u!114 &729618638
 MonoBehaviour:
@@ -30034,7 +30034,7 @@ MonoBehaviour:
   mask: {fileID: 1593253871}
   fill: {fileID: 1894161970}
   currentValueText: {fileID: 0}
-  animationTime: 2
+  animationTime: 0.5
   color: {r: 1, g: 0.24705882, b: 0.20392157, a: 1}
 --- !u!114 &757693428
 MonoBehaviour:
@@ -37914,7 +37914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52f233236c825cb4db99d4f0f2db1944, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  realworldSecondsPerGameMinute: 0.05
+  realworldSecondsPerGameMinute: 0.1
   clockOn: 1
   startMinute: 0
   startHour: 6
