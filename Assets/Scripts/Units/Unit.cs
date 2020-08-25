@@ -16,12 +16,7 @@ public abstract class Unit : MonoBehaviour
     [SerializeField] protected MessageDisplay messageDisplay = null;
     [SerializeField] protected UnitDetector unitDetector = null;
 
-    public Need Mood { private set; get; }
-    public Need Food { private set; get; }
-    public Need Recreation { private set; get; }
-
-    int foodMoodModifier;
-    int recreationMoodModifier;
+    
 
 
     string unitName;
@@ -72,14 +67,6 @@ public abstract class Unit : MonoBehaviour
         this.City = city;
         this.seeker.City = city;
         UnitName = NameGenerator.GetName();
-
-        //Needs
-        Mood = new Need("Mood", 0, 0.1f, 0.25f, 0.75f, 0.5f);
-        Mood.OnStateChanged += HandleMoodState;
-        Food = new Need("Food", 0.1f, 0, 0.25f, 0.75f, 1);
-        Food.OnStateChanged += HandleFoodState;
-        Recreation = new Need("Recreation", 0.05f, 0, 0.25f, 0.75f, 1);
-        Recreation.OnStateChanged += HandleRecreationState;
     }
 
 
@@ -130,58 +117,13 @@ public abstract class Unit : MonoBehaviour
 
     public abstract string GetProfession();
 
-    protected virtual void HandleMoodState(Need.State newState)
-    {
+    public abstract void SendToViewer(UnitViewer unitViewer);
 
-    }
-    protected virtual void HandleFoodState(Need.State newState)
-    {
-        switch (newState)
-        {
-            case Need.State.Critical:
-                foodMoodModifier = -100;
-                break;
-            case Need.State.Low:
-                foodMoodModifier = -25;
-                break;
-            case Need.State.Normal:
-                foodMoodModifier = 0;
-                break;
-            case Need.State.High:
-                foodMoodModifier = 10;
-                break;
-        }
-        CalculateMood();
-    }
-    protected virtual void HandleRecreationState(Need.State newState)
-    {
-        switch (newState)
-        {
-            case Need.State.Critical:
-                recreationMoodModifier = -50;
-                break;
-            case Need.State.Low:
-                foodMoodModifier = -20;
-                break;
-            case Need.State.Normal:
-                foodMoodModifier = 0;
-                break;
-            case Need.State.High:
-                foodMoodModifier = 20;
-                break;
-        }
-        CalculateMood();
-    }
+    public abstract void UnsubrscibeFromViewer(UnitViewer unitViewer);
 
-    //-100 will be 0, +100 will be 1
-    private void CalculateMood()
-    {
-        int lowBase = 100;
-        int sum = foodMoodModifier + recreationMoodModifier + lowBase;
-        float factor = sum / 100f;
-        factor /= 2;
-        Mood.CurrentValue = factor;
-    }
+    public abstract string GetMoodExplanation();
+
+    protected abstract void CalculateMood();
 
     public abstract class State
     {

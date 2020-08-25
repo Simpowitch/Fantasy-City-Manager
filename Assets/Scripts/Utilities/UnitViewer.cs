@@ -13,48 +13,62 @@ public class UnitViewer : MonoBehaviour
 
     Unit lastViewedUnit;
 
-    public void ShowUnit(Unit unit)
+    public void ShowCitizen(Citizen citizen)
     {
         if (lastViewedUnit)
-            SubscribeToViewedUnitNeeds(false);
-
-        ActivatePanel(unit != null);
-        if (unit)
+            lastViewedUnit.UnsubrscibeFromViewer(this);
+        ActivatePanel(citizen != null);
+        if (citizen)
         {
-            nameText.text = unit.UnitName;
-            professionText.text = $"Profession: {unit.GetProfession()}";
-            moodExplainText.text = "";
-            mood.SetNewValues(unit.Mood.CurrentValue);
-            food.SetNewValues(unit.Food.CurrentValue);
-            recreation.SetNewValues(unit.Recreation.CurrentValue);
+            nameText.text = citizen.UnitName;
+            professionText.text = $"Profession: {citizen.GetProfession()}";
+            moodExplainText.text = citizen.GetMoodExplanation();
+            mood.SetNewValues(citizen.Mood.CurrentValue);
+            food.SetNewValues(citizen.Food.CurrentValue);
+            recreation.SetNewValues(citizen.Recreation.CurrentValue);
 
-            lastViewedUnit = unit;
-            SubscribeToViewedUnitNeeds(true);
+            lastViewedUnit = citizen;
+            Subscribe(citizen, true);
         }
     }
 
-    private void SubscribeToViewedUnitNeeds(bool state)
+
+    public void ShowVisitor(Visitor visitor)
+    {
+
+    }
+
+    public void Hide()
+    {
+        if (lastViewedUnit)
+            lastViewedUnit.UnsubrscibeFromViewer(this);
+        ActivatePanel(false);
+    }
+
+    public void Subscribe(Citizen citizen, bool state)
     {
         if (state)
         {
-            lastViewedUnit.Mood.OnValueChanged += UpdateMoodBar;
-            lastViewedUnit.Food.OnValueChanged += UpdateFoodBar;
-            lastViewedUnit.Recreation.OnValueChanged += UpdateRecreationBar;
+            citizen.Mood.OnValueChanged += UpdateMoodBar;
+            citizen.Food.OnValueChanged += UpdateFoodBar;
+            citizen.Recreation.OnValueChanged += UpdateRecreationBar;
         }
         else
         {
-            lastViewedUnit.Mood.OnValueChanged -= UpdateMoodBar;
-            lastViewedUnit.Food.OnValueChanged -= UpdateFoodBar;
-            lastViewedUnit.Recreation.OnValueChanged -= UpdateRecreationBar;
+            citizen.Mood.OnValueChanged -= UpdateMoodBar;
+            citizen.Food.OnValueChanged -= UpdateFoodBar;
+            citizen.Recreation.OnValueChanged -= UpdateRecreationBar;
         }
+    }
+
+    public void Subscribe(Visitor visitor, bool state)
+    {
+
     }
 
     private void UpdateMoodBar(float newValue) => mood.SetNewValues(newValue);
     private void UpdateFoodBar(float newValue) => food.SetNewValues(newValue);
     private void UpdateRecreationBar(float newValue) => recreation.SetNewValues(newValue);
 
-
-
-
-    public void ActivatePanel(bool state) => mainPanel.SetActive(state);
+    private void ActivatePanel(bool state) => mainPanel.SetActive(state);
 }

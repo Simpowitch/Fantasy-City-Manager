@@ -6,6 +6,13 @@ public class Citizen : Unit
     Residence home;
     Employment employment;
 
+    public Need Mood { private set; get; }
+    public Need Food { private set; get; }
+    public Need Recreation { private set; get; }
+
+    int foodMoodModifier;
+    int recreationMoodModifier;
+
     private void OnDestroy()
     {
         if (employment != null)
@@ -20,15 +27,14 @@ public class Citizen : Unit
         LookForEmployment();
         ChangeState(new VisitCommercial(this));
         City.cityStats.Population++;
-    }
-    public void Setup(City city, Residence home)
-    {
-        base.BaseSetup(city);
-        LookForHome();
-        this.home = home;
-        home.MoveIn(this);
-        ChangeState(new VisitCommercial(this));
-        City.cityStats.Population++;
+
+        //Needs
+        Mood = new Need("Mood", 0, 0.1f, 0.25f, 0.75f, 0.5f);
+        Mood.OnStateChanged += HandleMoodState;
+        Food = new Need("Food", 0.1f, 0, 0.25f, 0.75f, 1);
+        Food.OnStateChanged += HandleFoodState;
+        Recreation = new Need("Recreation", 0.05f, 0, 0.25f, 0.75f, 1);
+        Recreation.OnStateChanged += HandleRecreationState;
     }
 
     protected override void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay)
@@ -124,7 +130,76 @@ public class Citizen : Unit
 
     public void SendThought(string thought) => StartCoroutine(messageDisplay.ShowMessage(3, thought, MessageDisplay.MessageType.Chatbubble));
 
+    public override void SendToViewer(UnitViewer unitViewer) => unitViewer.ShowCitizen(this);
+    public override void UnsubrscibeFromViewer(UnitViewer unitViewer) => unitViewer.Subscribe(this, false);
+
     public override string GetProfession() => employment != null ? employment.employmentName : "Unemployed";
+
+
+    #region Needs
+    protected virtual void HandleMoodState(Need.State newState)
+    {
+
+    }
+    protected virtual void HandleFoodState(Need.State newState)
+    {
+        switch (newState)
+        {
+            case Need.State.Critical:
+                foodMoodModifier = -100;
+                break;
+            case Need.State.Low:
+                foodMoodModifier = -25;
+                break;
+            case Need.State.Normal:
+                foodMoodModifier = 0;
+                break;
+            case Need.State.High:
+                foodMoodModifier = 10;
+                break;
+        }
+        CalculateMood();
+    }
+    protected virtual void HandleRecreationState(Need.State newState)
+    {
+        switch (newState)
+        {
+            case Need.State.Critical:
+                recreationMoodModifier = -50;
+                break;
+            case Need.State.Low:
+                foodMoodModifier = -20;
+                break;
+            case Need.State.Normal:
+                foodMoodModifier = 0;
+                break;
+            case Need.State.High:
+                foodMoodModifier = 20;
+                break;
+        }
+        CalculateMood();
+    }
+
+    public override string GetMoodExplanation()
+    {
+        string explanation = "";
+
+
+
+        return explanation;
+    }
+
+
+    //-100 will be 0, +100 will be 1
+    protected override void CalculateMood()
+    {
+        int lowBase = 100;
+        int sum = foodMoodModifier + recreationMoodModifier + lowBase;
+        float factor = sum / 100f;
+        factor /= 2;
+        Mood.CurrentValue = factor;
+    }
+    #endregion
 
     #region FSM
     public abstract class CitizenState : State

@@ -213,7 +213,10 @@ public class PlayerInput : MonoBehaviour
         {
             case InputMode.Selection:
                 Unit unit = GetUnitUnderMouse();
-                unitViewer.ShowUnit(unit);
+                if (unit)
+                    unit.SendToViewer(unitViewer);
+                else
+                    unitViewer.Hide();
                 break;
             case InputMode.BuildRoad:
                 if (allowedConstruction)
