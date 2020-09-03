@@ -6,13 +6,6 @@ public class Citizen : Unit
     Residence home;
     Employment employment;
 
-    public Need Mood { private set; get; }
-    public Need Food { private set; get; }
-    public Need Recreation { private set; get; }
-
-    int foodMoodModifier;
-    int recreationMoodModifier;
-
     private void OnDestroy()
     {
         if (employment != null)
@@ -28,13 +21,24 @@ public class Citizen : Unit
         ChangeState(new VisitCommercial(this));
         City.cityStats.Population++;
 
-        //Needs
-        Mood = new Need("Mood", 0, 0.1f, 0.25f, 0.75f, 0.5f);
-        Mood.OnStateChanged += HandleMoodState;
-        Food = new Need("Food", 0.1f, 0, 0.25f, 0.75f, 1);
-        Food.OnStateChanged += HandleFoodState;
-        Recreation = new Need("Recreation", 0.05f, 0, 0.25f, 0.75f, 1);
-        Recreation.OnStateChanged += HandleRecreationState;
+        //Needs initializing
+        Health = new Need("Health", 0, 0, 0.25f, 0.75f, 1, new MoodBuff("Dying", -100), new MoodBuff("Badly hurt", -50), new MoodBuff("Hurt", -10), new MoodBuff("Healthy", 25));
+        Food = new Need("Food", 0.05f, 0, 0.25f, 0.75f, 1f, new MoodBuff("Starving", -100), new MoodBuff("Hungry", -50), null, new MoodBuff("Ate recently", 25));
+        Employment = new Need("Employment", 0.01f, 0, 0.25f, 0.75f, 0.74f, new MoodBuff("No livelyhood", -50), new MoodBuff("Lacking purpose", -25), null, new MoodBuff("Honest day of work", 25));
+        Recreation = new Need("Recreation", 0.02f, 0, 0.25f, 0.75f, 0.5f, new MoodBuff("Depressed", -50), new MoodBuff("Bored", -20), null, new MoodBuff("Had fun", 15));
+        Faith = new Need("Faith", 0.01f, 0, 0.25f, 0.75f, 0.74f, new MoodBuff("Godforsaken", -10), new MoodBuff("Not in touch with faith", -5), null, new MoodBuff("Blessed", 10));
+        Hygiene = new Need("Hygiene", 0.01f, 0, 0.25f, 0.75f, 1f, new MoodBuff("Stinking", -10), new MoodBuff("Smelly", -5), null, new MoodBuff("Clean", 10));
+
+        Health.OnNeedValuesChanged += CalculateMoodBuffs;
+        Food.OnNeedValuesChanged += CalculateMoodBuffs;
+        Employment.OnNeedValuesChanged += CalculateMoodBuffs;
+        Recreation.OnNeedValuesChanged += CalculateMoodBuffs;
+        Faith.OnNeedValuesChanged += CalculateMoodBuffs;
+        Hygiene.OnNeedValuesChanged += CalculateMoodBuffs;
+
+        Mood = new Mood();
+
+        CalculateMoodBuffs();
     }
 
     protected override void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay)
@@ -66,18 +70,18 @@ public class Citizen : Unit
             LookForHome();
     }
 
-    protected override void NewNodeReached(PathNode newNode)
-    {
-        if (newNode == null)
-        {
-            if (FSM is VisitCommercial)
-            {
-                //Visit another commercial building
-                ChangeState(new VisitCommercial(this));
-            }
-        }
-        base.NewNodeReached(newNode);
-    }
+    //protected override void NewNodeReached(PathNode newNode)
+    //{
+    //    if (newNode == null)
+    //    {
+    //        if (FSM is VisitCommercial)
+    //        {
+    //            //Visit another commercial building
+    //            ChangeState(new VisitCommercial(this));
+    //        }
+    //    }
+    //    base.NewNodeReached(newNode);
+    //}
 
     public override void VisitingBuilding(Structure building)
     {
@@ -85,17 +89,7 @@ public class Citizen : Unit
         {
             return;
         }
-        if (FSM is VisitCommercial)
-        {
-            building.InteractedWith(this);
-        }
-        if (FSM is GoHome)
-        {
-            if (building == home)
-            {
-                ChangeState(new Sleep(this));
-            }
-        }
+        building.InteractedWith(this);
     }
 
     private void LookForHome()
@@ -130,76 +124,7 @@ public class Citizen : Unit
 
     public void SendThought(string thought) => StartCoroutine(messageDisplay.ShowMessage(3, thought, MessageDisplay.MessageType.Chatbubble));
 
-    public override void SendToViewer(UnitViewer unitViewer) => unitViewer.ShowCitizen(this);
-    public override void UnsubrscibeFromViewer(UnitViewer unitViewer) => unitViewer.Subscribe(this, false);
-
     public override string GetProfession() => employment != null ? employment.employmentName : "Unemployed";
-
-
-    #region Needs
-    protected virtual void HandleMoodState(Need.State newState)
-    {
-
-    }
-    protected virtual void HandleFoodState(Need.State newState)
-    {
-        switch (newState)
-        {
-            case Need.State.Critical:
-                foodMoodModifier = -100;
-                break;
-            case Need.State.Low:
-                foodMoodModifier = -25;
-                break;
-            case Need.State.Normal:
-                foodMoodModifier = 0;
-                break;
-            case Need.State.High:
-                foodMoodModifier = 10;
-                break;
-        }
-        CalculateMood();
-    }
-    protected virtual void HandleRecreationState(Need.State newState)
-    {
-        switch (newState)
-        {
-            case Need.State.Critical:
-                recreationMoodModifier = -50;
-                break;
-            case Need.State.Low:
-                foodMoodModifier = -20;
-                break;
-            case Need.State.Normal:
-                foodMoodModifier = 0;
-                break;
-            case Need.State.High:
-                foodMoodModifier = 20;
-                break;
-        }
-        CalculateMood();
-    }
-
-    public override string GetMoodExplanation()
-    {
-        string explanation = "";
-
-
-
-        return explanation;
-    }
-
-
-    //-100 will be 0, +100 will be 1
-    protected override void CalculateMood()
-    {
-        int lowBase = 100;
-        int sum = foodMoodModifier + recreationMoodModifier + lowBase;
-        float factor = sum / 100f;
-        factor /= 2;
-        Mood.CurrentValue = factor;
-    }
-    #endregion
 
     #region FSM
     public abstract class CitizenState : State
@@ -229,6 +154,7 @@ public class Citizen : Unit
                 citizen.SendThought(Utility.ReturnRandom(ENTERSTATEPHRASES));
             }
             citizen.Seeker.FindPathTo(citizen.home.CenterPosition);
+            citizen.home.OnUnitVisiting += CheckHome;
             base.EnterState();
         }
 
@@ -242,6 +168,15 @@ public class Citizen : Unit
                 }
             }
             base.DuringState();
+        }
+
+        private void CheckHome(Unit arrivedUnit)
+        {
+            if (arrivedUnit == citizen)
+            {
+                citizen.home.OnUnitVisiting -= CheckHome;
+                citizen.ChangeState(new Sleep(citizen));
+            }
         }
     }
 

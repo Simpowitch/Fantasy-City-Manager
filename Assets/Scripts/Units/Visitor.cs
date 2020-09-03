@@ -81,28 +81,8 @@ public class Visitor : Unit
     }
 
     protected void SendThought(string thought) => StartCoroutine(messageDisplay.ShowMessage(3, thought, MessageDisplay.MessageType.Chatbubble));
-    public override void SendToViewer(UnitViewer unitViewer) => unitViewer.ShowVisitor(this);
-    public override void UnsubrscibeFromViewer(UnitViewer unitViewer) => unitViewer.Subscribe(this, false);
 
     public override string GetProfession() => "Visitor";
-
-    #region Needs
-    public override string GetMoodExplanation()
-    {
-        string explanation = "";
-
-
-
-        return explanation;
-    }
-
-
-    //-100 will be 0, +100 will be 1
-    protected override void CalculateMood()
-    {
-        
-    }
-    #endregion
 
     #region FSM
     public abstract class VisitorState : State

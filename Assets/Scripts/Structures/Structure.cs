@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
-using UnityEditor.UIElements;
 
 public abstract class Structure : MonoBehaviour
 {
+    //Delegates
+    public delegate void UnitHandler(Unit unit);
+    public event UnitHandler OnUnitVisiting;
+
     [Header("Structure")]
     [SerializeField] ConstructionCost constructionCost = null;
     public ConstructionCost ConstructionCost { get => constructionCost; }
@@ -143,7 +146,10 @@ public abstract class Structure : MonoBehaviour
 
     public void Load(City city) => Constructed(city, false);
 
-    public virtual void InteractedWith(Unit unitVisiting) { }
+    public virtual void InteractedWith(Unit unitVisiting) 
+    {
+        OnUnitVisiting?.Invoke(unitVisiting);
+    }
     protected virtual void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay) { }
 
     public void SetTransparent()

@@ -1,21 +1,26 @@
 ﻿using UnityEngine;
-
+[System.Serializable]
 public class Need
 {
     public enum State { Critical, Low, Normal, High }
-    public delegate void NeedValueHandler(float newValue);
-    public event NeedValueHandler OnValueChanged;
-    public delegate void NeedStateHandler(State newState);
-    public event NeedStateHandler OnStateChanged;
+    public delegate void NeedHandler();
+    public event NeedHandler OnNeedValuesChanged;
 
     const float MINVALUE = 0;
     const float MAXVALUE = 1;
 
-    public string name;
-    public float needDecreasePerHour;
-    public float criticalThreshold;
-    public float lowThreshold;
-    public float highThreshold;
+    public string Title { get; private set; }
+    float needDecreasePerHour;
+    float criticalThreshold;
+    float lowThreshold;
+    float highThreshold;
+
+    public MoodBuff ActiveMoodBuff { get; private set; }
+
+    MoodBuff CriticalMoodBuff { get; set; }
+    MoodBuff LowMoodBuff { get; set; }
+    MoodBuff NormalMoodBuff { get; set; }
+    MoodBuff HighMoodBuff { get; set; }
 
     float currentValue;
     public float CurrentValue
@@ -27,7 +32,7 @@ public class Need
             if (currentValue != newValue)
             {
                 currentValue = newValue;
-                OnValueChanged?.Invoke(currentValue);
+                OnNeedValuesChanged?.Invoke();
             }
             else
             {
@@ -36,8 +41,6 @@ public class Need
             SetState(newValue);
         }
     }
-
-
 
     State state;
     public State CurrentState
@@ -48,7 +51,7 @@ public class Need
             if (state != value)
             {
                 state = value;
-                OnStateChanged?.Invoke(value);
+                ChangeActiveMoodBuff(value);
             }
             else
             {
@@ -57,15 +60,23 @@ public class Need
         }
     }
 
-    public Need(string name, float needDecreasePerHour, float criticalThreshold, float lowThreshold, float highThreshold, float startValue)
+    public Need(string title, float needDecreasePerHour, float criticalThreshold, float lowThreshold, float highThreshold, float startValue,
+        MoodBuff critical, MoodBuff low, MoodBuff normal, MoodBuff high)
     {
-        this.name = name;
+        this.Title = title;
         this.needDecreasePerHour = needDecreasePerHour;
         this.criticalThreshold = criticalThreshold;
         this.lowThreshold = lowThreshold;
         this.highThreshold = highThreshold;
         this.currentValue = startValue;
         this.state = State.Normal;
+
+        CriticalMoodBuff = critical;
+        LowMoodBuff = low;
+        NormalMoodBuff = normal;
+        HighMoodBuff = high;
+
+        SetState(startValue);
 
         Clock.OnHourChanged += HourProgressed;
     }
@@ -92,5 +103,28 @@ public class Need
             CurrentState = State.Normal;
         }
     }
+
+    private void ChangeActiveMoodBuff(State state)
+    {
+        switch (state)
+        {
+            case State.Critical:
+                ActiveMoodBuff = CriticalMoodBuff;
+                break;
+            case State.Low:
+                ActiveMoodBuff = LowMoodBuff;
+                break;
+            case State.Normal:
+                ActiveMoodBuff = NormalMoodBuff;
+                break;
+            case State.High:
+                ActiveMoodBuff = HighMoodBuff;
+                break;
+        }
+    }
+
+    public void FullfillNeed() => CurrentValue = MAXVALUE;
+
+
     void HourProgressed(int newHour) => CurrentValue -= needDecreasePerHour;
 }

@@ -69,7 +69,8 @@ public class Bar : MonoBehaviour
     }
 
     public void SetNewValues(int newValue, int newMax, int newMin) => EnqueueChange(new ProgressStatus(newValue, newMax, newMin));
-    public void SetNewValues(float newValue) => EnqueueChange(new ProgressStatus(newValue));
+    public void SetNewValues(float percentageFactor) => EnqueueChange(new ProgressStatus(percentageFactor));
+
 
 
     private void EnqueueChange(ProgressStatus change)

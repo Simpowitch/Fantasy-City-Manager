@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Unit : MonoBehaviour
 {
@@ -16,9 +17,6 @@ public abstract class Unit : MonoBehaviour
     [SerializeField] protected MessageDisplay messageDisplay = null;
     [SerializeField] protected UnitDetector unitDetector = null;
 
-    
-
-
     string unitName;
     public string UnitName
     {
@@ -28,6 +26,18 @@ public abstract class Unit : MonoBehaviour
             unitName = value;
         }
     }
+
+    //Needs
+    public delegate void MoodHandler(Unit unitChanged);
+    public event MoodHandler MoodRecalculated;
+    public Mood Mood { protected set; get; }
+    public Need Health { protected set; get; }
+    public Need Food { protected set; get; }
+    public Need Employment { protected set; get; }
+    public Need Recreation { protected set; get; }
+    public Need Faith { protected set; get; }
+    public Need Hygiene { protected set; get; }
+
 
     private void OnEnable()
     {
@@ -59,7 +69,8 @@ public abstract class Unit : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Structure building = collision.GetComponent<Structure>();
-        if (building) VisitingBuilding(building);
+        if (building) 
+            VisitingBuilding(building);
     }
 
     protected void BaseSetup(City city)
@@ -117,13 +128,29 @@ public abstract class Unit : MonoBehaviour
 
     public abstract string GetProfession();
 
-    public abstract void SendToViewer(UnitViewer unitViewer);
+    public void SendToViewer(UnitViewer unitViewer) => unitViewer.ShowUnit(this);
 
-    public abstract void UnsubrscibeFromViewer(UnitViewer unitViewer);
+    protected void CalculateMoodBuffs()
+    {
+        List<MoodBuff> newBuffs = new List<MoodBuff>();
 
-    public abstract string GetMoodExplanation();
+        if (Health != null && Health.ActiveMoodBuff != null)
+            newBuffs.Add(Health.ActiveMoodBuff);
+        if (Food != null && Food.ActiveMoodBuff != null)
+            newBuffs.Add(Food.ActiveMoodBuff);
+        if (Employment != null && Employment.ActiveMoodBuff != null)
+            newBuffs.Add(Employment.ActiveMoodBuff);
+        if (Recreation != null && Recreation.ActiveMoodBuff != null)
+            newBuffs.Add(Recreation.ActiveMoodBuff);
+        if (Faith != null && Faith.ActiveMoodBuff != null)
+            newBuffs.Add(Faith.ActiveMoodBuff);
+        if (Hygiene != null && Hygiene.ActiveMoodBuff != null)
+            newBuffs.Add(Hygiene.ActiveMoodBuff);
 
-    protected abstract void CalculateMood();
+        Mood.SetMoodBuffs(newBuffs);
+
+        MoodRecalculated?.Invoke(this);
+    }
 
     public abstract class State
     {
