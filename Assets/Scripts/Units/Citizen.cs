@@ -83,15 +83,6 @@ public class Citizen : Unit
     //    base.NewNodeReached(newNode);
     //}
 
-    public override void VisitingBuilding(Structure building)
-    {
-        if (building is CityGate)
-        {
-            return;
-        }
-        building.InteractedWith(this);
-    }
-
     private void LookForHome()
     {
         if (City.HasUnFilledResidences())

@@ -4,7 +4,7 @@ public class Visitor : Unit
 {
     [SerializeField] [Range(0, 100)] int leaveRandomizerPercentage = 20;
     Structure inn;
-    bool paidEntryToll = false;
+    public bool PaidEntryToll { get; set; } = false;
 
     private void OnDestroy()
     {
@@ -17,6 +17,21 @@ public class Visitor : Unit
         this.inn = Utility.ReturnRandom(City.taverns);
         ChangeState(new VisitCommercial(this));
         City.cityStats.Visitors++;
+
+        //Needs initializing
+        Health = new Need("Health", 0, 0, 0.25f, 0.75f, 1, new MoodBuff("Dying", -100), new MoodBuff("Badly hurt", -50), new MoodBuff("Hurt", -10), new MoodBuff("Healthy", 25));
+        Food = new Need("Food", 0.05f, 0, 0.25f, 0.75f, 1f, new MoodBuff("Starving", -100), new MoodBuff("Hungry", -50), null, new MoodBuff("Ate recently", 25));
+        Employment = new Need("Employment", 0.01f, 0, 0.25f, 0.75f, 0.74f, new MoodBuff("No livelyhood", -50), new MoodBuff("Lacking purpose", -25), null, new MoodBuff("Honest day of work", 25));
+        Recreation = new Need("Recreation", 0.02f, 0, 0.25f, 0.75f, 0.5f, new MoodBuff("Depressed", -50), new MoodBuff("Bored", -20), null, new MoodBuff("Had fun", 15));
+        Faith = new Need("Faith", 0.01f, 0, 0.25f, 0.75f, 0.74f, new MoodBuff("Godforsaken", -10), new MoodBuff("Not in touch with faith", -5), null, new MoodBuff("Blessed", 10));
+        Hygiene = new Need("Hygiene", 0.01f, 0, 0.25f, 0.75f, 1f, new MoodBuff("Stinking", -10), new MoodBuff("Smelly", -5), null, new MoodBuff("Clean", 10));
+
+        Health.OnNeedValuesChanged += CalculateMoodBuffs;
+        Food.OnNeedValuesChanged += CalculateMoodBuffs;
+        Employment.OnNeedValuesChanged += CalculateMoodBuffs;
+        Recreation.OnNeedValuesChanged += CalculateMoodBuffs;
+        Faith.OnNeedValuesChanged += CalculateMoodBuffs;
+        Hygiene.OnNeedValuesChanged += CalculateMoodBuffs;
     }
 
     protected override void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay)
@@ -62,22 +77,6 @@ public class Visitor : Unit
             }
         }
         base.NewNodeReached(newNode);
-    }
-
-    public override void VisitingBuilding(Structure building)
-    {
-        if (building is CityGate)
-        {
-            if (paidEntryToll)
-            {
-                return;
-            }
-            else
-            {
-                paidEntryToll = true;
-            }
-        }
-        building.InteractedWith(this);
     }
 
     protected void SendThought(string thought) => StartCoroutine(messageDisplay.ShowMessage(3, thought, MessageDisplay.MessageType.Chatbubble));

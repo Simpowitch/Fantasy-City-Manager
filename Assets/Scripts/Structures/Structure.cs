@@ -65,7 +65,7 @@ public abstract class Structure : MonoBehaviour
 
     public Vector2 LowerLeftCorner
     {
-        get 
+        get
         {
             switch (facingDirection)
             {
@@ -85,7 +85,7 @@ public abstract class Structure : MonoBehaviour
 
     public Vector2 UpperRightCorner
     {
-        get 
+        get
         {
             Vector2 corner = LowerLeftCorner;
             switch (facingDirection)
@@ -122,6 +122,11 @@ public abstract class Structure : MonoBehaviour
     }
     public List<ObjectTile> ObjectTiles { get => city.ObjectGrid.GetGridObjects(LowerLeftCorner, UpperRightCorner); }
 
+    protected List<Unit> unitsInside = new List<Unit>();
+    [SerializeField] List<Need.NeedProvision> visitingUnitsGainPerHour = new List<Need.NeedProvision>();
+
+
+
     public void BuildConstructionArea(City city)
     {
         constructionProgressBar.gameObject.SetActive(true);
@@ -138,6 +143,7 @@ public abstract class Structure : MonoBehaviour
         constructionProgressBar.gameObject.SetActive(false);
         this.city = city;
         DayNightSystem.OnPartOfTheDayChanged += PartOfDayChange;
+        Clock.OnHourChanged += HourChanged;
         tmConstructed.gameObject.SetActive(true);
         tmConstructionArea.gameObject.SetActive(false);
         GetComponent<Collider2D>().enabled = true;
@@ -146,11 +152,61 @@ public abstract class Structure : MonoBehaviour
 
     public void Load(City city) => Constructed(city, false);
 
-    public virtual void InteractedWith(Unit unitVisiting) 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Unit unitCollision = collision.GetComponent<Unit>();
+        if (unitCollision != null)
+        {
+            UnitVisiting(unitCollision);
+            if (!unitsInside.Contains(unitCollision))
+                unitsInside.Add(unitCollision);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        Unit unitCollision = collision.GetComponent<Unit>();
+        if (unitCollision != null && unitsInside.Contains(unitCollision))
+            unitsInside.Remove(unitCollision);
+    }
+
+    public virtual void UnitVisiting(Unit unitVisiting)
     {
         OnUnitVisiting?.Invoke(unitVisiting);
     }
+
     protected virtual void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay) { }
+    protected virtual void HourChanged(int newHour)
+    {
+        foreach (Unit unit in unitsInside)
+        {
+            foreach (Need.NeedProvision needProvision in visitingUnitsGainPerHour)
+            {
+                switch (needProvision.type)
+                {
+                    case Need.NeedProvision.Type.Healh:
+                        unit.Health.CurrentValue += needProvision.value;
+                        break;
+                    case Need.NeedProvision.Type.Food:
+                        unit.Food.CurrentValue += needProvision.value;
+                        break;
+                    case Need.NeedProvision.Type.Employment:
+                        unit.Employment.CurrentValue += needProvision.value;
+                        break;
+                    case Need.NeedProvision.Type.Recreation:
+                        unit.Recreation.CurrentValue += needProvision.value;
+                        break;
+                    case Need.NeedProvision.Type.Faith:
+                        unit.Faith.CurrentValue += needProvision.value;
+                        break;
+                    case Need.NeedProvision.Type.Hygiene:
+                        unit.Hygiene.CurrentValue += needProvision.value;
+                        break;
+                }
+            }
+        }
+    }
+
 
     public void SetTransparent()
     {

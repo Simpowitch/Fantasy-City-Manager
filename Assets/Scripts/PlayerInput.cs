@@ -311,15 +311,17 @@ public class PlayerInput : MonoBehaviour
     private Unit GetUnitUnderMouse()
     {
         ObjectTile objectTile = ObjectGrid.GetGridObject(Utility.GetMouseWorldPosition());
-
-        Collider2D[] allColliders = Physics2D.OverlapBoxAll(objectTile.CenteredWorldPosition, new Vector2(ObjectGrid.cellSize, ObjectGrid.cellSize), 0);
-        foreach (var collider in allColliders)
+        if (objectTile != null)
         {
-            Unit unit = collider.GetComponent<Unit>();
-            if (unit)
-                return unit;
+            Collider2D[] allColliders = Physics2D.OverlapBoxAll(objectTile.CenteredWorldPosition, new Vector2(ObjectGrid.cellSize, ObjectGrid.cellSize), 0);
+            foreach (var collider in allColliders)
+            {
+                Unit unit = collider.GetComponent<Unit>();
+                if (unit)
+                    return unit;
+            }
         }
-        return default;
+        return null;
     }
 
     private void GetMouseSelectedArea(out Vector3 lowerLeft, out Vector3 upperRight)

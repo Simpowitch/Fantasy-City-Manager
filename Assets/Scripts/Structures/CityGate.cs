@@ -7,12 +7,17 @@ public class CityGate : Workplace
         if (addToCityList)
             city.cityGates.Add(this);
     }
-    public override void InteractedWith(Unit unitVisiting)
+    public override void UnitVisiting(Unit unitVisiting)
     {
-        base.InteractedWith(unitVisiting);
+        base.UnitVisiting(unitVisiting);
         if (unitVisiting is Visitor)
         {
-            city.cityStats.Gold.Value += city.cityGateToll;
+            Visitor visitor = unitVisiting as Visitor;
+            if (!visitor.PaidEntryToll)
+            {
+                city.cityStats.Gold.Value += city.cityGateToll;
+                visitor.PaidEntryToll = true;
+            }
         }
     }
 

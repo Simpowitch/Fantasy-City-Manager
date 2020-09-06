@@ -123,8 +123,15 @@ public class Need
         }
     }
 
-    public void FullfillNeed() => CurrentValue = MAXVALUE;
-
-
     void HourProgressed(int newHour) => CurrentValue -= needDecreasePerHour;
+
+    [System.Serializable]
+    public struct NeedProvision
+    {
+        public enum Type { Healh, Food, Employment, Recreation, Faith, Hygiene }
+        public Type type;
+        public float value;
+    }
 }
+
+

@@ -48,9 +48,9 @@ public abstract class Workplace : Structure
             employment.workingPositions = structurePositions;
         }
     }
-    public override void InteractedWith(Unit unitVisiting)
+    public override void UnitVisiting(Unit unitVisiting)
     {
-        base.InteractedWith(unitVisiting);
+        base.UnitVisiting(unitVisiting);
         if (CitizensEmployed.Contains(unitVisiting as Citizen))
         {
             EmployeesAtSite.Add(unitVisiting as Citizen);

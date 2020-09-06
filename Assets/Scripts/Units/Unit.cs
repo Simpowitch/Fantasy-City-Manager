@@ -66,22 +66,12 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Structure building = collision.GetComponent<Structure>();
-        if (building) 
-            VisitingBuilding(building);
-    }
-
     protected void BaseSetup(City city)
     {
         this.City = city;
         this.seeker.City = city;
         UnitName = NameGenerator.GetName();
     }
-
-
-    public abstract void VisitingBuilding(Structure building);
 
     protected abstract void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay);
 
