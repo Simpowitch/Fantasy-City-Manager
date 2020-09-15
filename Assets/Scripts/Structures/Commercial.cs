@@ -13,10 +13,4 @@ public class Commercial : Workplace
         base.city.commercialBuidlings.Remove(this);
         base.Despawn();
     }
-
-    protected override void HourChanged(int newHour)
-    {
-        base.HourChanged(newHour);
-        
-    }
 }

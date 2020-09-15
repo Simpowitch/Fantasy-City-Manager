@@ -24,19 +24,18 @@ public abstract class Unit : MonoBehaviour
         set
         {
             unitName = value;
+            OnUnitInfoChanged?.Invoke(this);
         }
     }
 
+    public delegate void InfoChangeHandler(Unit unitChanged);
+    public event InfoChangeHandler OnUnitInfoChanged;
+    public float Happiness { private set; get; }
     //Needs
-    public delegate void MoodHandler(Unit unitChanged);
-    public event MoodHandler MoodRecalculated;
-    public Mood Mood { protected set; get; }
-    public Need Health { protected set; get; }
-    public Need Food { protected set; get; }
-    public Need Employment { protected set; get; }
-    public Need Recreation { protected set; get; }
-    public Need Faith { protected set; get; }
-    public Need Hygiene { protected set; get; }
+    public Need Social { private set; get; }
+    public Need Hunger { private set; get; }
+    public Need Energy { private set; get; }
+    public Need Recreation { private set; get; }
 
 
     private void OnEnable()
@@ -71,6 +70,16 @@ public abstract class Unit : MonoBehaviour
         this.City = city;
         this.seeker.City = city;
         UnitName = NameGenerator.GetName();
+
+        //Needs
+        Energy = new Need("Energy", 0.05f, 1);
+        Energy.OnNeedValuesChanged += CalculateHappiness;
+        Hunger = new Need("Hunger", 0.05f, 1);
+        Hunger.OnNeedValuesChanged += CalculateHappiness;
+        Recreation = new Need("Recreation", 0.05f, 1);
+        Recreation.OnNeedValuesChanged += CalculateHappiness;
+        Social = new Need("Social", 0.05f, 1);
+        Social.OnNeedValuesChanged += CalculateHappiness;
     }
 
     protected abstract void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay);
@@ -120,26 +129,16 @@ public abstract class Unit : MonoBehaviour
 
     public void SendToViewer(UnitViewer unitViewer) => unitViewer.ShowUnit(this);
 
-    protected void CalculateMoodBuffs()
+    protected void CalculateHappiness()
     {
-        List<MoodBuff> newBuffs = new List<MoodBuff>();
-
-        if (Health != null && Health.ActiveMoodBuff != null)
-            newBuffs.Add(Health.ActiveMoodBuff);
-        if (Food != null && Food.ActiveMoodBuff != null)
-            newBuffs.Add(Food.ActiveMoodBuff);
-        if (Employment != null && Employment.ActiveMoodBuff != null)
-            newBuffs.Add(Employment.ActiveMoodBuff);
-        if (Recreation != null && Recreation.ActiveMoodBuff != null)
-            newBuffs.Add(Recreation.ActiveMoodBuff);
-        if (Faith != null && Faith.ActiveMoodBuff != null)
-            newBuffs.Add(Faith.ActiveMoodBuff);
-        if (Hygiene != null && Hygiene.ActiveMoodBuff != null)
-            newBuffs.Add(Hygiene.ActiveMoodBuff);
-
-        Mood.SetMoodBuffs(newBuffs);
-
-        MoodRecalculated?.Invoke(this);
+        float average = 0;
+        average += Energy.CurrentValue;
+        average += Hunger.CurrentValue;
+        average += Recreation.CurrentValue;
+        average += Social.CurrentValue;
+        average /= 4;
+        Happiness = average;
+        OnUnitInfoChanged?.Invoke(this);
     }
 
     public abstract class State

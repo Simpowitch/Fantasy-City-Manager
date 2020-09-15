@@ -7,7 +7,7 @@ public class CityGate : Workplace
         if (addToCityList)
             city.cityGates.Add(this);
     }
-    public override void UnitVisiting(Unit unitVisiting)
+    protected override void UnitVisiting(Unit unitVisiting)
     {
         base.UnitVisiting(unitVisiting);
         if (unitVisiting is Visitor)

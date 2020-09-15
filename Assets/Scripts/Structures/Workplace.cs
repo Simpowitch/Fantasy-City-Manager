@@ -4,6 +4,9 @@ using UnityEngine;
 public abstract class Workplace : Structure
 {
     [Header("Workplace")]
+    public int startShiftHour = 8;
+    public int endShiftHour = 18;
+
     [SerializeField] List<Employment> employments = new List<Employment>();
     public List<Employment> Employments { get => employments; private set => employments = value; }
     public List<Citizen> CitizensEmployed
@@ -48,7 +51,7 @@ public abstract class Workplace : Structure
             employment.workingPositions = structurePositions;
         }
     }
-    public override void UnitVisiting(Unit unitVisiting)
+    protected override void UnitVisiting(Unit unitVisiting)
     {
         base.UnitVisiting(unitVisiting);
         if (CitizensEmployed.Contains(unitVisiting as Citizen))

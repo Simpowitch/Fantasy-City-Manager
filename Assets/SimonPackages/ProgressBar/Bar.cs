@@ -68,10 +68,7 @@ public class Bar : MonoBehaviour
         mask.fillAmount = fillAmount;
     }
 
-    public void SetNewValues(int newValue, int newMax, int newMin) => EnqueueChange(new ProgressStatus(newValue, newMax, newMin));
     public void SetNewValues(float percentageFactor) => EnqueueChange(new ProgressStatus(percentageFactor));
-
-
 
     private void EnqueueChange(ProgressStatus change)
     {
@@ -125,13 +122,6 @@ public class Bar : MonoBehaviour
         public readonly int newCurrent;
         public readonly int newMaximum;
         public readonly int newMinimum;
-
-        public ProgressStatus(int newCurrent, int newMaximum, int newMinimum)
-        {
-            this.newCurrent = newCurrent;
-            this.newMaximum = newMaximum;
-            this.newMinimum = newMinimum;
-        }
 
         public ProgressStatus(float percentageFactor)
         {

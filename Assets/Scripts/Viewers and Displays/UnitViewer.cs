@@ -3,22 +3,18 @@ using UnityEngine;
 
 public class UnitViewer : MonoBehaviour
 {
+    [Header("Unit info")]
     [SerializeField] GameObject mainPanel = null;
     [SerializeField] TextMeshProUGUI nameText = null;
     [SerializeField] TextMeshProUGUI professionText = null;
-    [SerializeField] TextMeshProUGUI moodExplainText = null;
-    [SerializeField] TextMeshProUGUI moodExplainValueText = null;
 
-
-    [Header("Parent Objects")]
-    [SerializeField] GameObject mood = null;
-    [SerializeField] GameObject health = null, food = null, employment = null, recreation = null, faith = null, hygiene = null;
+    [SerializeField] GameObject energy = null, hunger = null, recreation = null, social = null;
     [Header("Titles")]
-    [SerializeField] TextMeshProUGUI moodTitle = null;
-    [SerializeField] TextMeshProUGUI healthBarTitle = null, foodBarTitle = null, employmentBarTitle = null, recreationBarTitle = null, faithBarTitle = null, hygieneBarTitle = null;
+    [SerializeField] TextMeshProUGUI happinessTitle = null;
+    [SerializeField] TextMeshProUGUI energyTitle = null, hungerTitle = null, recreationTitle = null, socialTitle = null;
     [Header("Bars")]
-    [SerializeField] Bar moodBar = null;
-    [SerializeField] Bar healthBar = null, foodBar = null, employmentBar = null, recreationBar = null, faithBar = null, hygieneBar = null;
+    [SerializeField] Bar happinessBar = null;
+    [SerializeField] Bar energyBar = null, hungerBar = null, recreationBar = null, socialBar = null;
 
     Unit lastViewedUnit = null;
 
@@ -35,86 +31,56 @@ public class UnitViewer : MonoBehaviour
         nameText.text = unit.UnitName;
         professionText.text = unit.GetProfession();
 
-        if (unit.Mood != null)
+        happinessTitle.text = "Happiness";
+        happinessBar.SetNewValues(unit.Happiness);
+
+        if (unit.Energy != null)
         {
-            mood.SetActive(true);
-            moodTitle.text = "Mood";
-            moodBar.SetNewValues(unit.Mood.MoodValue, Mood.MAXVALUE, Mood.MINVALUE);
-            moodExplainText.text = unit.Mood.MoodExplanation;
-            moodExplainValueText.text = unit.Mood.MoodBuffExplanationValues;
+            energy.SetActive(true);
+            energyTitle.text = unit.Energy.Title;
+            energyBar.SetNewValues(unit.Energy.CurrentValue);
         }
         else
-        {
-            mood.SetActive(false);
-            moodExplainText.text = "";
-            moodExplainValueText.text = "";
-        }
+            energy.SetActive(false);
 
 
-        if (unit.Health != null)
+        if (unit.Hunger != null)
         {
-            health.SetActive(true);
-            healthBarTitle.text = unit.Health.Title;
-            healthBar.SetNewValues(unit.Health.CurrentValue);
+            hunger.SetActive(true);
+            hungerTitle.text = unit.Hunger.Title;
+            hungerBar.SetNewValues(unit.Hunger.CurrentValue);
         }
         else
-            health.SetActive(false);
-
-        if (unit.Food != null)
-        {
-            food.SetActive(true);
-            foodBarTitle.text = unit.Food.Title;
-            foodBar.SetNewValues(unit.Food.CurrentValue);
-        }
-        else
-            food.SetActive(false);
-
-        if (unit.Employment != null)
-        {
-            employment.SetActive(true);
-            employmentBarTitle.text = unit.Employment.Title;
-            employmentBar.SetNewValues(unit.Employment.CurrentValue);
-        }
-        else
-            employment.SetActive(false);
+            hunger.SetActive(false);
 
         if (unit.Recreation != null)
         {
             recreation.SetActive(true);
-            recreationBarTitle.text = unit.Recreation.Title;
+            recreationTitle.text = unit.Recreation.Title;
             recreationBar.SetNewValues(unit.Recreation.CurrentValue);
         }
         else
             recreation.SetActive(false);
 
-        if (unit.Faith != null)
+        if (unit.Social != null)
         {
-            faith.SetActive(true);
-            faithBarTitle.text = unit.Faith.Title;
-            faithBar.SetNewValues(unit.Faith.CurrentValue);
+            social.SetActive(true);
+            socialTitle.text = unit.Social.Title;
+            socialBar.SetNewValues(unit.Social.CurrentValue);
         }
         else
-            faith.SetActive(false);
-
-        if (unit.Hygiene != null)
-        {
-            hygiene.SetActive(true);
-            hygieneBarTitle.text = unit.Hygiene.Title;
-            hygieneBar.SetNewValues(unit.Hygiene.CurrentValue);
-        }
-        else
-            hygiene.SetActive(false);
+            social.SetActive(false);
     }
 
     public void SubscribeToChanges(Unit unit, bool state)
     {
         if (state)
         {
-            unit.MoodRecalculated += ShowUnit;
+            unit.OnUnitInfoChanged += ShowUnit;
         }
         else
         {
-            unit.MoodRecalculated -= ShowUnit;
+            unit.OnUnitInfoChanged -= ShowUnit;
         }
     }
 
