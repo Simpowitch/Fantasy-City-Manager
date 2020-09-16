@@ -15,9 +15,15 @@ public class ActionTimerSystem : MonoBehaviour
             return;
         }
         float time = Time.deltaTime;
-        foreach (var actionTimer in actionTimers)
+        for (int i = 0; i < actionTimers.Count; i++)
         {
-            actionTimer.Update(time);
+            if (actionTimers[i] != null)
+                actionTimers[i].Update(time);
+            else
+            {
+                actionTimers.RemoveAt(i);
+                i--;
+            }
         }
         for (int i = 0; i < actionTimers.Count; i++)
         {
@@ -34,16 +40,22 @@ public class ActionTimer
 {
     Action actionOnTimerEnd;
     float remainingTime;
+    bool running;
     public bool IsFinished { get => remainingTime <= 0; }
-    public ActionTimer(float time, Action actionOnTimerEnd)
+    public ActionTimer(float time, Action actionOnTimerEnd, bool startRunning)
     {
         remainingTime = time;
         this.actionOnTimerEnd = actionOnTimerEnd;
+        this.running = startRunning;
         ActionTimerSystem.AddActionTimer(this);
     }
 
+    public void PlayPause(bool play) => running = play;
+
     public void Update(float timeChange)
     {
+        if (!running)
+            return;
         remainingTime -= timeChange;
         if (IsFinished)
         {

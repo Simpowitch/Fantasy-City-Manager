@@ -171,6 +171,8 @@ public abstract class Structure : MonoBehaviour
         OnUnitVisiting?.Invoke(unitVisiting);
     }
 
+    public Vector3 GetRandomLocation() => Utility.ReturnRandom(ObjectTiles).CenteredWorldPosition;
+
     protected virtual void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay) { }
 
     public void SetTransparent()

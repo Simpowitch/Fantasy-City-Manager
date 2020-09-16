@@ -33,7 +33,6 @@ public class City : MonoBehaviour
     public int cityGateToll = 1;
     public int residentialDailyTax = 1;
     public int workplacesDailyTax = 2;
-    //public int commercialBuildingSaleBonus = 2;
 
     [Header("Expenses")]
     public int builderFee = 1;
@@ -53,11 +52,6 @@ public class City : MonoBehaviour
         get;
         private set;
     }
-    //public ZoneSystem ZoneSystem
-    //{
-    //    get;
-    //    private set;
-    //}
 
     public CityStats cityStats = new CityStats();
 
@@ -76,7 +70,6 @@ public class City : MonoBehaviour
         RoadNetwork = GetComponent<RoadNetwork>();
         Pathfinding = new Pathfinding(xSize, ySize, cellSize, Vector3.zero);
         ObjectGrid = new Grid<ObjectTile>(xSize, ySize, cellSize, Vector3.zero, (Grid<ObjectTile> g, int x, int y) => new ObjectTile(g, x, y));
-        //ZoneSystem = new ZoneSystem(ObjectGrid, ConstructionSystem);
         RoadNetwork.SetUp(ObjectGrid, Pathfinding.grid);
         canvasGrid.Setup(ObjectGrid);
 
@@ -248,5 +241,15 @@ public class City : MonoBehaviour
         }
 
         cityStats.Gold.Value += change;
+    }
+
+    public Task CreateLeaveCityTask(Unit unit)
+    {
+        Task newTask = new Task();
+        newTask.CreateAndAddSubTask(unit, "Leaving the city", Utility.ReturnRandom(cityEntrances).position, 0.1f, () =>
+        {
+            Destroy(unit.gameObject);
+        });
+        return newTask;
     }
 }

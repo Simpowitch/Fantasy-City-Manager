@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using Random = UnityEngine.Random;
+using System.Text.RegularExpressions;
 
 public static class Utility
 {
@@ -199,4 +200,72 @@ public static class Utility
         }
     }
     #endregion
+
+    public static T1 GetClosest<T1, T2>(List<T1> list, T2 origin) where T1 : MonoBehaviour where T2 : MonoBehaviour
+    {
+        float minDistance = float.MaxValue;
+        T1 closest = default;
+        foreach (var item in list)
+        {
+            float distance = Vector3.Distance(item.transform.position, origin.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closest = item;
+            }
+        }
+        return closest;
+    }
+
+    public static T GetClosest<T>(List<T> list, Vector3 origin) where T : MonoBehaviour
+    {
+        float minDistance = float.MaxValue;
+        T closest = default;
+        foreach (var item in list)
+        {
+            float distance = Vector3.Distance(item.transform.position, origin);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closest = item;
+            }
+        }
+        return closest;
+    }
+
+    public static Vector3 GetClosest(IEnumerable<Vector3> list, Vector3 origin)
+    {
+        float minDistance = float.MaxValue;
+        Vector3 closest = default;
+        foreach (var item in list)
+        {
+            float distance = Vector3.Distance(item, origin);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closest = item;
+            }
+        }
+        return closest;
+    }
+
+    public static void MoveToLayer(Transform root, int layer, Transform[] layerChangeExceptions)
+    {
+        bool changeLayer = true;
+        foreach (var exception in layerChangeExceptions)
+        {
+            if (exception == root)
+                changeLayer = false;
+        }
+        if (changeLayer)
+            root.gameObject.layer = layer;
+        foreach (Transform child in root)
+            MoveToLayer(child, layer, layerChangeExceptions);
+    }
+
+    public static string ReplaceWordInString(string originalString, string wordToReplace, string newWord)
+    {
+        string pattern = $@"\b{wordToReplace}\b";
+        return Regex.Replace(originalString, pattern, newWord);
+    }
 }

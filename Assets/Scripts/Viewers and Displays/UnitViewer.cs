@@ -7,6 +7,7 @@ public class UnitViewer : MonoBehaviour
     [SerializeField] GameObject mainPanel = null;
     [SerializeField] TextMeshProUGUI nameText = null;
     [SerializeField] TextMeshProUGUI professionText = null;
+    [SerializeField] TextMeshProUGUI taskDescriptionText = null;
 
     [SerializeField] GameObject energy = null, hunger = null, recreation = null, social = null;
     [Header("Titles")]
@@ -30,6 +31,10 @@ public class UnitViewer : MonoBehaviour
 
         nameText.text = unit.UnitName;
         professionText.text = unit.GetProfession();
+        if (unit.currentSubTask != null)
+            taskDescriptionText.text = unit.currentSubTask.Description;
+        else
+            taskDescriptionText.text = "Not doing anything";
 
         happinessTitle.text = "Happiness";
         happinessBar.SetNewValues(unit.Happiness);

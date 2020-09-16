@@ -8,6 +8,35 @@ public class BuilderEmployment : Employment
     const float BUILDTIME = 0.5f;
     public List<Structure> unfinishedStructures;
 
+    Structure targetStructure;
+
+
+
+    public Task CreateTask(Unit unit)
+    {
+        Task newTask = new Task();
+        if (unfinishedStructures.Count > 0) //At least 1 unfinished structure
+        {
+            if (targetStructure == null)
+                targetStructure = Utility.GetClosest(unfinishedStructures, unit);
+
+            newTask.CreateAndAddSubTask(unit, "Hammering", targetStructure.GetRandomLocation(), BUILDTIME, WorkAction);
+        }
+        else //No unfinished structures
+        {
+            newTask.CreateAndAddSubTask(unit, "Practicing crafting a wooden horse", unit.transform.position, 1f, null);
+        }
+        return newTask;
+    }
+
+    private void WorkAction()
+    {
+        targetStructure.constructionArea.AddConstructionTick();
+        targetStructure.constructionProgressBar.SetNewValues(targetStructure.constructionArea.GetConstructionTickNormalized);
+        if (targetStructure.constructionArea.IsFinished)
+            targetStructure = null;
+    }
+
     //public override WorkState GetWorkState()
     //{
     //    return new BuilderWorkState(employee, this);

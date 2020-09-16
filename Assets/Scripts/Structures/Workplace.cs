@@ -7,10 +7,7 @@ public abstract class Workplace : Structure
     [Header("Workplace - Time")]
     public int startShiftHour = 8;
     public int endShiftHour = 18;
-
-    [Header("Workplace - Tasks")]
-    public UnityEvent taskBeginning;
-    public UnityEvent taskCompleted;
+    public bool ShiftActive { get; private set; }
 
     [Header("Workplace - Employments")]
     [SerializeField] List<Employment> employments = new List<Employment>();
@@ -57,7 +54,9 @@ public abstract class Workplace : Structure
             employment.workingPositions = structurePositions;
             employment.workplace = this;
         }
+        Clock.OnHourChanged += NewHour;
     }
+
     protected override void UnitVisiting(Unit unitVisiting)
     {
         base.UnitVisiting(unitVisiting);
@@ -67,32 +66,29 @@ public abstract class Workplace : Structure
         }
     }
 
-    public Task GetTask()
+    private void NewHour(int hour)
     {
-        return new Task(Utility.ReturnRandom(ObjectTiles).CenteredWorldPosition, 0.5f, taskBeginning, taskCompleted);
+        if (hour == endShiftHour)
+            ShiftActive = false;
+        if (hour == startShiftHour)
+            ShiftActive = true;
     }
 
-    protected override void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay)
-    {
-        switch (partOfDay)
-        {
-            case DayNightSystem.PartOfTheDay.Evening:
-                EndWorkingDay();
-                break;
-            case DayNightSystem.PartOfTheDay.Night:
-            case DayNightSystem.PartOfTheDay.Morning:
-            case DayNightSystem.PartOfTheDay.Day:
-                break;
-        }
-    }
-
-    protected virtual void EndWorkingDay() => EmployeesAtSite.Clear();
     public bool CanEmploy() => UnfilledPositions.Count > 0;
     public bool IsFunctional() => Employments.Count > 0;
-    
+
     public override void Despawn()
     {
         base.city.workplaces.Remove(this);
+        Clock.OnHourChanged -= NewHour;
         base.Despawn();
+    }
+
+    public Task CreateTask(Unit unit)
+    {
+        Task newTask = new Task();
+        newTask.CreateAndAddSubTask(unit, "Taking orders", GetRandomLocation(), 3f, null);
+        newTask.CreateAndAddSubTask(unit, "Serving patreon", GetRandomLocation(), 3f, null);
+        return newTask;
     }
 }

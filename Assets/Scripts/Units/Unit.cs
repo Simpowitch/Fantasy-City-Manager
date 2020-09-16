@@ -43,14 +43,12 @@ public abstract class Unit : MonoBehaviour
 
     private void OnEnable()
     {
-        DayNightSystem.OnPartOfTheDayChanged += PartOfDayChange;
         Clock.OnHourChanged += NewHour;
         seeker.OnPathUpdated += NewNodeReached;
     }
 
     private void OnDisable()
     {
-        DayNightSystem.OnPartOfTheDayChanged -= PartOfDayChange;
         Clock.OnHourChanged -= NewHour;
         seeker.OnPathUpdated -= NewNodeReached;
     }
@@ -62,21 +60,6 @@ public abstract class Unit : MonoBehaviour
 
     private void Update()
     {
-        if (currentTask == null)
-            currentTask = GetNewTask();
-
-        if (currentTask != null)
-        {
-            if (currentSubTask == null)
-                currentSubTask = currentTask.GetNextSubTask();
-
-            if (currentSubTask != null)
-            {
-                //Do Task
-            }
-        }
-
-
         if (FSM != null)
         {
             FSM.DuringState();
@@ -98,9 +81,9 @@ public abstract class Unit : MonoBehaviour
         Recreation.OnNeedValuesChanged += CalculateHappiness;
         Social = new Need("Social", 0.05f, 1);
         Social.OnNeedValuesChanged += CalculateHappiness;
-    }
 
-    protected abstract void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay);
+        ChangeState(new IdleState(this));
+    }
 
     protected virtual void NewHour(int hour) { }
 
@@ -159,9 +142,44 @@ public abstract class Unit : MonoBehaviour
         OnUnitInfoChanged?.Invoke(this);
     }
 
-    protected abstract Task GetNewTask();
+    public virtual void FindNewSubTask()
+    {
+        currentSubTask = currentTask.GetNextSubTask();
+        if (currentSubTask == null)
+            FindNewTask();
+        else
+            ChangeState(new MoveState(this));
+    }
 
-    protected Task FullfillNeed()
+    protected virtual void FindNewTask()
+    {
+        currentSubTask = currentTask.GetNextSubTask();
+        if (currentSubTask != null)
+            ChangeState(new MoveState(this));
+        else
+            ChangeState(new IdleState(this));
+    }
+
+    protected void FindNeedFullfillTask()
+    {
+        //Debug
+        currentTask = CreateHungerTask();
+
+        //Find method to chose lowest or random low need
+    }
+
+    protected abstract Task CreateEnergyTask();
+    private Task CreateHungerTask()
+    {
+        Task newTask = new Task();
+        newTask.CreateAndAddSubTask(this, "Eating at the tavern", Utility.ReturnRandom(City.taverns).GetRandomLocation(), 5f, null);
+        return newTask;
+    }
+    private Task CreateRecreationTask()
+    {
+        throw new System.NotImplementedException();
+    }
+    private Task CreateSocialTask()
     {
         throw new System.NotImplementedException();
     }
@@ -172,6 +190,7 @@ public abstract class Unit : MonoBehaviour
         public virtual void EnterState()
         {
             unit.GoToNextNode();
+            unit.OnUnitInfoChanged?.Invoke(unit);
         }
 
         public virtual void DuringState()
@@ -184,6 +203,47 @@ public abstract class Unit : MonoBehaviour
         public State(Unit unit)
         {
             this.unit = unit;
+        }
+    }
+
+    public class IdleState : State
+    {
+        public IdleState(Unit unit) : base(unit) { }
+
+        public override void DuringState()
+        {
+            unit.FindNewTask();
+        }
+    }
+
+    public class MoveState : State
+    {
+        public MoveState(Unit unit) : base(unit) { }
+
+        public override void EnterState()
+        {
+            Vector3 targetPosition = unit.currentSubTask.Position;
+
+            unit.Seeker.FindPathTo(targetPosition);
+            base.EnterState();
+        }
+
+        public override void DuringState()
+        {
+            if (unit.currentSubTask.Arrived(unit))
+                unit.ChangeState(new TaskState(unit));
+            base.DuringState();
+        }
+    }
+
+    public class TaskState : State
+    {
+        public TaskState(Unit unit) : base(unit) { }
+
+        public override void EnterState()
+        {
+            unit.currentSubTask.actionTimer.PlayPause(true);
+            base.EnterState();
         }
     }
 }

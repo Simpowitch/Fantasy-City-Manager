@@ -15,6 +15,8 @@ public class Employment
 
     public List<Vector3> workingPositions;
 
+    public bool ShiftActive => workplace.ShiftActive;
+
     //public virtual WorkState GetWorkState()
     //{
     //    return new WorkState(employee, this);

@@ -1,43 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 [System.Serializable]
 public class Task
 {
     public Queue<SubTask> SubTasks { private set; get; }
 
-    public SubTask GetNextSubTask() => SubTasks.Peek();
-    public void CompleteSubTask()
+    public SubTask GetNextSubTask()
     {
-        SubTask completedTask = SubTasks.Dequeue();
-        completedTask.OnTaskCompleted?.Invoke();
+        if (SubTasks.Count > 0)
+            return SubTasks.Dequeue();
+        else
+            return null;
     }
 
-    public Task(SubTask[] newTasks)
+    public void CreateAndAddSubTask(Unit unit, string description, Vector3 position, float timeAtPosition, Action onTimerEndMethod)
     {
-        this.SubTasks = new Queue<SubTask>();
-        foreach (SubTask task in newTasks)
+        if (SubTasks == null)
+            SubTasks = new Queue<SubTask>();
+        Action newAction = () =>
         {
-            SubTasks.Enqueue(task);
-        }
+            onTimerEndMethod?.Invoke();
+            unit.FindNewSubTask();
+        };
+        SubTasks.Enqueue(new SubTask(position, description, new ActionTimer(timeAtPosition, newAction, false)));
     }
 
     [System.Serializable]
     public class SubTask
     {
         public Vector3 Position { private set; get; }
-        public float TimeAtPosition { private set; get; }
-        public UnityEvent OnTaskBeginning { private set; get; }
-        public UnityEvent OnTaskCompleted { private set; get; }
+        public string Description { private set; get; }
+        public ActionTimer actionTimer { private set; get; }
 
 
-        public SubTask(Vector3 position, float time, UnityEvent beginningEvent, UnityEvent endEvent)
+        public SubTask(Vector3 position, string description, ActionTimer action)
         {
             this.Position = position;
-            this.TimeAtPosition = time;
-            OnTaskBeginning = beginningEvent;
-            OnTaskCompleted = endEvent;
+            this.actionTimer = action;
+            Description = description;
         }
+
+        public bool Arrived(Unit unit) => Vector3.Distance(unit.transform.position, Position) < 1;
     }
 }
