@@ -85,6 +85,14 @@ public class Citizen : Unit
 
     public override string GetProfession() => employment != null ? employment.employmentName : "Unemployed";
 
+    protected override Task GetNewTask()
+    {
+        if (employment != null)
+            currentTask = employment.workplace.GetTask();
+        else
+            FullfillNeed();
+    }
+
     //#region FSM
     //public abstract class CitizenState : State
     //{

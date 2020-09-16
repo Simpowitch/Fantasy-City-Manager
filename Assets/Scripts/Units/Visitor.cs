@@ -68,6 +68,8 @@ public class Visitor : Unit
 
     public override string GetProfession() => "Visitor";
 
+    protected override Task GetNewTask() => FullfillNeed();
+
     //#region FSM
     //public abstract class VisitorState : State
     //{

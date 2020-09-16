@@ -4,6 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class Employment
 {
+    public Workplace workplace;
     public Citizen employee;
     public string employmentName = "worker";
 

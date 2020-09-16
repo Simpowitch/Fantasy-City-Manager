@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public abstract class Unit : MonoBehaviour
@@ -37,6 +38,8 @@ public abstract class Unit : MonoBehaviour
     public Need Energy { private set; get; }
     public Need Recreation { private set; get; }
 
+    public Task currentTask;
+    public Task.SubTask currentSubTask;
 
     private void OnEnable()
     {
@@ -59,6 +62,21 @@ public abstract class Unit : MonoBehaviour
 
     private void Update()
     {
+        if (currentTask == null)
+            currentTask = GetNewTask();
+
+        if (currentTask != null)
+        {
+            if (currentSubTask == null)
+                currentSubTask = currentTask.GetNextSubTask();
+
+            if (currentSubTask != null)
+            {
+                //Do Task
+            }
+        }
+
+
         if (FSM != null)
         {
             FSM.DuringState();
@@ -139,6 +157,13 @@ public abstract class Unit : MonoBehaviour
         average /= 4;
         Happiness = average;
         OnUnitInfoChanged?.Invoke(this);
+    }
+
+    protected abstract Task GetNewTask();
+
+    protected Task FullfillNeed()
+    {
+        throw new System.NotImplementedException();
     }
 
     public abstract class State

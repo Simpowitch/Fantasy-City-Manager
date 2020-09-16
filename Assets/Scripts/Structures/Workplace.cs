@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public abstract class Workplace : Structure
 {
-    [Header("Workplace")]
+    [Header("Workplace - Time")]
     public int startShiftHour = 8;
     public int endShiftHour = 18;
 
+    [Header("Workplace - Tasks")]
+    public UnityEvent taskBeginning;
+    public UnityEvent taskCompleted;
+
+    [Header("Workplace - Employments")]
     [SerializeField] List<Employment> employments = new List<Employment>();
     public List<Employment> Employments { get => employments; private set => employments = value; }
     public List<Citizen> CitizensEmployed
@@ -49,6 +55,7 @@ public abstract class Workplace : Structure
         foreach (var employment in employments)
         {
             employment.workingPositions = structurePositions;
+            employment.workplace = this;
         }
     }
     protected override void UnitVisiting(Unit unitVisiting)
@@ -59,6 +66,12 @@ public abstract class Workplace : Structure
             EmployeesAtSite.Add(unitVisiting as Citizen);
         }
     }
+
+    public Task GetTask()
+    {
+        return new Task(Utility.ReturnRandom(ObjectTiles).CenteredWorldPosition, 0.5f, taskBeginning, taskCompleted);
+    }
+
     protected override void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay)
     {
         switch (partOfDay)
