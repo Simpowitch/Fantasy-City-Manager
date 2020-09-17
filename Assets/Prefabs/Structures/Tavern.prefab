@@ -233,16 +233,33 @@ MonoBehaviour:
   constructionArea:
     constructionTick: 0
     constructionTickMax: 80
+  startShiftHour: 8
+  endShiftHour: 18
   employments:
-  - employee: {fileID: 0}
+  - workplace: {fileID: 0}
+    employee: {fileID: 0}
     employmentName: Innkeeper
     workingPositions: []
-  - employee: {fileID: 0}
+  - workplace: {fileID: 0}
+    employee: {fileID: 0}
     employmentName: Barman
     workingPositions: []
-  - employee: {fileID: 0}
+  - workplace: {fileID: 0}
+    employee: {fileID: 0}
     employmentName: Waiter
     workingPositions: []
+  workerTaskCreator:
+    subTasks:
+    - description: Taking Orders
+      actionTimer: 3
+      actionOnTimerEnd:
+        m_PersistentCalls:
+          m_Calls: []
+    - description: Serving patreon
+      actionTimer: 2
+      actionOnTimerEnd:
+        m_PersistentCalls:
+          m_Calls: []
 --- !u!61 &7047295982953017326
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -737,7 +754,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1775479749
-  m_SortingLayer: -2
+  m_SortingLayer: -3
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
