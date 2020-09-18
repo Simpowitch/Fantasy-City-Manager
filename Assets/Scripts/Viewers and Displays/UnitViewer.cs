@@ -31,8 +31,8 @@ public class UnitViewer : MonoBehaviour
 
         nameText.text = unit.UnitName;
         professionText.text = unit.GetProfession();
-        if (unit.currentSubTask != null)
-            taskDescriptionText.text = unit.currentSubTask.Description;
+        if (unit.currentTask != null)
+            taskDescriptionText.text = unit.currentTask.Description;
         else
             taskDescriptionText.text = "Not doing anything";
 

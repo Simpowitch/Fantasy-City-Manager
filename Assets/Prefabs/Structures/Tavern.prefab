@@ -239,27 +239,15 @@ MonoBehaviour:
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Innkeeper
-    workingPositions: []
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Barman
-    workingPositions: []
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Waiter
-    workingPositions: []
-  workerTaskCreator:
-    subTasks:
-    - description: Taking Orders
-      actionTimer: 3
-      actionOnTimerEnd:
-        m_PersistentCalls:
-          m_Calls: []
-    - description: Serving patreon
-      actionTimer: 2
-      actionOnTimerEnd:
-        m_PersistentCalls:
-          m_Calls: []
+  consumedOfPatreon:
+    type: 3
+    value: 1
 --- !u!61 &7047295982953017326
 BoxCollider2D:
   m_ObjectHideFlags: 0

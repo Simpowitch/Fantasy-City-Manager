@@ -10,23 +10,41 @@ public class BuilderEmployment : Employment
 
     Structure targetStructure;
 
+    public override bool ShiftActive => unfinishedStructures.Count > 0;
 
-
-    public Task CreateTask(Unit unit)
+    public override Task GetWorkTask(Citizen citizen)
     {
-        Task newTask = new Task();
         if (unfinishedStructures.Count > 0) //At least 1 unfinished structure
         {
             if (targetStructure == null)
-                targetStructure = Utility.GetClosest(unfinishedStructures, unit);
+                targetStructure = Utility.GetClosest(unfinishedStructures, citizen);
 
-            newTask.CreateAndAddSubTask(unit, "Hammering", targetStructure.GetRandomLocation(), BUILDTIME, WorkAction);
+            ActionTimer onTaskEndTimer = new ActionTimer(BUILDTIME, WorkAction, false);
+            return new Task("Constructing", onTaskEndTimer, targetStructure.GetRandomLocation());
         }
         else //No unfinished structures
         {
-            newTask.CreateAndAddSubTask(unit, "Practicing crafting a wooden horse", unit.transform.position, 1f, null);
+            ActionTimer onTaskEndTimer = new ActionTimer(2f, null, false);
+            return new Task("Practicing crafting a wooden horse", onTaskEndTimer, citizen.transform.position);
         }
-        return newTask;
+
+
+
+
+
+        //Task newTask = new Task();
+        //if (unfinishedStructures.Count > 0) //At least 1 unfinished structure
+        //{
+        //    if (targetStructure == null)
+        //        targetStructure = Utility.GetClosest(unfinishedStructures, unit);
+
+        //    newTask.CreateAndAddSubTask(unit, "Hammering", targetStructure.GetRandomLocation(), BUILDTIME, WorkAction);
+        //}
+        //else //No unfinished structures
+        //{
+        //    newTask.CreateAndAddSubTask(unit, "Practicing crafting a wooden horse", unit.transform.position, 1f, null);
+        //}
+        //return newTask;
     }
 
     private void WorkAction()

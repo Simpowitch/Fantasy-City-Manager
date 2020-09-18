@@ -15,7 +15,7 @@ public class CityGate : Workplace
             Visitor visitor = unitVisiting as Visitor;
             if (!visitor.PaidEntryToll)
             {
-                city.cityStats.Gold.Value += city.cityGateToll;
+                city.cityStats.AddResource(new CityResource(CityResource.Type.Gold, city.cityGateToll));
                 visitor.PaidEntryToll = true;
             }
         }
@@ -25,5 +25,10 @@ public class CityGate : Workplace
     {
         base.city.cityGates.Remove(this);
         base.Despawn();
+    }
+
+    public override Task GetWorkTask(Citizen citizen)
+    {
+        throw new System.NotImplementedException();
     }
 }

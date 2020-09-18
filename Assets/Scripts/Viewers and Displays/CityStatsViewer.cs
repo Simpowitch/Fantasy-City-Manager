@@ -27,6 +27,8 @@ public class CityStatsViewer : MonoBehaviour
 
         city.cityStats.OnPopulationChanged += ChangePopulationText;
         city.cityStats.OnVisitorsChanged += ChangeVisitorsText;
+
+        city.cityStats.SendValuesToListeners();
     }
 
     private void OnDisable()

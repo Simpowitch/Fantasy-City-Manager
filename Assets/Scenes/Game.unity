@@ -32092,6 +32092,10 @@ MonoBehaviour:
   xSize: 71
   ySize: 40
   cellSize: 1
+  startGold: 10
+  startWood: 10
+  startStone: 10
+  startFood: 10
   unitTransformParent: {fileID: 1263021721}
   visitorPrefab: {fileID: 3135807491833436267, guid: 20395afce2fa5044dbd2b74086fb345b,
     type: 3}
@@ -32126,7 +32130,11 @@ MonoBehaviour:
   unfinishedStructures: []
   minVisits: 1
   maxVisits: 4
-  BuilderEmployments: []
+  BuilderEmployments:
+  - workplace: {fileID: 0}
+    employee: {fileID: 0}
+    employmentName: Carpenter
+    unfinishedStructures: []
   cityGateToll: 10
   residentialDailyTax: 5
   workplacesDailyTax: 10

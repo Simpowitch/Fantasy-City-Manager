@@ -67,7 +67,7 @@ public class Citizen : Unit
     protected override void FindNewTask()
     {
         if (employment != null && employment.ShiftActive)
-            currentTask = employment.workplace.CreateTask(this);
+            currentTask = employment.GetWorkTask(this);
         else
             FindNeedFullfillTask();
         base.FindNewTask();

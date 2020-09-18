@@ -164,7 +164,7 @@ public class ConstructionSystem : MonoBehaviour
         ConstructionCost costGroup = new ConstructionCost();
         foreach (var cost in roadCosts[constructionIndex].ResourceCosts)
         {
-            CityResource resourceToAdd = new CityResource("", cost.type, cost.Value * roadPreviews.Count);
+            CityResource resourceToAdd = new CityResource(cost.type, cost.Value * roadPreviews.Count);
             costGroup.AddResource(resourceToAdd);
         }
         bool canMeetCosts = CheckCosts(costGroup, out constructionCost);

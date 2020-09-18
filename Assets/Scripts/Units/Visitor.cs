@@ -29,6 +29,7 @@ public class Visitor : Unit
             currentTask = City.CreateLeaveCityTask(this);
         else
             FindNeedFullfillTask();
+        base.FindNewTask();
     }
 
     protected override Task CreateEnergyTask()

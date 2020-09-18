@@ -12,10 +12,8 @@ public class Employment
     public void QuitJob() => employee = null;
 
     public bool PositionFilled { get => employee != null; }
-
-    public List<Vector3> workingPositions;
-
-    public bool ShiftActive => workplace.ShiftActive;
+    public virtual Task GetWorkTask(Citizen citizen) => workplace.GetWorkTask(citizen);
+    public virtual bool ShiftActive => workplace.ShiftActive;
 
     //public virtual WorkState GetWorkState()
     //{

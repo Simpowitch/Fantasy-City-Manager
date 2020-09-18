@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class Unit : MonoBehaviour
 {
@@ -39,7 +37,9 @@ public abstract class Unit : MonoBehaviour
     public Need Recreation { private set; get; }
 
     public Task currentTask;
-    public Task.SubTask currentSubTask;
+    //public Task.SubTask currentSubTask;
+
+    public Inventory inventory = new Inventory();
 
     private void OnEnable()
     {
@@ -142,23 +142,29 @@ public abstract class Unit : MonoBehaviour
         OnUnitInfoChanged?.Invoke(this);
     }
 
-    public virtual void FindNewSubTask()
-    {
-        currentSubTask = currentTask.GetNextSubTask();
-        if (currentSubTask == null)
-            FindNewTask();
-        else
-            ChangeState(new MoveState(this));
-    }
+    //public virtual void FindNewSubTask()
+    //{
+    //    currentSubTask = currentTask.GetNextSubTask();
+    //    if (currentSubTask == null)
+    //        FindNewTask();
+    //    else
+    //        ChangeState(new MoveState(this));
+    //}
 
     protected virtual void FindNewTask()
     {
-        currentSubTask = currentTask.GetNextSubTask();
-        if (currentSubTask != null)
+        if (currentTask != null)
             ChangeState(new MoveState(this));
         else
             ChangeState(new IdleState(this));
     }
+    //{
+    //    ////currentSubTask = currentTask.GetNextSubTask();
+    //    ////if (currentSubTask != null)
+    //    ////    ChangeState(new MoveState(this));
+    //    ////else
+    //    ////    ChangeState(new IdleState(this));
+    //}
 
     protected void FindNeedFullfillTask()
     {
@@ -171,9 +177,12 @@ public abstract class Unit : MonoBehaviour
     protected abstract Task CreateEnergyTask();
     private Task CreateHungerTask()
     {
-        Task newTask = new Task();
-        newTask.CreateAndAddSubTask(this, "Eating at the tavern", Utility.ReturnRandom(City.taverns).GetRandomLocation(), 5f, null);
-        return newTask;
+        Commercial foodSource = Utility.ReturnRandom(City.taverns); //EXCHANGE FOR FOOD SOURCES
+        return foodSource.GetPatreonTask(this);
+
+        //Task newTask = new Task();
+        //newTask.CreateAndAddSubTask(this, "Eating at the tavern", Utility.ReturnRandom(City.taverns).GetRandomLocation(), 5f, null);
+        //return newTask;
     }
     private Task CreateRecreationTask()
     {
@@ -222,7 +231,7 @@ public abstract class Unit : MonoBehaviour
 
         public override void EnterState()
         {
-            Vector3 targetPosition = unit.currentSubTask.Position;
+            Vector3 targetPosition = unit.currentTask.Position;
 
             unit.Seeker.FindPathTo(targetPosition);
             base.EnterState();
@@ -230,7 +239,7 @@ public abstract class Unit : MonoBehaviour
 
         public override void DuringState()
         {
-            if (unit.currentSubTask.Arrived(unit))
+            if (unit.currentTask.HasArrived(unit.transform.position))
                 unit.ChangeState(new TaskState(unit));
             base.DuringState();
         }
@@ -242,8 +251,15 @@ public abstract class Unit : MonoBehaviour
 
         public override void EnterState()
         {
-            unit.currentSubTask.actionTimer.PlayPause(true);
+            unit.currentTask.Arrived();
             base.EnterState();
+        }
+
+        public override void DuringState()
+        {
+            if (unit.currentTask.TaskCompleted)
+                unit.ChangeState(new IdleState(unit));
+            base.DuringState();
         }
     }
 }

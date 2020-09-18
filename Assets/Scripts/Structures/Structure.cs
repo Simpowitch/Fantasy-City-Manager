@@ -10,6 +10,10 @@ public abstract class Structure : MonoBehaviour
 
     [Header("Structure")]
     [SerializeField] ConstructionCost constructionCost = null;
+
+    //[Header("Structure - Visitor Tasks")]
+    //[SerializeField] TaskCreator visitStructureTaskCreator = null;
+
     public ConstructionCost ConstructionCost { get => constructionCost; }
     [Header("References")]
     [SerializeField] Tilemap tmConstructed = null;
@@ -172,6 +176,7 @@ public abstract class Structure : MonoBehaviour
     }
 
     public Vector3 GetRandomLocation() => Utility.ReturnRandom(ObjectTiles).CenteredWorldPosition;
+
 
     protected virtual void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay) { }
 

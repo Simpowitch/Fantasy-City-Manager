@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 
 public class CityStats
 {
@@ -7,10 +6,10 @@ public class CityStats
     public event StatsHandler OnPopulationChanged;
     public event StatsHandler OnVisitorsChanged;
 
-    public CityResource Gold = new CityResource("Gold", CityResource.Type.Gold, 0);
-    public CityResource Wood = new CityResource("Wood", CityResource.Type.Wood, 0);
-    public CityResource Stone = new CityResource("Stone", CityResource.Type.Stone, 0);
-    public CityResource Food = new CityResource("Food", CityResource.Type.Food, 0);
+    public CityResource Gold { get; private set; }
+    public CityResource Wood { get; private set; }
+    public CityResource Stone { get; private set; }
+    public CityResource Food { get; private set; }
 
     int population;
     public int Population
@@ -34,10 +33,19 @@ public class CityStats
         }
     }
 
-    public void Setup()
+    public void Setup(int startGold, int startWood, int startStone, int startFood)
     {
         OnPopulationChanged?.Invoke(population);
         OnVisitorsChanged?.Invoke(visitors);
+
+        Gold = new CityResource(CityResource.Type.Gold, startGold);
+        Wood = new CityResource(CityResource.Type.Wood, startWood);
+        Stone = new CityResource(CityResource.Type.Stone, startStone);
+        Food = new CityResource(CityResource.Type.Food, startFood);
+    }
+
+    public void SendValuesToListeners()
+    {
         Gold.OnValueChanged?.Invoke(Gold.Value);
         Wood.OnValueChanged?.Invoke(Wood.Value);
         Stone.OnValueChanged?.Invoke(Stone.Value);
@@ -59,20 +67,23 @@ public class CityStats
         }
         return null;
     }
+    public void RemoveResource(CityResource resourceToRemove) => GetResource(resourceToRemove.type).Value -= resourceToRemove.Value;
+    public void AddResource(CityResource resourceToAdd) => GetResource(resourceToAdd.type).Value += resourceToAdd.Value;
 
-    public void RemoveResources(List<CityResource> cityResources)
+    public void RemoveResources(List<CityResource> resourcesToRemove)
     {
-        foreach (var resource in cityResources)
+        foreach (var resource in resourcesToRemove)
         {
-            GetResource(resource.type).Value -= resource.Value;
+            RemoveResource(resource);
         }
     }
 
-    public void AddResources(List<CityResource> cityResources)
+
+    public void AddResources(List<CityResource> resourcesToAdd)
     {
-        foreach (var resource in cityResources)
+        foreach (var resource in resourcesToAdd)
         {
-            GetResource(resource.type).Value += resource.Value;
+            AddResource(resource);
         }
     }
 }

@@ -24,11 +24,11 @@ public class Player : MonoBehaviour
     {
         //IF NO LOADING
         CreateNewCity();
-        activeCity.cityStats.Setup();
     }
 
     public void CreateNewCity()
     {
+        defaultCity.Setup();
         ActiveCity = defaultCity;
     }
 }

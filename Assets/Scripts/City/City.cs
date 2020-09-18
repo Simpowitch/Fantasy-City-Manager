@@ -7,6 +7,11 @@ public class City : MonoBehaviour
     [Header("Setup - Initializers")]
     [SerializeField] int xSize = 40, ySize = 15;
     [SerializeField] float cellSize = 1;
+    
+    [SerializeField] int startGold = 10;
+    [SerializeField] int startWood = 10;
+    [SerializeField] int startStone = 10;
+    [SerializeField] int startFood = 10;
 
     [Header("Static references")]
     [SerializeField] Transform unitTransformParent = null;
@@ -98,11 +103,15 @@ public class City : MonoBehaviour
 
     private void Start()
     {
-        cityStats.Setup();
         foreach (var residence in residentialBuildings)
         {
             SpawnCitizen(residence);
         }
+    }
+
+    public void Setup()
+    {
+        cityStats.Setup(startGold, startWood, startStone, startFood);
     }
 
     void ConfirmBuildingPlacements(Structure structure)
@@ -240,16 +249,13 @@ public class City : MonoBehaviour
                 change -= builderFee;
         }
 
-        cityStats.Gold.Value += change;
+        cityStats.AddResource(new CityResource(CityResource.Type.Gold, change));
     }
 
     public Task CreateLeaveCityTask(Unit unit)
     {
-        Task newTask = new Task();
-        newTask.CreateAndAddSubTask(unit, "Leaving the city", Utility.ReturnRandom(cityEntrances).position, 0.1f, () =>
-        {
-            Destroy(unit.gameObject);
-        });
-        return newTask;
+        ActionTimer onTaskEnd = new ActionTimer(0.1f, () => Destroy(unit.gameObject), false);
+        Task leaveTask = new Task("Leaving the city", onTaskEnd, Utility.ReturnRandom(cityEntrances).position);
+        return leaveTask;
     }
 }

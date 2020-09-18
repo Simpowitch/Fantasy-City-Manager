@@ -706,15 +706,18 @@ MonoBehaviour:
   constructionArea:
     constructionTick: 0
     constructionTickMax: 20
+  startShiftHour: 8
+  endShiftHour: 18
   employments:
-  - employee: {fileID: 0}
+  - workplace: {fileID: 0}
+    employee: {fileID: 0}
     employmentName: Farmer and Owner
-    workingPositions: []
-  - employee: {fileID: 0}
+  - workplace: {fileID: 0}
+    employee: {fileID: 0}
     employmentName: Farmer
-    workingPositions: []
-  produce: 3
-  producePerEmployee: 1
+  producedByWorker:
+    type: 3
+    value: 1
 --- !u!61 &5217708615405840495
 BoxCollider2D:
   m_ObjectHideFlags: 0
