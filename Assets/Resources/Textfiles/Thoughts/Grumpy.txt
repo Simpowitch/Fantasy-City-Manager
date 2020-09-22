@@ -1,27 +1,55 @@
 #DEFAULT
 Kids...Can't live with them...Can't kill them...
 Everything will kill you. So choose something fun.
+I'm all toasty inside.
+I’d wish you the best of luck but I believe luck is a concept created by the weak to explain their failures.
+That is the problem with everything. They try and make it better without realizing the old is fine.
+Love, hate. look we're a family what's the difference?
 #END
 #TAVERNVISIT
 I only drink water that has been filtered through a brewery first!
 I do not think we get smarter as we get older. We just run out of stupid things to do.
 Drunk am I not. Are you?...you are? you are!
+Am I just eating because I'm bored?
+I guess I could use a little social interaction.
+If there were more food and fewer people, this would be a perfect party.
+When my time comes, I want to be buried face down, so that anyone who doesn’t like me can kiss my ass!
+If nobody hates you, you're doing something wrong.
 #END
 #TAVERNWORKING
 Everyone seem fine with me coming in early for work...but leaving early is unacceptable...
+I order the food, you cook the food. The customer gets the food. We do that for 40 years, and then we die.
+Please come again...When I'm not working.
 #END
 #CONSTRUCTING
 So if i do my job really well I get rewarded with doing other peoples job too?...great...
+Can I go home now? I'm sick...of this.
+If given the choice between doing something and nothing. I'd do nothing. However I’d work all night, if it meant nothing got done.
+There's no I in "team". There is a me, though, if you jumble it up.
 #END
 #FARMWORKING
 Remember when there was such a thing as a day off? I don't...
+I love the smell of fertilizer in the morning.
+Never half-ass two things. Whole-ass one thing.
+If any of you need anything at all, too bad. Deal with your problems yourselves, like adults.
+Get off my land!
 #END
 #SLEEPING
 It is better to wake up and pee than to pee and wake up.
 I should be sleeping at work instead. What a waste of time this is.
+Wake me up when I care.
 #END
 #MINING
 I just want to highfive everyone in this place...Really hard...In the face...with this pickaxe.
+A wise man once said. "Don't dig straight down". Guess I'm not that wise...
+It's days like these I wish I didn't settle down here.
 #END
 #LEAVECITY
+I'll be back.
+Pray for me that this is the last time you see me.
+Well, I am not usually one for speeches. So, goodbye.
+#END
+#ENTERCITY
+I don't know why I'm here. Just hand me a task and I'll do it.
+Be it ever so heinous, there's no place like home.
 #END
