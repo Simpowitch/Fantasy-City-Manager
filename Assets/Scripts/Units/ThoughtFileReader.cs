@@ -29,6 +29,9 @@ public static class ThoughtFileReader
         char[] chars = baseString.ToCharArray();
         string newString = "";
 
+        if (chars.Length == 0)
+            return "#DEFAULT";
+
         if (chars[0] != '#')
             newString += "#";
         for (int i = 0; i < chars.Length; i++)

@@ -97,4 +97,14 @@ public class Clock : MonoBehaviour
     }
 
     private string GetClockStatus() => string.Format("{0:00}:{1:00}", hour, minute);
+
+    public static bool IsTimeBetween(int a, int b, int current)
+    {
+        if (a < b)
+            return current >= a && current <= b;
+        else if (a > b)
+            return current <= a && current >= b;
+        else
+            return false;
+    }
 }

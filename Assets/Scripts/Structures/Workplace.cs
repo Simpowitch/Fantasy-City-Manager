@@ -69,13 +69,7 @@ public abstract class Workplace : Structure
         }
     }
 
-    private void NewHour(int hour)
-    {
-        if (hour == endShiftHour)
-            ShiftActive = false;
-        if (hour == startShiftHour)
-            ShiftActive = true;
-    }
+    private void NewHour(int hour) => ShiftActive = Clock.IsTimeBetween(startShiftHour, endShiftHour, hour);
 
     public bool CanEmploy() => UnfilledPositions.Count > 0;
     public bool IsFunctional() => Employments.Count > 0;
