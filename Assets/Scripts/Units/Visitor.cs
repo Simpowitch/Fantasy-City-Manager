@@ -31,6 +31,7 @@ public class Visitor : Unit
 
     protected override Task CreateEnergyTask()
     {
-        throw new System.NotImplementedException();
+        INeedProvider source = Utility.ReturnRandom(City.EnergyProviders);
+        return source.CreateSatisfyNeedTask(this, Need.NeedType.Energy);
     }
 }

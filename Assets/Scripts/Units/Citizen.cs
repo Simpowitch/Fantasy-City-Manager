@@ -71,8 +71,5 @@ public class Citizen : Unit
         base.FindNewTask();
     }
 
-    protected override Task CreateEnergyTask()
-    {
-        throw new System.NotImplementedException();
-    }
+    protected override Task CreateEnergyTask() => home.CreateSatisfyNeedTask(this, Need.NeedType.Energy);
 }

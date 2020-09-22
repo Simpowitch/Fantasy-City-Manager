@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class City : MonoBehaviour
@@ -28,6 +27,12 @@ public class City : MonoBehaviour
     public List<CityGate> cityGates = null;
     public Transform[] cityEntrances = null;
     public List<Structure> unfinishedStructures = null;
+
+    public List<INeedProvider> HungerProviders { get; private set; } = new List<INeedProvider>();
+    public List<INeedProvider> EnergyProviders { get; private set; } = new List<INeedProvider>();
+    public List<INeedProvider> RecreationProviders { get; private set; } = new List<INeedProvider>();
+    public List<INeedProvider> SocialProviders { get; private set; } = new List<INeedProvider>();
+
     [Header("Debug")]
     public int minVisits = 1;
     public int maxVisits = 20;

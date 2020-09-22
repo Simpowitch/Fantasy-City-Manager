@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Unit : MonoBehaviour
 {
@@ -44,6 +45,11 @@ public abstract class Unit : MonoBehaviour
     public Need Recreation { private set; get; }
     public Need Social { private set; get; }
 
+    public Need[] Needs
+    {
+        get => new Need[] { Hunger, Energy, Recreation, Social };
+    }
+
     public Task currentTask;
 
     public Inventory inventory = new Inventory();
@@ -80,13 +86,13 @@ public abstract class Unit : MonoBehaviour
         UnitName = NameGenerator.GetName();
 
         //Needs
-        Energy = new Need("Energy", 0.05f, 1);
+        Energy = new Need(Need.NeedType.Energy, 0.05f, 1);
         Energy.OnNeedValuesChanged += CalculateHappiness;
-        Hunger = new Need("Hunger", 0.05f, 1);
+        Hunger = new Need(Need.NeedType.Hunger, 0.05f, 1);
         Hunger.OnNeedValuesChanged += CalculateHappiness;
-        Recreation = new Need("Recreation", 0.05f, 1);
+        Recreation = new Need(Need.NeedType.Recreation, 0.05f, 1);
         Recreation.OnNeedValuesChanged += CalculateHappiness;
-        Social = new Need("Social", 0.05f, 1);
+        Social = new Need(Need.NeedType.Social, 0.05f, 1);
         Social.OnNeedValuesChanged += CalculateHappiness;
 
         ChangeState(new IdleState(this));
@@ -151,15 +157,6 @@ public abstract class Unit : MonoBehaviour
         OnUnitInfoChanged?.Invoke(this);
     }
 
-    //public virtual void FindNewSubTask()
-    //{
-    //    currentSubTask = currentTask.GetNextSubTask();
-    //    if (currentSubTask == null)
-    //        FindNewTask();
-    //    else
-    //        ChangeState(new MoveState(this));
-    //}
-
     protected virtual void FindNewTask()
     {
         if (currentTask != null)
@@ -167,35 +164,66 @@ public abstract class Unit : MonoBehaviour
         else
             ChangeState(new IdleState(this));
     }
-    //{
-    //    ////currentSubTask = currentTask.GetNextSubTask();
-    //    ////if (currentSubTask != null)
-    //    ////    ChangeState(new MoveState(this));
-    //    ////else
-    //    ////    ChangeState(new IdleState(this));
-    //}
+
 
     protected void FindNeedFullfillTask()
     {
-        //Debug
-        currentTask = CreateHungerTask();
+        List<Need> lowNeeds = new List<Need>();
+        List<Need> mediumNeeds = new List<Need>();
 
-        //Find method to chose lowest or random low need
+        foreach (Need need in Needs)
+        {
+            if (need.State == Need.NeedState.Low)
+                lowNeeds.Add(need);
+            else if (need.State == Need.NeedState.Medium)
+                mediumNeeds.Add(need);
+        }
+
+        Need chosenNeed;
+        if (lowNeeds.Count > 0)
+            chosenNeed = Utility.ReturnRandom(lowNeeds);
+        else if (mediumNeeds.Count > 0)
+            chosenNeed = Utility.ReturnRandom(mediumNeeds);
+        else
+            chosenNeed = Utility.ReturnRandom(Needs);
+
+        currentTask = GetTask(chosenNeed);
+    }
+
+
+    private Task GetTask(Need need)
+    {
+        switch (need.Type)
+        {
+            case Need.NeedType.Energy:
+                return CreateEnergyTask();
+            case Need.NeedType.Hunger:
+                return CreateHungerTask();
+            case Need.NeedType.Recreation:
+                return CreateRecreationTask();
+            case Need.NeedType.Social:
+                return CreateSocialTask();
+            default:
+                Debug.LogError("Need not defined");
+                return null;
+        }
     }
 
     protected abstract Task CreateEnergyTask();
     private Task CreateHungerTask()
     {
-        Commercial foodSource = Utility.ReturnRandom(City.taverns); //EXCHANGE FOR FOOD SOURCES
-        return foodSource.GetPatreonTask(this);
+        INeedProvider source = Utility.ReturnRandom(City.HungerProviders);
+        return source.CreateSatisfyNeedTask(this, Need.NeedType.Hunger);
     }
     private Task CreateRecreationTask()
     {
-        throw new System.NotImplementedException();
+        INeedProvider source = Utility.ReturnRandom(City.RecreationProviders);
+        return source.CreateSatisfyNeedTask(this, Need.NeedType.Recreation);
     }
     private Task CreateSocialTask()
     {
-        throw new System.NotImplementedException();
+        INeedProvider source = Utility.ReturnRandom(City.SocialProviders);
+        return source.CreateSatisfyNeedTask(this, Need.NeedType.Social);
     }
 
     public abstract class State

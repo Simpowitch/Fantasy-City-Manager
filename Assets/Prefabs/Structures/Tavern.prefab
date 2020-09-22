@@ -245,9 +245,14 @@ MonoBehaviour:
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Waiter
+  workTaskThoughtHeader: TavernWork
+  workTaskDescription: Working at the tavern
+  patreonTaskThoughtHeader: TavernVisit
+  patreonTaskDescription: Visiting the tavern
   consumedOfPatreon:
     type: 3
     value: 1
+  providedNeeds: 00000000010000000200000003000000
 --- !u!61 &7047295982953017326
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -715,6 +715,8 @@ MonoBehaviour:
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Farmer
+  workTaskThoughtHeader: FarmWorking
+  workTaskDescription: Working at the farm
   producedByWorker:
     type: 3
     value: 1

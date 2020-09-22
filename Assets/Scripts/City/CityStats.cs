@@ -67,8 +67,16 @@ public class CityStats
         }
         return null;
     }
-    public void RemoveResource(CityResource resourceToRemove) => GetResource(resourceToRemove.type).Value -= resourceToRemove.Value;
-    public void AddResource(CityResource resourceToAdd) => GetResource(resourceToAdd.type).Value += resourceToAdd.Value;
+    public void RemoveResource(CityResource resourceToRemove)
+    {
+        if (resourceToRemove != null)
+            GetResource(resourceToRemove.type).Value -= resourceToRemove.Value;
+    }
+    public void AddResource(CityResource resourceToAdd)
+    {
+        if (resourceToAdd != null)
+            GetResource(resourceToAdd.type).Value += resourceToAdd.Value;
+    }
 
     public void RemoveResources(List<CityResource> resourcesToRemove)
     {

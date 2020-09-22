@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Commercial : Workplace
+public class Commercial : Workplace, INeedProvider
 {
     [Header("Commercial")]
     List<Vector3> patreonLocations;
@@ -9,6 +9,9 @@ public class Commercial : Workplace
     [SerializeField] protected string patreonTaskThoughtHeader = "";
     [SerializeField] protected string patreonTaskDescription = "";
     [SerializeField] CityResource consumedOfPatreon = null;
+
+    [SerializeField] List<Need.NeedType> providedNeeds = null;
+    public List<Need.NeedType> NeedTypes => providedNeeds;
 
     protected override void Constructed(City city, bool addToCityList)
     {
@@ -25,6 +28,25 @@ public class Commercial : Workplace
             patreonLocations.Add(item.CenteredWorldPosition);
             workPositions.Add(item.CenteredWorldPosition);
         }
+
+        foreach (var needType in NeedTypes)
+        {
+            switch (needType)
+            {
+                case Need.NeedType.Energy:
+                    city.EnergyProviders.Add(this);
+                    break;
+                case Need.NeedType.Hunger:
+                    city.HungerProviders.Add(this);
+                    break;
+                case Need.NeedType.Recreation:
+                    city.RecreationProviders.Add(this);
+                    break;
+                case Need.NeedType.Social:
+                    city.SocialProviders.Add(this);
+                    break;
+            }
+        }
     }
 
     public override void Despawn()
@@ -33,28 +55,39 @@ public class Commercial : Workplace
         base.Despawn();
     }
 
-    public Task GetPatreonTask(Unit unit)
+    public override Task GetWorkTask(Citizen citizen)
     {
+        ActionTimer onTaskEnd = new ActionTimer(3f, null, false);
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(workPositions));
+    }
+
+    public Task CreateSatisfyNeedTask(Unit unit, Need.NeedType type)
+    {
+        if (!NeedTypes.Contains(type))
+        {
+            Debug.LogError("Need asked for cannot be provided by this building");
+            return null;
+        }
+
         ActionTimer onTaskEnd = new ActionTimer(3f, () =>
         {
-            switch (consumedOfPatreon.type)
+            switch (type)
             {
-                case CityResource.Type.Gold:
-                case CityResource.Type.Wood:
-                case CityResource.Type.Stone:
+                case Need.NeedType.Energy:
+                    unit.Energy.Satisfy();
                     break;
-                case CityResource.Type.Food:
-                    unit.Hunger.CurrentValue += 1;
+                case Need.NeedType.Hunger:
+                    unit.Hunger.Satisfy();
+                    break;
+                case Need.NeedType.Recreation:
+                    unit.Recreation.Satisfy();
+                    break;
+                case Need.NeedType.Social:
+                    unit.Social.Satisfy();
                     break;
             }
             city.cityStats.RemoveResource(consumedOfPatreon);
         }, false);
         return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(patreonLocations));
-    }
-
-    public override Task GetWorkTask(Citizen citizen)
-    {
-        ActionTimer onTaskEnd = new ActionTimer(3f, null, false);
-        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(workPositions));
     }
 }

@@ -7,10 +7,28 @@ public class Need
 
     const float MINVALUE = 0;
     const float MAXVALUE = 1;
+    const float LOWVALUE = 0.25f;
+    const float HIGHVALUE = 0.75f;
+
+    public enum NeedType
+    {
+        Energy,
+        Hunger,
+        Recreation,
+        Social
+    }
+
+    public enum NeedState
+    {
+        Low,
+        Medium,
+        High
+    }
 
     public string Title { get; private set; }
+    public NeedType Type { get; private set; }
     float needDecreasePerHour;
-
+    public NeedState State { get; private set; }
 
     float currentValue;
     public float CurrentValue
@@ -23,24 +41,35 @@ public class Need
             {
                 currentValue = newValue;
                 OnNeedValuesChanged?.Invoke();
-            }
-            else
-            {
-                currentValue = newValue;
+                SetState();
             }
         }
     }
 
-    public Need(string title, float needDecreasePerHour, float startValue)
+    public Need(NeedType needType, float needDecreasePerHour, float startValue)
     {
-        this.Title = title;
+        Type = needType;
+        this.Title = needType.ToString();
         this.needDecreasePerHour = needDecreasePerHour;
-        this.currentValue = startValue;
+        this.CurrentValue = startValue;
 
         Clock.OnHourChanged += HourProgressed;
     }
 
+    public void Satisfy() => CurrentValue = MAXVALUE;
+
     void HourProgressed(int newHour) => CurrentValue -= needDecreasePerHour;
+
+    void SetState()
+    {
+        if (CurrentValue <= LOWVALUE)
+            State = NeedState.Low;
+        else if (currentValue >= HIGHVALUE)
+            State = NeedState.High;
+        else
+            State = NeedState.Medium;
+    }
+
 
     [System.Serializable]
     public struct NeedProvision
