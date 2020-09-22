@@ -255,7 +255,7 @@ public class City : MonoBehaviour
     public Task CreateLeaveCityTask(Unit unit)
     {
         ActionTimer onTaskEnd = new ActionTimer(0.1f, () => Destroy(unit.gameObject), false);
-        Task leaveTask = new Task("Leaving the city", onTaskEnd, Utility.ReturnRandom(cityEntrances).position);
+        Task leaveTask = new Task("Leaving the city", ThoughtFileReader.GetText(unit.UnitPersonality, "leaveCity"), onTaskEnd, Utility.ReturnRandom(cityEntrances).position);
         return leaveTask;
     }
 }

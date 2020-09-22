@@ -6,7 +6,8 @@ public class Commercial : Workplace
     [Header("Commercial")]
     List<Vector3> patreonLocations;
     List<Vector3> workPositions;
-
+    [SerializeField] protected string patreonTaskThoughtHeader = "";
+    [SerializeField] protected string patreonTaskDescription = "";
     [SerializeField] CityResource consumedOfPatreon = null;
 
     protected override void Constructed(City city, bool addToCityList)
@@ -48,12 +49,12 @@ public class Commercial : Workplace
             }
             city.cityStats.RemoveResource(consumedOfPatreon);
         }, false);
-        return new Task("Eat at the tavern", onTaskEnd, Utility.ReturnRandom(patreonLocations));
+        return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(patreonLocations));
     }
 
     public override Task GetWorkTask(Citizen citizen)
     {
         ActionTimer onTaskEnd = new ActionTimer(3f, null, false);
-        return new Task("Serving patreon", onTaskEnd, Utility.ReturnRandom(workPositions));
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(workPositions));
     }
 }

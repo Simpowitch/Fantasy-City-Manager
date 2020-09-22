@@ -26,6 +26,14 @@ public abstract class Unit : MonoBehaviour
             OnUnitInfoChanged?.Invoke(this);
         }
     }
+    public enum Personality
+    {
+        Grumpy,
+        Charming,
+        Arrogant,
+        Patriotic
+    }
+    public Personality UnitPersonality { get; private set; }
 
     public delegate void InfoChangeHandler(Unit unitChanged);
     public event InfoChangeHandler OnUnitInfoChanged;
@@ -37,7 +45,6 @@ public abstract class Unit : MonoBehaviour
     public Need Social { private set; get; }
 
     public Task currentTask;
-    //public Task.SubTask currentSubTask;
 
     public Inventory inventory = new Inventory();
 
@@ -179,13 +186,8 @@ public abstract class Unit : MonoBehaviour
     protected abstract Task CreateEnergyTask();
     private Task CreateHungerTask()
     {
-        SendThought(ThoughtFileReader.GetTavernVisit());
         Commercial foodSource = Utility.ReturnRandom(City.taverns); //EXCHANGE FOR FOOD SOURCES
         return foodSource.GetPatreonTask(this);
-
-        //Task newTask = new Task();
-        //newTask.CreateAndAddSubTask(this, "Eating at the tavern", Utility.ReturnRandom(City.taverns).GetRandomLocation(), 5f, null);
-        //return newTask;
     }
     private Task CreateRecreationTask()
     {
@@ -255,6 +257,7 @@ public abstract class Unit : MonoBehaviour
         public override void EnterState()
         {
             unit.currentTask.Arrived();
+            unit.SendThought(unit.currentTask.Thought);
             base.EnterState();
         }
 

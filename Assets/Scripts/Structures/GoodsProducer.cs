@@ -24,22 +24,6 @@ public class GoodsProducer : Workplace
     public override Task GetWorkTask(Citizen citizen)
     {
         ActionTimer collectTimer = new ActionTimer(5f, () => citizen.inventory.Add(producedByWorker), false);
-        string description = "";
-        switch (producedByWorker.type)
-        {
-            case CityResource.Type.Gold:
-                description = "Mining gold";
-                break;
-            case CityResource.Type.Wood:
-                description = "Chopping wood";
-                break;
-            case CityResource.Type.Stone:
-                description = "Mining stone";
-                break;
-            case CityResource.Type.Food:
-                description = "Harvesting";
-                break;
-        }
-        return new Task(description, collectTimer, Utility.ReturnRandom(collectLocations));
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, Utility.ReturnRandom(collectLocations));
     }
 }

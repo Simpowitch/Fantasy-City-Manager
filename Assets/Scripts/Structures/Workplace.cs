@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public abstract class Workplace : Structure
 {
@@ -11,9 +10,9 @@ public abstract class Workplace : Structure
 
     [Header("Workplace - Employments")]
     [SerializeField] List<Employment> employments = new List<Employment>();
+    [SerializeField] protected string workTaskThoughtHeader = "";
+    [SerializeField] protected string workTaskDescription = "";
 
-    //[Header("Workplace - Work Tasks")]
-    //[SerializeField] TaskCreator workerTaskCreator = null;
 
     public List<Employment> Employments { get => employments; private set => employments = value; }
     public List<Citizen> CitizensEmployed
@@ -89,13 +88,4 @@ public abstract class Workplace : Structure
     }
 
     public abstract Task GetWorkTask(Citizen citizen);
-
-    //public Task CreateWorkTask(Unit unit)
-    //{
-    //    return workerTaskCreator.CreateTask(unit, GetRandomLocation);
-    //    //Task newTask = new Task();
-    //    //newTask.CreateAndAddSubTask(unit, "Taking orders", GetRandomLocation(), 3f, null);
-    //    //newTask.CreateAndAddSubTask(unit, "Serving patreon", GetRandomLocation(), 3f, null);
-    //    //return newTask;
-    //}
 }
