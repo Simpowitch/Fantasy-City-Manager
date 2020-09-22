@@ -1,0 +1,26 @@
+#DEFAULT
+Kids...Can't live with them...Can't kill them...
+Everything will kill you. So choose something fun.
+#END
+#TAVERNVISIT
+I only drink water that has been filtered through a brewery first!
+I do not think we get smarter as we get older. We just run out of stupid things to do.
+Drunk am I not. Are you?...you are? you are!
+#END
+#TAVERNWORKING
+Everyone seem fine with me coming in early for work...but leaving early is unacceptable...
+#END
+#CONSTRUCTING
+So if i do my job really well I get rewarded with doing other peoples job too?...great...
+#END
+#FARMWORKING
+farm working line
+#END
+#SLEEPING
+It is better to wake up and pee than to pee and wake up.
+I should be sleeping at work instead. What a waste of time this is.
+#END
+#MINING
+I just want to highfive everyone in this place...Really hard...In the face...with this pickaxe.
+#END
+#LEAVECITY
