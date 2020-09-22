@@ -14,7 +14,7 @@ Everyone seem fine with me coming in early for work...but leaving early is unacc
 So if i do my job really well I get rewarded with doing other peoples job too?...great...
 #END
 #FARMWORKING
-farm working line
+Remember when there was such a thing as a day off? I don't...
 #END
 #SLEEPING
 It is better to wake up and pee than to pee and wake up.
@@ -24,3 +24,4 @@ I should be sleeping at work instead. What a waste of time this is.
 I just want to highfive everyone in this place...Really hard...In the face...with this pickaxe.
 #END
 #LEAVECITY
+#END
