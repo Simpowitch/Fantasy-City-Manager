@@ -60,8 +60,6 @@ public class Citizen : Unit
         LookForEmployment();
     }
 
-    public void SendThought(string thought) => StartCoroutine(messageDisplay.ShowMessage(3, thought, MessageDisplay.MessageType.Chatbubble));
-
     public override string GetProfession() => employment != null ? employment.employmentName : "Unemployed";
 
     protected override void FindNewTask()

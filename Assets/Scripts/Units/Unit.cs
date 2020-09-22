@@ -31,10 +31,10 @@ public abstract class Unit : MonoBehaviour
     public event InfoChangeHandler OnUnitInfoChanged;
     public float Happiness { private set; get; }
     //Needs
-    public Need Social { private set; get; }
     public Need Hunger { private set; get; }
     public Need Energy { private set; get; }
     public Need Recreation { private set; get; }
+    public Need Social { private set; get; }
 
     public Task currentTask;
     //public Task.SubTask currentSubTask;
@@ -130,6 +130,8 @@ public abstract class Unit : MonoBehaviour
 
     public void SendToViewer(UnitViewer unitViewer) => unitViewer.ShowUnit(this);
 
+    public void SendThought(string thought) => StartCoroutine(messageDisplay.ShowMessage(3, thought, MessageDisplay.MessageType.Chatbubble));
+
     protected void CalculateHappiness()
     {
         float average = 0;
@@ -177,6 +179,7 @@ public abstract class Unit : MonoBehaviour
     protected abstract Task CreateEnergyTask();
     private Task CreateHungerTask()
     {
+        SendThought(ThoughtFileReader.GetTavernVisit());
         Commercial foodSource = Utility.ReturnRandom(City.taverns); //EXCHANGE FOR FOOD SOURCES
         return foodSource.GetPatreonTask(this);
 

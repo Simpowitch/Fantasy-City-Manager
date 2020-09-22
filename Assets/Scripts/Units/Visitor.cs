@@ -18,9 +18,6 @@ public class Visitor : Unit
         City.cityStats.Visitors++;
     }
 
-
-    protected void SendThought(string thought) => StartCoroutine(messageDisplay.ShowMessage(3, thought, MessageDisplay.MessageType.Chatbubble));
-
     public override string GetProfession() => "Visitor";
 
     protected override void FindNewTask()
