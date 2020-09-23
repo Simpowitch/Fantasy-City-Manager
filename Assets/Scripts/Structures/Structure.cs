@@ -29,7 +29,7 @@ public abstract class Structure : MonoBehaviour
     protected City city;
     Vector3 rotationOffset;
 
-    Direction facingDirection = Direction.Down;
+    [SerializeField] Direction facingDirection = Direction.Down;
     public Direction FacingDirecion
     {
         get => facingDirection;
@@ -231,5 +231,30 @@ public abstract class Structure : MonoBehaviour
         }
 
         Destroy(this.gameObject);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+
+        //Low Left to Up Left
+        Vector3 posA = LowerLeftCorner;
+        Vector3 posB = new Vector2(LowerLeftCorner.x, UpperRightCorner.y);
+        Gizmos.DrawLine(posA, posB);
+
+        //Up Left to Up Right
+        posA = posB;
+        posB = UpperRightCorner;
+        Gizmos.DrawLine(posA, posB);
+
+        //Up Right to Low Right
+        posA = posB;
+        posB = new Vector2(UpperRightCorner.x, LowerLeftCorner.y);
+        Gizmos.DrawLine(posA, posB);
+
+        //Low Right to Low Left
+        posA = posB;
+        posB = LowerLeftCorner;
+        Gizmos.DrawLine(posA, posB);
     }
 }
