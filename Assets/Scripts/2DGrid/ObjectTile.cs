@@ -14,30 +14,6 @@ public class ObjectTile
         set
         {
             hasRoad = value;
-            //ResidentialZoned = false;
-        }
-    }
-
-    List<ObjectTile> adjacentRoadTiles = new List<ObjectTile>();
-    public List<Direction> AdjacentRoadDirections
-    {
-        get
-        {
-            if (adjacentRoadTiles.Count > 0)
-            {
-                List<Direction> directions = new List<Direction>();
-                foreach (var tile in adjacentRoadTiles)
-                {
-                    Direction newDirection = ObjectTile.GetDirection(this, tile);
-                    if (newDirection != Direction.Invalid)
-                        directions.Add(newDirection);
-                }
-                return directions;
-            }
-            else
-            {
-                return null;
-            }
         }
     }
 
@@ -48,32 +24,8 @@ public class ObjectTile
         set
         {
             structure = value;
-            //ResidentialZoned = false;
         }
     }
-
-
-    //public bool IsZonable
-    //{
-    //    get
-    //    {
-    //        if (!IsBuildable)
-    //        {
-    //            return false;
-    //        }
-    //        if (adjacentRoadTiles.Count <= 0)
-    //        {
-    //            return false;
-    //        }
-    //        return true;
-    //    }
-    //}
-
-    //public bool ResidentialZoned
-    //{
-    //    set;
-    //    get;
-    //}
 
     public Vector3 CenteredWorldPosition
     {
@@ -111,16 +63,6 @@ public class ObjectTile
         this.grid = grid;
         this.x = x;
         this.y = y;
-    }
-
-    public void AddAdjacentRoadTile(ObjectTile tileWithRoad) => adjacentRoadTiles.Add(tileWithRoad);
-
-    public void RemoveAdjacentRoadTile(ObjectTile tileWithRemovedRoad)
-    {
-        if (adjacentRoadTiles.Contains(tileWithRemovedRoad))
-        {
-            adjacentRoadTiles.Remove(tileWithRemovedRoad);
-        }
     }
 
     public static Direction GetDirection(ObjectTile fromTile, ObjectTile toTile)

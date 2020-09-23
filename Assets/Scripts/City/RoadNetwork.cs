@@ -1,23 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
-
 
 public class RoadNetwork : MonoBehaviour
 {
+    public enum GroundType { Grass, GravelRoad, StoneRoad, Indoor}
+
     [SerializeField] Tilemap roadTilemap = null;
 
     Grid<ObjectTile> objectGrid;
     Grid<PathNode> pathGrid;
 
     [Header("Road/AI Travelling costs")]
-    [SerializeField] int[] roadTravelCosts = null;
-    [SerializeField] int grassTravelCost = 10;
-    [SerializeField] int startingRoadIndex = 0;
-
-    [Header("Zones around roads")]
-    [SerializeField] int tilesZonableAroundRoad = 1;
+    [SerializeField] int grassTravelCost = 100;
+    [SerializeField] int gravelTravelCost = 20;
+    [SerializeField] int stoneTravelCost = 10;
+    [SerializeField] int indoorTravelCost = 1;
 
     public void SetUp(Grid<ObjectTile> objectGrid, Grid<PathNode> pathgrid)
     {
@@ -35,7 +32,7 @@ public class RoadNetwork : MonoBehaviour
             {
                 if (!tile.HasRoad)
                 {
-                    AddRoad(tile.CenteredWorldPosition, startingRoadIndex);
+                    AddRoad(tile.CenteredWorldPosition, GroundType.GravelRoad);
                 }
             }
             else
@@ -49,16 +46,11 @@ public class RoadNetwork : MonoBehaviour
         }
     }
 
-    public void AddRoad(Vector3 worldPosition, int index)
+    public void AddRoad(Vector3 worldPosition, GroundType groundType)
     {
         ObjectTile roadTile = objectGrid.GetGridObject(worldPosition);
         roadTile.HasRoad = true;
-        pathGrid.GetGridObject(worldPosition).ChangeMovementPenalty(roadTravelCosts[index]);
-        List<ObjectTile> newResidentialPossibleTiles = objectGrid.GetGridObjectsInAllLines(worldPosition, tilesZonableAroundRoad);
-        foreach (var tile in newResidentialPossibleTiles)
-        {
-            tile.AddAdjacentRoadTile(roadTile);
-        }
+        pathGrid.GetGridObject(worldPosition).ChangeMovementPenalty(GetTravellingCost(groundType));
     }
 
     public void RemoveRoad(Vector3 worldPosition)
@@ -66,10 +58,29 @@ public class RoadNetwork : MonoBehaviour
         ObjectTile noRoadTile = objectGrid.GetGridObject(worldPosition);
         noRoadTile.HasRoad = false;
         pathGrid.GetGridObject(worldPosition).ChangeMovementPenalty(grassTravelCost);
-        List<ObjectTile> newResidentialPossibleTiles = objectGrid.GetGridObjectsInAllLines(worldPosition, tilesZonableAroundRoad);
-        foreach (var tile in newResidentialPossibleTiles)
+    }
+
+    private int GetTravellingCost(GroundType groundType)
+    {
+        switch (groundType)
         {
-            tile.RemoveAdjacentRoadTile(noRoadTile);
+            case GroundType.Grass:
+                return grassTravelCost;
+            case GroundType.GravelRoad:
+                return gravelTravelCost;
+            case GroundType.StoneRoad:
+                return stoneTravelCost;
+            case GroundType.Indoor:
+                return indoorTravelCost;
+            default:
+                Debug.LogError("Missing road type");
+                return grassTravelCost;
         }
+    }
+
+    public void ChangeWalkable(Vector3 worldPosition, bool walkable)
+    {
+        PathNode node = pathGrid.GetGridObject(worldPosition);
+        node.ChangeIsWalkable(walkable);
     }
 }

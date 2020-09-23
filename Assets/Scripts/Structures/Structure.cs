@@ -10,9 +10,7 @@ public abstract class Structure : MonoBehaviour
 
     [Header("Structure")]
     [SerializeField] ConstructionCost constructionCost = null;
-
-    //[Header("Structure - Visitor Tasks")]
-    //[SerializeField] TaskCreator visitStructureTaskCreator = null;
+    public ConstructionArea constructionArea = null;
 
     public ConstructionCost ConstructionCost { get => constructionCost; }
     [Header("References")]
@@ -25,7 +23,9 @@ public abstract class Structure : MonoBehaviour
     [SerializeField] protected int ySize = 1;
     [SerializeField] protected float cellSize = 1;
 
-    public ConstructionArea constructionArea = new ConstructionArea();
+    [Header("Floor setup")]
+    [SerializeField] Transform[] wallTiles = null;
+
     protected City city;
     Vector3 rotationOffset;
 
@@ -148,6 +148,24 @@ public abstract class Structure : MonoBehaviour
         tmConstructionArea.gameObject.SetActive(false);
         GetComponent<Collider2D>().enabled = true;
         city.RemoveConstructionArea(this);
+
+        FloorSetup();
+    }
+
+    private void FloorSetup()
+    {
+        //Change pathfinding cost to indoor cost of all tiles
+        foreach (ObjectTile tile in ObjectTiles)
+        {
+            city.RoadNetwork.AddRoad(tile.CenteredWorldPosition, RoadNetwork.GroundType.Indoor);
+        }
+
+
+        //Set walls to non-walkable tiles
+        foreach (Transform tile in wallTiles)
+        {
+            city.RoadNetwork.ChangeWalkable(tile.position, false);
+        }
     }
 
     public void Load(City city) => Constructed(city, false);
@@ -199,6 +217,19 @@ public abstract class Structure : MonoBehaviour
     public virtual void Despawn()
     {
         DayNightSystem.OnPartOfTheDayChanged -= PartOfDayChange;
+
+        //Change pathfinding cost to outdoor cost of all tiles
+        foreach (var item in ObjectTiles)
+        {
+            city.RoadNetwork.AddRoad(item.CenteredWorldPosition, RoadNetwork.GroundType.Grass);
+        }
+
+        //Set walls to walkable tiles
+        foreach (Transform tile in wallTiles)
+        {
+            city.RoadNetwork.ChangeWalkable(tile.position, true);
+        }
+
         Destroy(this.gameObject);
     }
 }

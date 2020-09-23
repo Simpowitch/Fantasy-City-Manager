@@ -29666,11 +29666,11 @@ RectTransform:
   m_Children:
   - {fileID: 484028344}
   m_Father: {fileID: 1425388248}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 195, y: -30}
+  m_AnchoredPosition: {x: 140, y: -30}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &720387632
@@ -29733,7 +29733,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -31029,7 +31029,7 @@ PrefabInstance:
     - target: {fileID: 6616308929995136185, guid: f278478e06910354cbb5c9ad31ca7b81,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 33
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 6616308929995136185, guid: f278478e06910354cbb5c9ad31ca7b81,
         type: 3}
@@ -31124,9 +31124,11 @@ MonoBehaviour:
   constructionInformation: {fileID: 764665445}
   constructionInformationPanel: {fileID: 365778804}
   roadTiles:
+  - {fileID: 0}
   - {fileID: 11400000, guid: 05cec448ea5dd1d4a856e2dfcbaf3fc4, type: 2}
   - {fileID: 11400000, guid: f09c62be496afa9489f07718f380f27b, type: 2}
   roadCosts:
+  - resourceCosts: []
   - resourceCosts:
     - type: 0
       value: 1
@@ -32152,10 +32154,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roadTilemap: {fileID: 1436568804}
-  roadTravelCosts: 140000000a000000
   grassTravelCost: 100
-  startingRoadIndex: 0
-  tilesZonableAroundRoad: 1
+  gravelTravelCost: 20
+  stoneTravelCost: 10
+  indoorTravelCost: 1
 --- !u!1 &1185769596
 GameObject:
   m_ObjectHideFlags: 0
@@ -33545,8 +33547,8 @@ RectTransform:
   m_Children:
   - {fileID: 1619604298}
   - {fileID: 1066816671}
-  - {fileID: 1987076871}
   - {fileID: 720387631}
+  - {fileID: 1987076871}
   m_Father: {fileID: 248821294}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -38344,11 +38346,11 @@ RectTransform:
   m_Children:
   - {fileID: 758624857}
   m_Father: {fileID: 1425388248}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 140, y: -30}
+  m_AnchoredPosition: {x: 195, y: -30}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1987076872
@@ -38411,7 +38413,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

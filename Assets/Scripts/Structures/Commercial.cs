@@ -4,13 +4,14 @@ using System.Collections.Generic;
 public class Commercial : Workplace, INeedProvider
 {
     [Header("Commercial")]
-    List<Vector3> patreonLocations;
-    List<Vector3> workPositions;
+    [SerializeField] CityResource consumedOfPatreon = null;
+    [SerializeField] List<Need.NeedType> providedNeeds = null;
+
+    [Header("Patreon Task setup")]
     [SerializeField] protected string patreonTaskThoughtHeader = "";
     [SerializeField] protected string patreonTaskDescription = "";
-    [SerializeField] CityResource consumedOfPatreon = null;
+    [SerializeField] protected Transform[] patreonTaskTiles = null;
 
-    [SerializeField] List<Need.NeedType> providedNeeds = null;
     public List<Need.NeedType> NeedTypes => providedNeeds;
 
     protected override void Constructed(City city, bool addToCityList)
@@ -18,16 +19,6 @@ public class Commercial : Workplace, INeedProvider
         base.Constructed(city, addToCityList);
         if (addToCityList)
             city.commercialBuidlings.Add(this);
-
-        patreonLocations = new List<Vector3>();
-        workPositions = new List<Vector3>();
-
-        //Debug
-        foreach (var item in ObjectTiles)
-        {
-            patreonLocations.Add(item.CenteredWorldPosition);
-            workPositions.Add(item.CenteredWorldPosition);
-        }
 
         foreach (var needType in NeedTypes)
         {
@@ -58,7 +49,7 @@ public class Commercial : Workplace, INeedProvider
     public override Task GetWorkTask(Citizen citizen)
     {
         ActionTimer onTaskEnd = new ActionTimer(3f, null, false);
-        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(workPositions));
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(workTaskTiles).position);
     }
 
     public Task CreateSatisfyNeedTask(Unit unit, Need.NeedType type)
@@ -88,6 +79,6 @@ public class Commercial : Workplace, INeedProvider
             }
             city.cityStats.RemoveResource(consumedOfPatreon);
         }, false);
-        return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(patreonLocations));
+        return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(patreonTaskTiles).position);
     }
 }

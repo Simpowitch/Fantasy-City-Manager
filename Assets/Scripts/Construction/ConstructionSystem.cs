@@ -252,7 +252,7 @@ public class ConstructionSystem : MonoBehaviour
     {
         Vector3Int cellTilemapPosition = roadTilemap.WorldToCell(tilePosition);
         roadTilemap.SetTile(cellTilemapPosition, roadTiles[constructionIndex]);
-        RoadNetwork.AddRoad(tilePosition, constructionIndex);
+        RoadNetwork.AddRoad(tilePosition, (RoadNetwork.GroundType) constructionIndex);
 
         city.cityStats.RemoveResources(roadCosts[constructionIndex].ResourceCosts);
     }

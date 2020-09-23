@@ -10,8 +10,11 @@ public abstract class Workplace : Structure
 
     [Header("Workplace - Employments")]
     [SerializeField] List<Employment> employments = new List<Employment>();
+
+    [Header("Patreon Task setup")]
     [SerializeField] protected string workTaskThoughtHeader = "";
     [SerializeField] protected string workTaskDescription = "";
+    [SerializeField] protected Transform[] workTaskTiles = null;
 
 
     public List<Employment> Employments { get => employments; private set => employments = value; }
@@ -47,14 +50,8 @@ public abstract class Workplace : Structure
         if (addToCityList)
             city.workplaces.Add(this);
 
-        List<Vector3> structurePositions = new List<Vector3>();
-        foreach (var tile in ObjectTiles)
-        {
-            structurePositions.Add(tile.CenteredWorldPosition);
-        }
         foreach (var employment in employments)
         {
-            //employment.workingPositions = structurePositions;
             employment.workplace = this;
         }
         Clock.OnHourChanged += NewHour;

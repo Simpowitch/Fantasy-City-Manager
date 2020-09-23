@@ -7,6 +7,8 @@ public class Residence : Structure, INeedProvider
     [Header("Residence")]
 
     public int maxResidents = 2;
+    [SerializeField] Transform bedTile = null;
+
     public List<Citizen> Residents { get; private set; } = new List<Citizen>();
     public int NumberOfUnfilledResidenceSpots { get => maxResidents - Residents.Count; }
 
@@ -59,6 +61,6 @@ public class Residence : Structure, INeedProvider
         {
             unit.Energy.Satisfy();
         }, false);
-        return new Task("Going to bed", ThoughtFileReader.GetText(unit.UnitPersonality, "Sleeping"), onTaskEnd, Utility.ReturnRandom(ObjectTiles).CenteredWorldPosition);
+        return new Task("Going to bed", ThoughtFileReader.GetText(unit.UnitPersonality, "Sleeping"), onTaskEnd, bedTile.position);
     }
 }
