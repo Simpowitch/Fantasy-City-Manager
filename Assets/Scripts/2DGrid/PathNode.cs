@@ -19,6 +19,11 @@ public class PathNode
         get => movementPenalty;
     }
 
+    public CanvasTile CanvasTileObject
+    {
+        get;
+        set;
+    }
 
     private bool isWalkable = true;
     public bool IsWalkable

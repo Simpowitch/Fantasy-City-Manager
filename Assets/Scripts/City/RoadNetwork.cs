@@ -3,7 +3,7 @@ using UnityEngine.Tilemaps;
 
 public class RoadNetwork : MonoBehaviour
 {
-    public enum GroundType { Grass, GravelRoad, StoneRoad, Indoor}
+    public enum GroundType { Grass, GravelRoad, StoneRoad, Indoor }
 
     [SerializeField] Tilemap roadTilemap = null;
 
@@ -15,6 +15,8 @@ public class RoadNetwork : MonoBehaviour
     [SerializeField] int gravelTravelCost = 20;
     [SerializeField] int stoneTravelCost = 10;
     [SerializeField] int indoorTravelCost = 1;
+
+    public bool PathfindingPenaltiesShown { get; private set; } = false;
 
     public void SetUp(Grid<ObjectTile> objectGrid, Grid<PathNode> pathgrid)
     {
@@ -82,5 +84,17 @@ public class RoadNetwork : MonoBehaviour
     {
         PathNode node = pathGrid.GetGridObject(worldPosition);
         node.ChangeIsWalkable(walkable);
+    }
+
+    public void ShowPathfindingPenalties(bool enabled)
+    {
+        if (pathGrid == null)
+            return;
+        foreach (var pathNode in pathGrid.gridArray)
+        {
+            string text = enabled ? pathNode.MovementPenalty.ToString() : "";
+            pathNode.CanvasTileObject.SetText(text);
+        }
+        PathfindingPenaltiesShown = enabled;
     }
 }

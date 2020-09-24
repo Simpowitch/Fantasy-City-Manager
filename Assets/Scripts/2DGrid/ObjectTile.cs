@@ -7,49 +7,30 @@ public class ObjectTile
     public readonly int x, y;
 
 
-    bool hasRoad;
-    public bool HasRoad
-    {
-        get => hasRoad;
-        set
-        {
-            hasRoad = value;
-        }
-    }
+    public bool HasRoad { get; set; }
 
-    Structure structure;
-    public Structure Structure
-    {
-        get => structure;
-        set
-        {
-            structure = value;
-        }
-    }
+    public Structure Structure { get; set; }
+
+    public Tree Tree { get; set; }
+
 
     public Vector3 CenteredWorldPosition
     {
         get => grid.GetWorldPosition(x, y, true);
     }
 
-    public CanvasTile CanvasTileObject
-    {
-        get;
-        set;
-    }
+    public CanvasTile CanvasTileObject { get; set; }
 
-    public bool IsBuildable
+    public bool IsFree
     {
         get
         {
             if (Structure != null)
-            {
                 return false;
-            }
             if (HasRoad)
-            {
                 return false;
-            }
+            if (Tree)
+                return false;
             if (x == 0 || x == grid.Width - 1 || y == 0 || y == grid.Height - 1)
             {
                 return false;
@@ -64,6 +45,8 @@ public class ObjectTile
         this.x = x;
         this.y = y;
     }
+
+    public List<ObjectTile> GetNeighbors() => grid.GetNeighbourList(x, y);
 
     public static Direction GetDirection(ObjectTile fromTile, ObjectTile toTile)
     {

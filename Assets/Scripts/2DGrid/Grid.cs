@@ -167,6 +167,36 @@ public class Grid<TGridObject>
         return objectsInLines;
     }
 
+    public List<TGridObject> GetNeighbourList(int currentX, int currentY)
+    {
+        List<TGridObject> neighbourList = new List<TGridObject>();
+        
+        if (currentX - 1 >= 0)
+        {
+            //Left
+            neighbourList.Add(GetGridObject(currentX - 1, currentY));
+            //Left down
+            if (currentY - 1 >= 0) neighbourList.Add(GetGridObject(currentX - 1, currentY - 1));
+            //Left up
+            if (currentY + 1 < Height) neighbourList.Add(GetGridObject(currentX - 1, currentY + 1));
+        }
+        if (currentX + 1 < Width)
+        {
+            //Right
+            neighbourList.Add(GetGridObject(currentX + 1, currentY));
+            //Right down
+            if (currentY - 1 >= 0) neighbourList.Add(GetGridObject(currentX + 1, currentY - 1));
+            //Right up
+            if (currentY + 1 < Height) neighbourList.Add(GetGridObject(currentX + 1, currentY + 1));
+        }
+        //Down
+        if (currentY - 1 >= 0) neighbourList.Add(GetGridObject(currentX, currentY - 1));
+        //Up
+        if (currentY + 1 < Height) neighbourList.Add(GetGridObject(currentX, currentY + 1));
+
+        return neighbourList;
+    }
+
     public void SetGridObject(int x, int y, TGridObject gridObject)
     {
         if (IsWithinGrid(x, y))

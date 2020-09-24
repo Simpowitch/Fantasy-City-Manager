@@ -150,7 +150,7 @@ public class ConstructionSystem : MonoBehaviour
         {
             Vector3 worldPosition = roadTilemap.CellToWorld(item);
             ObjectTile objectTile = ObjectGrid.GetGridObject(worldPosition);
-            if (!objectTile.IsBuildable)
+            if (!objectTile.IsFree)
             {
                 if (explanation != "")
                 {
@@ -197,7 +197,7 @@ public class ConstructionSystem : MonoBehaviour
         }
         foreach (ObjectTile tile in objectTiles)
         {
-            if (!tile.IsBuildable)
+            if (!tile.IsFree)
             {
                 if (explanation != "")
                 {

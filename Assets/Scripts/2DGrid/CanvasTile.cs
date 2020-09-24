@@ -6,20 +6,16 @@ using UnityEngine.UI;
 public class CanvasTile : MonoBehaviour
 {
     public enum SelectionFillState { Off, Allowed, Disallowed};
-    public enum ZoneFillState { Off, Zonable, Zoned };
 
     public Image selectionFill;
-    public Image zoneFill;
     public Image outline;
     public Color allowedColor;
     public Color disallowedColor;
-    public Color zonableColor;
-    public Color zonedColor;
+    public Text text;
 
     private void Start()
     {
         SetSelectionFillState(SelectionFillState.Off);
-        SetZoneFillState(ZoneFillState.Off);
         SetGridOutline(false);
     }
 
@@ -39,21 +35,7 @@ public class CanvasTile : MonoBehaviour
         }
     }
 
-    public void SetZoneFillState(ZoneFillState state)
-    {
-        zoneFill.enabled = state != ZoneFillState.Off;
-        switch (state)
-        {
-            case ZoneFillState.Off:
-                break;
-            case ZoneFillState.Zonable:
-                zoneFill.color = zonableColor;
-                break;
-            case ZoneFillState.Zoned:
-                zoneFill.color = zonedColor;
-                break;
-        }
-    }
-
     public void SetGridOutline(bool status) => outline.enabled = status;
+
+    public void SetText(string newText) => text.text = newText;
 }

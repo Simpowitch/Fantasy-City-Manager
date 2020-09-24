@@ -64,7 +64,7 @@ public class Pathfinding
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
-            foreach (PathNode neighbourNode in GetNeighbourList(currentNode))
+            foreach (PathNode neighbourNode in grid.GetNeighbourList(currentNode.x, currentNode.y))
             {
                 if (closedList.Contains(neighbourNode)) continue;
                 if (!neighbourNode.IsWalkable)
@@ -93,37 +93,37 @@ public class Pathfinding
         return null;
     }
 
-    private List<PathNode> GetNeighbourList(PathNode currentNode)
-    {
-        List<PathNode> neighbourList = new List<PathNode>();
+    //private List<PathNode> GetNeighbourList(PathNode currentNode)
+    //{
+    //    List<PathNode> neighbourList = new List<PathNode>();
 
-        if (currentNode.x - 1 >= 0)
-        {
-            //Left
-            neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y));
-            //Left down
-            if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y - 1));
-            //Left up
-            if (currentNode.y + 1 < grid.Height) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y + 1));
-        }
-        if (currentNode.x +1 < grid.Width)
-        {
-            //Right
-            neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y));
-            //Right down
-            if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y - 1));
-            //Right up
-            if (currentNode.y + 1 < grid.Height) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y + 1));
-        }
-        //Down
-        if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x, currentNode.y - 1));
-        //Up
-        if (currentNode.y + 1 < grid.Height) neighbourList.Add(GetNode(currentNode.x, currentNode.y + 1));
+    //    if (currentNode.x - 1 >= 0)
+    //    {
+    //        //Left
+    //        neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y));
+    //        //Left down
+    //        if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y - 1));
+    //        //Left up
+    //        if (currentNode.y + 1 < grid.Height) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y + 1));
+    //    }
+    //    if (currentNode.x +1 < grid.Width)
+    //    {
+    //        //Right
+    //        neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y));
+    //        //Right down
+    //        if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y - 1));
+    //        //Right up
+    //        if (currentNode.y + 1 < grid.Height) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y + 1));
+    //    }
+    //    //Down
+    //    if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x, currentNode.y - 1));
+    //    //Up
+    //    if (currentNode.y + 1 < grid.Height) neighbourList.Add(GetNode(currentNode.x, currentNode.y + 1));
 
-        return neighbourList;
-    }
+    //    return neighbourList;
+    //}
 
-    private PathNode GetNode(int x, int y) => grid.GetGridObject(x, y);
+    //private PathNode GetNode(int x, int y) => grid.GetGridObject(x, y);
 
     private List<PathNode> CalculatePath(PathNode endNode)
     {
