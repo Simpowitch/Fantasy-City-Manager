@@ -64,10 +64,11 @@ public class TreeNetwork : MonoBehaviour
     public void SpawnTree(ObjectTile objectTile)
     {
         Tree tree = Instantiate(treeBlueprint, objectTile.CenteredWorldPosition, Quaternion.identity, treeParent);
-        tree.Spawned(objectTile, pathGrid.GetGridObject(objectTile.CenteredWorldPosition));
+        tree.Spawned(this, objectTile);
         spawnedTrees.Add(tree);
     }
 
+    public void RemoveTree(Tree treeToRemove) => spawnedTrees.Remove(treeToRemove);
 
     public void Setup(Grid<ObjectTile> objectGrid, Grid<PathNode> pathGrid)
     {
@@ -75,17 +76,12 @@ public class TreeNetwork : MonoBehaviour
         this.pathGrid = pathGrid;
     }
 
-    public List<Tree> GetAllTrees()
+    public List<Tree> GetHarvestableTrees()
     {
-        List<Tree> trees = new List<Tree>();
-        trees.AddRange(spawnedTrees);
-        return trees;
-    }
-
-    public List<Tree> GetAllMarkedTrees()
-    {
-        List<Tree> trees = new List<Tree>();
-        trees.PopulateListWithMatchingConditions(spawnedTrees, (t) => t.markedForChopping == true);
-        return trees;
+        List<Tree> treesForChopping = new List<Tree>();
+        treesForChopping.PopulateListWithMatchingConditions(spawnedTrees, (tree) => tree.markedForChopping && tree.workOccupiedBy == null);
+        if (treesForChopping.Count == 0)
+            treesForChopping.PopulateListWithMatchingConditions(spawnedTrees, (tree) => tree.workOccupiedBy == null);
+        return treesForChopping;
     }
 }

@@ -29,10 +29,35 @@ public class Inventory
                 }
                 else
                 {
-                    existingResource.Value += resourceToRemove.Value;
+                    existingResource.Value -= resourceToRemove.Value;
+                    if (existingResource.Value <= 0)
+                        resources.Remove(existingResource);
                     return true;
                 }
             }
+        }
+        return false;
+    }
+
+    public void RemoveAllOfType(CityResource.Type type, out CityResource resourcesRemoved)
+    {
+        resourcesRemoved = new CityResource(type, 0);
+        foreach (var resource in resources)
+        {
+            if (resource.type == type)
+            {
+                resourcesRemoved.Value += resource.Value;
+                TryToRemove(resource);
+            }
+        }
+    }
+
+    public bool HasResourceType(CityResource.Type type)
+    {
+        foreach (var resource in resources)
+        {
+            if (resource.type == type)
+                return true;
         }
         return false;
     }
