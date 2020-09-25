@@ -50,7 +50,7 @@ public class City : MonoBehaviour
     public Pathfinding Pathfinding { get; private set; }
     public Grid<ObjectTile> ObjectGrid { get; private set; }
     public RoadNetwork RoadNetwork { get; private set; }
-    public TreeNetwork TreeNetwork { get; private set; }
+    public ResourceObjectNetwork ResourceObjectNetwork { get; private set; }
 
     public CityStats cityStats = new CityStats();
 
@@ -67,11 +67,11 @@ public class City : MonoBehaviour
     private void Awake()
     {
         RoadNetwork = GetComponent<RoadNetwork>();
-        TreeNetwork = GetComponent<TreeNetwork>();
+        ResourceObjectNetwork = GetComponent<ResourceObjectNetwork>();
         Pathfinding = new Pathfinding(xSize, ySize, cellSize, Vector3.zero);
         ObjectGrid = new Grid<ObjectTile>(xSize, ySize, cellSize, Vector3.zero, (Grid<ObjectTile> g, int x, int y) => new ObjectTile(g, x, y));
         RoadNetwork.SetUp(ObjectGrid, Pathfinding.grid);
-        TreeNetwork.Setup(ObjectGrid, Pathfinding.grid);
+        ResourceObjectNetwork.Setup(ObjectGrid);
         canvasGrid.Setup(ObjectGrid, Pathfinding.grid);
 
         //Pre-placed structures

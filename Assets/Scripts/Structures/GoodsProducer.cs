@@ -21,33 +21,21 @@ public class GoodsProducer : Workplace
         else //Create work to collect resource
         {
             ActionTimer collectTimer = new ActionTimer(5f, () => citizen.inventory.Add(producedByWorker), false);
-            switch (producedByWorker.type)
+            List<ResourceObject> harvestableResources = city.ResourceObjectNetwork.GetHarvestableObjects(producedByWorker.type);
+            if (harvestableResources.Count > 0)
             {
-                case CityResource.Type.Wood:
-                    List<Tree> trees = city.TreeNetwork.GetHarvestableTrees();
-                    if (trees.Count <= 0)
-                        return GetIdleTask(citizen);
-                    else
-                    {
-                        Tree closestTree = Utility.GetClosest(trees, citizen.transform.position);
-                        closestTree.workOccupiedBy = citizen;
-                        collectTimer = new ActionTimer(5f, () =>
-                        {
-                            citizen.inventory.Add(producedByWorker);
-                            closestTree.Despawn();
-                        },
-                            false);
-                        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, closestTree.transform.position);
-                    }
-                case CityResource.Type.Gold: //REPLACE WITH LOCATIONS TO MINE
-                case CityResource.Type.Stone: //REPLACE WITH LOCATIONS TO MINE
-                case CityResource.Type.Food: //REPLACE WITH LOCATIONS TO FARM
-                    return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, Utility.ReturnRandom(workTaskTiles).position);
-                default:
-                    Debug.LogError("Type of resource not found");
-                    return null;
+                ResourceObject closestObject = Utility.GetClosest(harvestableResources, citizen.transform.position);
+                closestObject.workOccupiedBy = citizen;
+                collectTimer = new ActionTimer(5f, () =>
+                {
+                    citizen.inventory.Add(producedByWorker);
+                    closestObject.Despawn();
+                },
+                    false);
+                return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, closestObject.transform.position);
             }
-
+            else
+                return GetIdleTask(citizen);
         }
     }
 

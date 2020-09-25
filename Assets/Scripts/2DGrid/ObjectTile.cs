@@ -6,13 +6,11 @@ public class ObjectTile
     public readonly Grid<ObjectTile> grid;
     public readonly int x, y;
 
-
     public bool HasRoad { get; set; }
 
     public Structure Structure { get; set; }
 
-    public Tree Tree { get; set; }
-
+    public ResourceObject ResourceObject {get; set;}
 
     public Vector3 CenteredWorldPosition
     {
@@ -29,7 +27,7 @@ public class ObjectTile
                 return false;
             if (HasRoad)
                 return false;
-            if (Tree)
+            if (ResourceObject)
                 return false;
             if (x == 0 || x == grid.Width - 1 || y == 0 || y == grid.Height - 1)
             {
