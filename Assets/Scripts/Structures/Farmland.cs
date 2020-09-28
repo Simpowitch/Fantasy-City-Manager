@@ -41,6 +41,7 @@ public class Farmland : Structure
     {
         GrowingResource seed = Instantiate(cropBlueprint, farmTile.ObjectTile.CenteredWorldPosition, Quaternion.identity, this.transform);
         farmTile.Crop = seed;
+        seed.Spawned(null, farmTile.ObjectTile);
     }
 
     protected override void Constructed(City city, bool addToCityList)

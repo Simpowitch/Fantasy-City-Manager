@@ -24,7 +24,8 @@ public class GrowingResource : ResourceObject
 
     protected override void Despawn()
     {
-        network.RemoveGrowable(this);
+        if (network)
+            network.RemoveGrowable(this);
         ObjectTile.ResourceObject = null;
         GameObject.Destroy(this.gameObject, 0.01f);
     }
