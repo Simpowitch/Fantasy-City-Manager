@@ -12,6 +12,8 @@ public class ObjectTile
 
     public ResourceObject ResourceObject {get; set;}
 
+    public FarmTile FarmTile { get; set; }
+
     public Vector3 CenteredWorldPosition
     {
         get => grid.GetWorldPosition(x, y, true);
@@ -28,6 +30,8 @@ public class ObjectTile
             if (HasRoad)
                 return false;
             if (ResourceObject)
+                return false;
+            if (FarmTile != null)
                 return false;
             if (x == 0 || x == grid.Width - 1 || y == 0 || y == grid.Height - 1)
             {

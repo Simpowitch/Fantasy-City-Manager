@@ -19,19 +19,6 @@ public class ActionTimerSystem : MonoBehaviour
         {
             if (actionTimers[i] != null)
                 actionTimers[i].Update(time);
-            else
-            {
-                actionTimers.RemoveAt(i);
-                i--;
-            }
-        }
-        for (int i = 0; i < actionTimers.Count; i++)
-        {
-            if (actionTimers[i].IsFinished)
-            {
-                RemoveActionTimer(actionTimers[i]);
-                i--;
-            }
         }
     }
 }
@@ -39,11 +26,15 @@ public class ActionTimerSystem : MonoBehaviour
 public class ActionTimer
 {
     Action actionOnTimerEnd;
+    float startTime;
     float remainingTime;
     bool running;
     public bool IsFinished { get => remainingTime <= 0; }
+    public float Progress { get => 1 - (remainingTime / startTime); }
+
     public ActionTimer(float time, Action actionOnTimerEnd, bool startRunning)
     {
+        startTime = time;
         remainingTime = time;
         this.actionOnTimerEnd = actionOnTimerEnd;
         this.running = startRunning;
@@ -61,6 +52,7 @@ public class ActionTimer
         {
             actionOnTimerEnd?.Invoke();
             actionOnTimerEnd = null;
+            ActionTimerSystem.RemoveActionTimer(this);
         }
     }
 }

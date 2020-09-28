@@ -7,18 +7,27 @@ public class BuilderEmployment : Employment
 {
     const float BUILDTIME = 0.5f;
     public List<Structure> unfinishedStructures;
+    List<Structure> AvailableForConstruction
+    {
+        get
+        {
+            List<Structure> available = new List<Structure>();
+            available.PopulateListWithMatchingConditions(unfinishedStructures, (structure) => structure.constructionArea.CanBeWorkedOn); //Where the last tick is not being worked on by anyone
+            return available;
+        }
+    }
 
     Structure targetStructure;
 
-    public override bool ShiftActive => unfinishedStructures.Count > 0;
+    public override bool ShiftActive => AvailableForConstruction.Count > 0;
 
     public override Task GetWorkTask(Citizen citizen)
     {
-        if (unfinishedStructures.Count > 0) //At least 1 unfinished structure
+        if (AvailableForConstruction.Count > 0) //At least 1 unfinished structure with atleast 1 tick left
         {
             if (targetStructure == null)
                 targetStructure = Utility.GetClosest(unfinishedStructures, citizen);
-
+            targetStructure.constructionArea.OccupyTick();
             ActionTimer onTaskEndTimer = new ActionTimer(BUILDTIME, WorkAction, false);
             return new Task("Constructing", ThoughtFileReader.GetText(citizen.UnitPersonality, "constructing"), onTaskEndTimer, targetStructure.GetRandomLocation());
         }

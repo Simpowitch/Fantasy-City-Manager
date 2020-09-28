@@ -25,6 +25,7 @@ public class City : MonoBehaviour
     public List<Tavern> taverns = null;
     public List<Workplace> workplaces = null;
     public List<CityGate> cityGates = null;
+    public List<Farmland> farmlands = null;
     public Transform[] cityEntrances = null;
     public List<Structure> unfinishedStructures = null;
 

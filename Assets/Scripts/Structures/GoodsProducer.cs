@@ -4,15 +4,15 @@ using UnityEngine;
 public class GoodsProducer : Workplace
 {
     [Header("Goods producer")]
-    [SerializeField] CityResource producedByWorker = null;
+    [SerializeField] CityResource.Type acceptedResourceType = CityResource.Type.Gold;
 
     public override Task GetWorkTask(Citizen citizen)
     {
-        if (citizen.inventory.HasResourceType(producedByWorker.type)) // Citizen is carrying the type produced at this workplace - Create work to leave at this building
+        if (citizen.inventory.HasResourceType(acceptedResourceType)) // Citizen is carrying the type produced at this workplace - Create work to leave at this building
         {
             ActionTimer leaveTimer = new ActionTimer(5f, () =>
             {
-                citizen.inventory.RemoveAllOfType(producedByWorker.type, out CityResource resourcesRemoved);
+                citizen.inventory.RemoveAllOfType(acceptedResourceType, out CityResource resourcesRemoved);
                 city.cityStats.AddResource(resourcesRemoved);
             }
             , false);
@@ -20,16 +20,14 @@ public class GoodsProducer : Workplace
         }
         else //Create work to collect resource
         {
-            ActionTimer collectTimer = new ActionTimer(5f, () => citizen.inventory.Add(producedByWorker), false);
-            List<ResourceObject> harvestableResources = city.ResourceObjectNetwork.GetHarvestableObjects(producedByWorker.type);
+            List<ResourceObject> harvestableResources = city.ResourceObjectNetwork.GetHarvestableStatic(acceptedResourceType);
             if (harvestableResources.Count > 0)
             {
                 ResourceObject closestObject = Utility.GetClosest(harvestableResources, citizen.transform.position);
                 closestObject.workOccupiedBy = citizen;
-                collectTimer = new ActionTimer(5f, () =>
+                ActionTimer collectTimer = new ActionTimer(5f, () =>
                 {
-                    citizen.inventory.Add(producedByWorker);
-                    closestObject.Despawn();
+                    citizen.inventory.Add(closestObject.Harvest());
                 },
                     false);
                 return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, closestObject.transform.position);

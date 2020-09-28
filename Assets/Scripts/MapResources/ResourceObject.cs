@@ -2,29 +2,42 @@
 
 public class ResourceObject : MonoBehaviour
 {
-    ResourceObjectNetwork network;
+    protected ResourceObjectNetwork network;
     public ObjectTile ObjectTile { get; private set; }
 
-    [SerializeField] CityResource.Type type = CityResource.Type.Stone;
-    public CityResource.Type Type { get => type; }
+    [SerializeField] CityResource yieldOnHarvest = null;
+    [SerializeField] SpriteRenderer markRenderer = null;
+    public CityResource.Type Type { get => yieldOnHarvest.type; }
 
     public Citizen workOccupiedBy;
 
-    public bool markedForHarvest;
+    public bool MarkedForHarvest { get; private set; }
 
     //Called when the object is spawned in
-    public void Spawned(ResourceObjectNetwork network, ObjectTile objectTile)
+    public virtual void Spawned(ResourceObjectNetwork network, ObjectTile objectTile)
     {
         this.network = network;
         this.ObjectTile = objectTile;
         this.ObjectTile.ResourceObject = this;
     }
 
-    //Called when harvested 
-    public void Despawn()
+    public CityResource Harvest()
     {
-        network.RemoveObject(this);
+        Despawn();
+        return yieldOnHarvest;
+    }
+
+    public void MarkForHarvest(bool state)
+    {
+        MarkedForHarvest = state;
+        markRenderer.enabled = state;
+    }
+
+    //Called when harvested 
+    protected virtual void Despawn()
+    {
+        network.RemoveStatic(this);
         ObjectTile.ResourceObject = null;
-        GameObject.Destroy(this.gameObject);
+        GameObject.Destroy(this.gameObject, 0.01f);
     }
 }

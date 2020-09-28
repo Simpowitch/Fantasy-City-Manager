@@ -94,6 +94,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19e3a2f8fc315f74c8e1d64bc939f928, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 2
+  yieldOnHarvest:
+    type: 2
+    value: 5
   workOccupiedBy: {fileID: 0}
   markedForHarvest: 0
