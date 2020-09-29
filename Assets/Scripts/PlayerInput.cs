@@ -150,6 +150,10 @@ public class PlayerInput : MonoBehaviour
     void Hoover()
     {
         Vector3 centeredWorldPosition = ObjectGrid.GetWorldPosition(Utility.GetMouseWorldPosition(), true);
+
+        //Debug.Log(ObjectGrid.GetGridObject(centeredWorldPosition).ToString());
+        //Debug.Log(Utility.GetDirection(playerCharacter.transform.position, centeredWorldPosition));
+
         selectionObject.transform.position = centeredWorldPosition;
         switch (Mode)
         {

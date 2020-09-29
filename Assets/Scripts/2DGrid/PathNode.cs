@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 [System.Serializable]
 public class PathNode
@@ -59,5 +60,22 @@ public class PathNode
     public override string ToString()
     {
         return x + "," + y;
+    }
+
+    public static bool CanTravelToNeighbor(PathNode to, PathNode from, List<PathNode> fromNeighbors)
+    {
+        if (!to.IsWalkable)
+            return false;
+        if (!fromNeighbors.Contains(to))
+            return false;
+        Direction2D direction = Utility.GetDirection(from.WorldPosition, to.WorldPosition);
+        if (Utility.IsDiagonal(direction))
+        {
+            PathNode next = from.grid.GetGridObjectInDirection(from.WorldPosition, direction.Next());
+            PathNode previous = from.grid.GetGridObjectInDirection(from.WorldPosition, direction.Previous());
+            return (next.IsWalkable && previous.IsWalkable);
+        }
+        else
+            return true;
     }
 }

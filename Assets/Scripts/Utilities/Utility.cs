@@ -6,6 +6,18 @@ using Random = UnityEngine.Random;
 using System.Text.RegularExpressions;
 using System.Linq;
 
+public enum Direction2D
+{
+    N,
+    NE,
+    E,
+    SE,
+    S,
+    SW,
+    W,
+    NW,
+}
+
 public static class Utility
 {
     /// <summary>
@@ -249,6 +261,55 @@ public static class Utility
         }
         return closest;
     }
+
+    public static bool Between(float a, float b, float testValue)
+    {
+        if (testValue < b && testValue > a)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public static float GetCompassDegree(Vector2 A, Vector2 B)
+    {
+        //difference
+        var Delta = B - A;
+        //use atan2 to get the angle; Atan2 returns radians
+        var angleRadians = Mathf.Atan2(Delta.x, Delta.y);
+
+        //convert to degrees
+        var angleDegrees = angleRadians * Mathf.Rad2Deg;
+
+
+        if (angleDegrees < 0)
+            angleDegrees += 360;
+
+        return angleDegrees;
+    }
+
+    public static Direction2D GetDirection(Vector2 from, Vector2 to)
+    {
+        float degrees = GetCompassDegree(from, to);
+
+        float degreesPerDirection = 360 / 8;
+
+        float minDir = -degreesPerDirection / 2;
+        float maxDir = minDir;
+
+        for (Direction2D direction = Direction2D.N; direction <= Direction2D.NW; direction++)
+        {
+            maxDir += degreesPerDirection;
+
+            if (Between(minDir, maxDir, degrees))
+                return direction;
+            minDir = maxDir;
+
+        }
+        return Direction2D.N;
+    }
+
+    public static bool IsDiagonal(Direction2D direction) => direction == Direction2D.NE || direction == Direction2D.SE || direction == Direction2D.SW || direction == Direction2D.NW;
 
     public static void MoveToLayer(Transform root, int layer, Transform[] layerChangeExceptions)
     {

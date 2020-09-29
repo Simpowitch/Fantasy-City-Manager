@@ -50,35 +50,8 @@ public class ObjectTile
 
     public List<ObjectTile> GetNeighbors() => grid.GetNeighbourList(x, y);
 
-    public static Direction GetDirection(ObjectTile fromTile, ObjectTile toTile)
+    public override string ToString()
     {
-        int deltaX, deltaY;
-        deltaX = toTile.x - fromTile.x;
-        deltaY = toTile.y - fromTile.y;
-
-        if (Mathf.Abs(deltaX) > 0 && Mathf.Abs(deltaY) > 0)
-        {
-            return Direction.Invalid;
-        }
-        else
-        {
-            if (deltaX > 0)
-            {
-                return Direction.Right;
-            }
-            else if (deltaX < 0)
-            {
-                return Direction.Left;
-            }
-            else if (deltaY > 0)
-            {
-                return Direction.Up;
-            }
-            else if (deltaY < 0)
-            {
-                return Direction.Down;
-            }
-        }
-        throw new System.ArgumentException();
+        return $"X: {x}. Y: {y}";
     }
 }

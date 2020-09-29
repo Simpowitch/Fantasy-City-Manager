@@ -124,24 +124,72 @@ public class Grid<TGridObject>
         return foundGridObjects;
     }
 
-    public List<TGridObject> GetGridObjectsInLine(Vector3 fromPosition, Direction direction, int numberOfCells)
+    public TGridObject GetGridObjectInDirection(Vector3 fromPosition, Direction2D direction)
+    {
+        GetXY(fromPosition, out int x, out int y);
+        Vector2Int delta = Vector2Int.zero;
+        switch (direction)
+        {
+            case Direction2D.N:
+                delta = new Vector2Int(0, 1);
+                break;
+            case Direction2D.NE:
+                delta = new Vector2Int(1, 1);
+                break;
+            case Direction2D.E:
+                delta = new Vector2Int(1, 0);
+                break;
+            case Direction2D.SE:
+                delta = new Vector2Int(1, -1);
+                break;
+            case Direction2D.S:
+                delta = new Vector2Int(0, -1);
+                break;
+            case Direction2D.SW:
+                delta = new Vector2Int(-1, -1);
+                break;
+            case Direction2D.W:
+                delta = new Vector2Int(-1, 0);
+                break;
+            case Direction2D.NW:
+                delta = new Vector2Int(-1, 1);
+                break;
+        }
+        x += delta.x;
+        y += delta.y;
+        return GetGridObject(x, y);
+    }
+
+    public List<TGridObject> GetGridObjectsInLine(Vector3 fromPosition, Direction2D direction, int numberOfCells)
     {
         List<TGridObject> objectsInLine = new List<TGridObject>();
         GetXY(fromPosition, out int x, out int y);
         Vector2Int delta = Vector2Int.zero;
         switch (direction)
         {
-            case Direction.Down:
-                delta = new Vector2Int(0, -1);
-                break;
-            case Direction.Left:
-                delta = new Vector2Int(-1, 0);
-                break;
-            case Direction.Up:
+            case Direction2D.N:
                 delta = new Vector2Int(0, 1);
                 break;
-            case Direction.Right:
+            case Direction2D.NE:
+                delta = new Vector2Int(1, 1);
+                break;
+            case Direction2D.E:
                 delta = new Vector2Int(1, 0);
+                break;
+            case Direction2D.SE:
+                delta = new Vector2Int(1, -1);
+                break;
+            case Direction2D.S:
+                delta = new Vector2Int(0, -1);
+                break;
+            case Direction2D.SW:
+                delta = new Vector2Int(-1, -1);
+                break;
+            case Direction2D.W:
+                delta = new Vector2Int(-1, 0);
+                break;
+            case Direction2D.NW:
+                delta = new Vector2Int(-1, 1);
                 break;
         }
         for (int i = 0; i < numberOfCells; i++)
@@ -160,9 +208,9 @@ public class Grid<TGridObject>
     public List<TGridObject> GetGridObjectsInAllLines(Vector3 fromPosition, int numberOfCells)
     {
         List<TGridObject> objectsInLines = new List<TGridObject>();
-        for (int i = 0; i < (int)Direction.MAX; i++)
+        for (Direction2D direction = Direction2D.N; direction <= Direction2D.NW; direction++)
         {
-            objectsInLines.AddRange(GetGridObjectsInLine(fromPosition, (Direction)i, numberOfCells));
+            objectsInLines.AddRange(GetGridObjectsInLine(fromPosition, direction, numberOfCells));
         }
         return objectsInLines;
     }
@@ -170,7 +218,6 @@ public class Grid<TGridObject>
     public List<TGridObject> GetNeighbourList(int currentX, int currentY)
     {
         List<TGridObject> neighbourList = new List<TGridObject>();
-        
         if (currentX - 1 >= 0)
         {
             //Left

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public enum Direction { Down, Left, Up, Right, MAX = 3, Invalid }
+public enum Facing { Down, Left, Up, Right, MAX = 3, Invalid }
 public class ConstructionSystem : MonoBehaviour
 {
     public enum Mode { Off, Road, Structure }
@@ -43,7 +43,7 @@ public class ConstructionSystem : MonoBehaviour
     List<Vector3Int> roadPreviews = new List<Vector3Int>();
     Structure structurePreview;
     int constructionIndex = 0;
-    Direction constructionFacing;
+    Facing constructionFacing;
 
     private void Awake()
     {
@@ -74,7 +74,7 @@ public class ConstructionSystem : MonoBehaviour
 
     public void ChangeFacingRotationDirection()
     {
-        if ((int)constructionFacing + 1 > (int)Direction.MAX)
+        if ((int)constructionFacing + 1 > (int)Facing.MAX)
         {
             constructionFacing = 0;
             if (structurePreview)
@@ -88,7 +88,7 @@ public class ConstructionSystem : MonoBehaviour
         }
     }
 
-    public void SetFacingRotationDirection(Direction newDirection)
+    public void SetFacingRotationDirection(Facing newDirection)
     {
         constructionFacing = newDirection;
         if (structurePreview)

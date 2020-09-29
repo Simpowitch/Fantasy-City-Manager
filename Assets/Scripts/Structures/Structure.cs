@@ -29,8 +29,8 @@ public abstract class Structure : MonoBehaviour
     protected City city;
     Vector3 rotationOffset;
 
-    [SerializeField] Direction facingDirection = Direction.Down;
-    public Direction FacingDirecion
+    [SerializeField] Facing facingDirection = Facing.Down;
+    public Facing FacingDirecion
     {
         get => facingDirection;
         set
@@ -40,16 +40,16 @@ public abstract class Structure : MonoBehaviour
 
             switch (value)
             {
-                case Direction.Down:
+                case Facing.Down:
                     rotationOffset = new Vector3(0, 0);
                     break;
-                case Direction.Left:
+                case Facing.Left:
                     rotationOffset = new Vector3(0, cellSize);
                     break;
-                case Direction.Up:
+                case Facing.Up:
                     rotationOffset = new Vector3(cellSize, cellSize);
                     break;
-                case Direction.Right:
+                case Facing.Right:
                     rotationOffset = new Vector3(cellSize, 0);
                     break;
             }
@@ -73,13 +73,13 @@ public abstract class Structure : MonoBehaviour
         {
             switch (facingDirection)
             {
-                case Direction.Down:
+                case Facing.Down:
                     return anchorPoint + rotationOffset;
-                case Direction.Left:
+                case Facing.Left:
                     return anchorPoint + new Vector3(0, -xSize * cellSize) + rotationOffset;
-                case Direction.Up:
+                case Facing.Up:
                     return anchorPoint + new Vector3(-xSize * cellSize, -ySize * cellSize) + rotationOffset;
-                case Direction.Right:
+                case Facing.Right:
                     return anchorPoint + new Vector3(-ySize * cellSize, 0) + rotationOffset;
                 default:
                     return anchorPoint;
@@ -94,11 +94,11 @@ public abstract class Structure : MonoBehaviour
             Vector2 corner = LowerLeftCorner;
             switch (facingDirection)
             {
-                case Direction.Down:
-                case Direction.Up:
+                case Facing.Down:
+                case Facing.Up:
                     return corner + new Vector2(xSize * cellSize, ySize * cellSize);
-                case Direction.Left:
-                case Direction.Right:
+                case Facing.Left:
+                case Facing.Right:
                     return corner + new Vector2(ySize * cellSize, xSize * cellSize);
                 default:
                     return corner;
@@ -113,11 +113,11 @@ public abstract class Structure : MonoBehaviour
             Vector2 corner = LowerLeftCorner;
             switch (facingDirection)
             {
-                case Direction.Down:
-                case Direction.Up:
+                case Facing.Down:
+                case Facing.Up:
                     return corner + new Vector2(xSize * cellSize / 2, ySize * cellSize / 2);
-                case Direction.Left:
-                case Direction.Right:
+                case Facing.Left:
+                case Facing.Right:
                     return corner + new Vector2(ySize * cellSize / 2, xSize * cellSize / 2);
                 default:
                     return corner;
