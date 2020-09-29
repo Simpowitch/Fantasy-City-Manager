@@ -45,21 +45,21 @@ public class Residence : Structure, INeedProvider
         base.Despawn();
     }
 
-    public Task CreateSatisfyNeedTask(Unit unit, Need.NeedType type)
+    public Task CreateSatisfyNeedTask(Unit unit, Need needToSatisfy)
     {
-        if (!NeedTypes.Contains(type))
+        if (!NeedTypes.Contains(needToSatisfy.Type))
         {
             Debug.LogError("Need asked for cannot be provided by this building");
             return null;
         }
-        return CreateSleepTask(unit);
+        return CreateSleepTask(unit, needToSatisfy);
     }
 
-    private Task CreateSleepTask(Unit unit)
+    private Task CreateSleepTask(Unit unit, Need needToSatisfy)
     {
         ActionTimer onTaskEnd = new ActionTimer(3f, () =>
         {
-            unit.Energy.Satisfy();
+            needToSatisfy.Satisfy();
         }, false);
         return new Task("Going to bed", ThoughtFileReader.GetText(unit.UnitPersonality, "Sleeping"), onTaskEnd, bedTile.position);
     }

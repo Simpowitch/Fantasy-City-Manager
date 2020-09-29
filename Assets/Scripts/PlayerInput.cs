@@ -9,7 +9,9 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] ConstructionSystem constructionSystem = null;
     [SerializeField] MouseTooltip mouseTooltip = null;
     City city;
-    [SerializeField] UnitViewer unitViewer = null;
+    [SerializeField] ObjectViewer objectViewer = null;
+    [SerializeField] InGameCamera playerCamera = null;
+    [SerializeField] PlayerCharacter playerCharacter = null;
 
     [Header("Selection")]
     [SerializeField] GameObject selectionObject = null;
@@ -103,6 +105,7 @@ public class PlayerInput : MonoBehaviour
     private void Awake()
     {
         player.OnActiveCityChanged += SetCity;
+        playerCamera.SetTrackingTarget(playerCharacter.transform);
     }
 
     private void SetCity(City city)
@@ -136,6 +139,12 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
             constructionSystem.ChangeFacingRotationDirection();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            playerCamera.ToggleTracking();
+            playerCharacter.CanMove = playerCamera.IsTracking;
+        }
     }
 
     void Hoover()
@@ -212,11 +221,11 @@ public class PlayerInput : MonoBehaviour
         switch (Mode)
         {
             case InputMode.Selection:
-                Unit unit = GetUnitUnderMouse();
-                if (unit)
-                    unit.SendToViewer(unitViewer);
+                IViewable unit = GetViewableUnderMouse();
+                if (unit != null)
+                    objectViewer.ShowViewable(unit);
                 else
-                    unitViewer.Hide();
+                    objectViewer.Hide();
                 break;
             case InputMode.BuildRoad:
                 if (allowedConstruction)
@@ -308,17 +317,17 @@ public class PlayerInput : MonoBehaviour
         return units;
     }
 
-    private Unit GetUnitUnderMouse()
+    private IViewable GetViewableUnderMouse()
     {
         ObjectTile objectTile = ObjectGrid.GetGridObject(Utility.GetMouseWorldPosition());
         if (objectTile != null)
         {
-            Collider2D[] allColliders = Physics2D.OverlapBoxAll(objectTile.CenteredWorldPosition, new Vector2(ObjectGrid.cellSize, ObjectGrid.cellSize), 0);
+            Collider2D[] allColliders = Physics2D.OverlapBoxAll(objectTile.CenteredWorldPosition, new Vector2(ObjectGrid.cellSize / 2, ObjectGrid.cellSize / 2), 0);
             foreach (var collider in allColliders)
             {
-                Unit unit = collider.GetComponent<Unit>();
-                if (unit)
-                    return unit;
+                IViewable viewable = collider.GetComponent<IViewable>();
+                if (viewable != null)
+                    return viewable;
             }
         }
         return null;

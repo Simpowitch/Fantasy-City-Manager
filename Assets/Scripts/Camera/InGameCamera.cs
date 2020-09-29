@@ -35,7 +35,7 @@ public class InGameCamera : MonoBehaviour
     Vector3 mouseUpPos = new Vector3();
 
     //Tracking
-    bool isTracking = false;
+    public bool IsTracking { get; private set; } = false;
     Transform trackingTransform;
 
     private void Start()
@@ -68,55 +68,56 @@ public class InGameCamera : MonoBehaviour
         {
             newCameraTransform.cameraSize -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
         }
-        //Middle Mouse Movement
-        if (Input.GetMouseButtonDown(2))
+        if (!IsTracking)
         {
-            mouseDownPos = activeCamera.ScreenToWorldPoint(Input.mousePosition);
-            isTracking = false;
-        }
-        if (Input.GetMouseButton(2))
-        {
-            mouseUpPos = activeCamera.ScreenToWorldPoint(Input.mousePosition);
-            newCameraTransform.cameraPosition = transform.localPosition + mouseDownPos - mouseUpPos;
-        }
-        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
-        {
-            //Key movement
-            MoveDirection(Directions.Right, Input.GetAxis("Horizontal") > 0);
-            MoveDirection(Directions.Left, Input.GetAxis("Horizontal") < 0);
-            MoveDirection(Directions.Down, Input.GetAxis("Vertical") < 0);
-            MoveDirection(Directions.Up, Input.GetAxis("Vertical") > 0);
-        }
-        else if (edgeMovement)
-        {
-            //Edge detection
-            MoveDirection(Directions.Right, Input.mousePosition.x > Screen.width - cursorDetectionRange);
-            MoveDirection(Directions.Left, Input.mousePosition.x < 0 + cursorDetectionRange);
-            MoveDirection(Directions.Down, Input.mousePosition.y < 0 + cursorDetectionRange);
-            MoveDirection(Directions.Up, Input.mousePosition.y > Screen.height - cursorDetectionRange);
-        }
-        void MoveDirection(Directions direction, bool isButtonPressed)
-        {
-            if (isButtonPressed)
+            //Middle Mouse Movement
+            if (Input.GetMouseButtonDown(2))
             {
-                isTracking = false;
-                float zoomScale = activeCamera.orthographicSize / zoomMax;
-                switch (direction)
+                mouseDownPos = activeCamera.ScreenToWorldPoint(Input.mousePosition);
+            }
+            if (Input.GetMouseButton(2))
+            {
+                mouseUpPos = activeCamera.ScreenToWorldPoint(Input.mousePosition);
+                newCameraTransform.cameraPosition = transform.localPosition + mouseDownPos - mouseUpPos;
+            }
+            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            {
+                //Key movement
+                MoveDirection(Directions.Right, Input.GetAxis("Horizontal") > 0);
+                MoveDirection(Directions.Left, Input.GetAxis("Horizontal") < 0);
+                MoveDirection(Directions.Down, Input.GetAxis("Vertical") < 0);
+                MoveDirection(Directions.Up, Input.GetAxis("Vertical") > 0);
+            }
+            else if (edgeMovement)
+            {
+                //Edge detection
+                MoveDirection(Directions.Right, Input.mousePosition.x > Screen.width - cursorDetectionRange);
+                MoveDirection(Directions.Left, Input.mousePosition.x < 0 + cursorDetectionRange);
+                MoveDirection(Directions.Down, Input.mousePosition.y < 0 + cursorDetectionRange);
+                MoveDirection(Directions.Up, Input.mousePosition.y > Screen.height - cursorDetectionRange);
+            }
+            void MoveDirection(Directions direction, bool isButtonPressed)
+            {
+                if (isButtonPressed)
                 {
-                    case Directions.Up:
-                        newCameraTransform.cameraPosition.y += cameraSpeed * zoomScale;
-                        break;
-                    case Directions.Left:
-                        newCameraTransform.cameraPosition.x -= cameraSpeed * zoomScale;
-                        break;
-                    case Directions.Down:
-                        newCameraTransform.cameraPosition.y -= cameraSpeed * zoomScale;
-                        break;
-                    case Directions.Right:
-                        newCameraTransform.cameraPosition.x += cameraSpeed * zoomScale;
-                        break;
-                    default:
-                        break;
+                    float zoomScale = activeCamera.orthographicSize / zoomMax;
+                    switch (direction)
+                    {
+                        case Directions.Up:
+                            newCameraTransform.cameraPosition.y += cameraSpeed * zoomScale;
+                            break;
+                        case Directions.Left:
+                            newCameraTransform.cameraPosition.x -= cameraSpeed * zoomScale;
+                            break;
+                        case Directions.Down:
+                            newCameraTransform.cameraPosition.y -= cameraSpeed * zoomScale;
+                            break;
+                        case Directions.Right:
+                            newCameraTransform.cameraPosition.x += cameraSpeed * zoomScale;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -142,11 +143,11 @@ public class InGameCamera : MonoBehaviour
     #region Tracking
     void TrackPosition()
     {
-        if (isTracking)
+        if (IsTracking)
         {
             if (trackingTransform == null)
             {
-                isTracking = false;
+                IsTracking = false;
                 return;
             }
             else
@@ -158,13 +159,13 @@ public class InGameCamera : MonoBehaviour
 
     public void ToggleTracking()
     {
-        isTracking = !isTracking;
+        IsTracking = !IsTracking;
     }
 
-    void SetTrackingTarget(Transform transform)
+    public void SetTrackingTarget(Transform transform)
     {
         trackingTransform = transform;
-        isTracking = true;
+        IsTracking = true;
     }
     #endregion
 

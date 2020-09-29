@@ -50,7 +50,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d76459e9616deb49991bba0f28d5439, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotation: {fileID: 3932747847281129558}
   seeker: {fileID: 3704443307884447362}
   messageDisplay: {fileID: 3882110982529542440}
   unitDetector: {fileID: 8033300393647027598}
@@ -117,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fae7dbcf5665574eb80e6b1f6dd2a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 2
+  movementSpeed: 1
 --- !u!114 &8033300393647027598
 MonoBehaviour:
   m_ObjectHideFlags: 0

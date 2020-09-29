@@ -52,9 +52,9 @@ public class Commercial : Workplace, INeedProvider
         return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(workTaskTiles).position);
     }
 
-    public Task CreateSatisfyNeedTask(Unit unit, Need.NeedType type)
+    public Task CreateSatisfyNeedTask(Unit unit, Need needToSatisfy)
     {
-        if (!NeedTypes.Contains(type))
+        if (!NeedTypes.Contains(needToSatisfy.Type))
         {
             Debug.LogError("Need asked for cannot be provided by this building");
             return null;
@@ -62,21 +62,7 @@ public class Commercial : Workplace, INeedProvider
 
         ActionTimer onTaskEnd = new ActionTimer(3f, () =>
         {
-            switch (type)
-            {
-                case Need.NeedType.Energy:
-                    unit.Energy.Satisfy();
-                    break;
-                case Need.NeedType.Hunger:
-                    unit.Hunger.Satisfy();
-                    break;
-                case Need.NeedType.Recreation:
-                    unit.Recreation.Satisfy();
-                    break;
-                case Need.NeedType.Social:
-                    unit.Social.Satisfy();
-                    break;
-            }
+            needToSatisfy.Satisfy();
             city.cityStats.RemoveResource(consumedOfPatreon);
         }, false);
         return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(patreonTaskTiles).position);

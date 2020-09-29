@@ -3,5 +3,5 @@
 public interface INeedProvider
 {
     List<Need.NeedType> NeedTypes { get; }
-    Task CreateSatisfyNeedTask(Unit unit, Need.NeedType type);
+    Task CreateSatisfyNeedTask(Unit unit, Need needToSatisfy);
 }
