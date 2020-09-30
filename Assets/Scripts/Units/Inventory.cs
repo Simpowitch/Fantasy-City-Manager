@@ -23,7 +23,7 @@ public class Inventory
         {
             if (resourceToRemove.type == existingResource.type)
             {
-                if (existingResource.Value >= resourceToRemove.Value)
+                if (existingResource.Value < resourceToRemove.Value)
                 {
                     return false;
                 }
