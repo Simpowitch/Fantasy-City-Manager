@@ -10,7 +10,8 @@ public class ObjectViewer : MonoBehaviour
     [SerializeField] TextMeshProUGUI actionText = null;
 
     IViewable lastViewed;
-    [SerializeField] Bar happinessBar = null;
+    [SerializeField] TextMeshProUGUI primaryStatTitle = null;
+    [SerializeField] Bar primaryStatBar = null;
     [SerializeField] GameObject[] needObjects = null;
     [SerializeField] TextMeshProUGUI[] needTitles = null;
     [SerializeField] Bar[] needBars = null;
@@ -28,13 +29,14 @@ public class ObjectViewer : MonoBehaviour
         specialityText.text = viewable.GetSpeciality();
         actionText.text = viewable.ActionDescription;
 
-        happinessBar.SetNewValues(viewable.GetHappiness());
+        primaryStatTitle.text = viewable.GetPrimaryStatName();
+        primaryStatBar.SetNewValues(viewable.GetPrimaryStatValue());
         Need[] needs = viewable.GetNeeds();
 
         for (int i = 0; i < needObjects.Length; i++)
         {
             //Display all needs
-            if (i < needs.Length) //Need exists 
+            if (needs != null && i < needs.Length) //Need exists 
             {
                 needObjects[i].SetActive(true);
                 needTitles[i].text = needs[i].Title;

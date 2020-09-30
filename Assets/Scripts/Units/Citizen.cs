@@ -188,6 +188,7 @@ public class Citizen : Unit, IViewable
         return needs;
     }
     public string GetSpeciality() => GetProfession();
-    public float GetHappiness() => Happiness;
+    public float GetPrimaryStatValue() => Happiness;
+    public string GetPrimaryStatName() => "Happiness";
     #endregion
 }

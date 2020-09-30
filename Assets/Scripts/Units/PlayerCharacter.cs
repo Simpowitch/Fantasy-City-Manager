@@ -42,6 +42,7 @@ public class PlayerCharacter : MonoBehaviour, IViewable
         {
             unitAnimator.PlayWalkAnimation(aim - transform.position);
             ActionDescription = "Moving";
+            moving.Satisfy();
         }
         else
         {
@@ -77,7 +78,8 @@ public class PlayerCharacter : MonoBehaviour, IViewable
             PlayerCharacterInfoChanged();
         }
     }
-    public float GetHappiness() => moving.CurrentValue;
+    public float GetPrimaryStatValue() => moving.CurrentValue;
+    public string GetPrimaryStatName() => "Happiness";
     public Need[] GetNeeds()
     {
         Need[] needs = new Need[1];

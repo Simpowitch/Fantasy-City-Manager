@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 3177461}
   - component: {fileID: 3177460}
   m_Layer: 5
-  m_Name: Happiness Bar
+  m_Name: Primary Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27951,7 +27951,7 @@ GameObject:
   - component: {fileID: 409677382}
   - component: {fileID: 409677383}
   m_Layer: 5
-  m_Name: Happiness
+  m_Name: Primary Stat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29864,7 +29864,7 @@ GameObject:
   - component: {fileID: 650226846}
   - component: {fileID: 650226845}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Primary Title Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37718,7 +37718,8 @@ MonoBehaviour:
   nameText: {fileID: 1902749887}
   specialityText: {fileID: 1206514350}
   actionText: {fileID: 11287840}
-  happinessBar: {fileID: 3177460}
+  primaryStatTitle: {fileID: 650226845}
+  primaryStatBar: {fileID: 3177460}
   needObjects:
   - {fileID: 1605031978}
   - {fileID: 2088026109}

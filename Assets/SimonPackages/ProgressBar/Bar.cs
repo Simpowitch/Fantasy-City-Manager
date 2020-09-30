@@ -37,8 +37,8 @@ public class Bar : MonoBehaviour
 
     public Color color;
 
-    bool animatingChange;
-    Queue<ProgressStatus> changes = new Queue<ProgressStatus>();
+    //bool animatingChange;
+    //Queue<ProgressStatus> changes = new Queue<ProgressStatus>();
 
     private void Update()
     {
@@ -47,13 +47,13 @@ public class Bar : MonoBehaviour
         ShowCurrentValue();
     }
 
-    private void OnEnable()
-    {
-        if (changes.Count > 0 && !animatingChange)
-        {
-            ChangeValues(changes.Dequeue());
-        }
-    }
+    //private void OnEnable()
+    //{
+    //    if (changes.Count > 0 && !animatingChange)
+    //    {
+    //        ChangeValues(changes.Dequeue());
+    //    }
+    //}
 
     void SetColor()
     {
@@ -68,19 +68,22 @@ public class Bar : MonoBehaviour
         mask.fillAmount = fillAmount;
     }
 
-    public void SetNewValues(float percentageFactor) => EnqueueChange(new ProgressStatus(percentageFactor));
+    //public void SetNewValues(float percentageFactor) => EnqueueChange(new ProgressStatus(percentageFactor));
+    public void SetNewValues(float percentageFactor) => ChangeValues(new ProgressStatus(percentageFactor));
 
-    private void EnqueueChange(ProgressStatus change)
-    {
-        changes.Enqueue(change);
-        if (this.gameObject.activeInHierarchy && !animatingChange)
-        {
-            ChangeValues(changes.Dequeue());
-        }
-    }
+
+    //private void EnqueueChange(ProgressStatus change)
+    //{
+    //    changes.Enqueue(change);
+    //    if (this.gameObject.activeInHierarchy && !animatingChange)
+    //    {
+    //        ChangeValues(changes.Dequeue());
+    //    }
+    //}
 
     private void ChangeValues(ProgressStatus newStatus)
     {
+        StopAllCoroutines();
         maximumValue = newStatus.newMaximum;
         minimumValue = newStatus.newMinimum;
         StartCoroutine(ChangeCurrentOverTime(newStatus.newCurrent, animationTime));
@@ -88,7 +91,7 @@ public class Bar : MonoBehaviour
 
     IEnumerator ChangeCurrentOverTime(int targetValue, float animationTime)
     {
-        animatingChange = true;
+        //animatingChange = true;
         float timer = 0;
         float t = 0;
         int startCurrent = currentValue;
@@ -101,12 +104,12 @@ public class Bar : MonoBehaviour
             yield return null;
         }
         currentValue = targetValue;
-        animatingChange = false;
+        //animatingChange = false;
 
-        if (changes.Count > 0)
-        {
-            ChangeValues(changes.Dequeue());
-        }
+        //if (changes.Count > 0)
+        //{
+        //    ChangeValues(changes.Dequeue());
+        //}
     }
 
     private void ShowCurrentValue()

@@ -6,6 +6,7 @@ public interface IViewable
     string Name { get; set; }
     string ActionDescription { get; }
     string GetSpeciality();
-    float GetHappiness();
+    string GetPrimaryStatName();
+    float GetPrimaryStatValue();
     Need[] GetNeeds();
 }

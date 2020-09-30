@@ -140,7 +140,6 @@ public class Visitor : Unit, IViewable
         }
     }
 
-    public float GetHappiness() => Happiness;
     public Need[] GetNeeds()
     {
         Need[] needs = new Need[4];
@@ -151,5 +150,7 @@ public class Visitor : Unit, IViewable
         return needs;
     }
     public string GetSpeciality() => "Visitor";
+    public float GetPrimaryStatValue() => Happiness;
+    public string GetPrimaryStatName() => "Happiness";
     #endregion
 }
