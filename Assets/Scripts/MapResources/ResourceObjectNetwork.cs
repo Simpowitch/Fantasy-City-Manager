@@ -174,7 +174,7 @@ public class ResourceObjectNetwork : MonoBehaviour
         }
     }
 
-    public List<ResourceObject> GetHarvestableStatic(CityResource.Type type)
+    public List<ResourceObject> GetHarvestable(CityResource.Type type)
     {
         List<ResourceObject> list = new List<ResourceObject>();
         switch (type)
@@ -183,6 +183,9 @@ public class ResourceObjectNetwork : MonoBehaviour
                 list = harvestableStones;
                 break;
             case CityResource.Type.Wood:
+                List<GrowingResource> trees = GetHarvestableGrowables(CityResource.Type.Wood);
+                list.AddRange(trees);
+                return list;
             case CityResource.Type.Food:
             case CityResource.Type.Gold:
             default:
@@ -197,7 +200,7 @@ public class ResourceObjectNetwork : MonoBehaviour
         return harvestable;
     }
 
-    public List<GrowingResource> GetHarvestableGrowables(CityResource.Type type)
+    private List<GrowingResource> GetHarvestableGrowables(CityResource.Type type)
     {
         List<GrowingResource> list = new List<GrowingResource>();
         switch (type)

@@ -20,7 +20,7 @@ public class GoodsProducer : Workplace
         }
         else //Create work to collect resource
         {
-            List<ResourceObject> harvestableResources = city.ResourceObjectNetwork.GetHarvestableStatic(acceptedResourceType);
+            List<ResourceObject> harvestableResources = city.ResourceObjectNetwork.GetHarvestable(acceptedResourceType);
             if (harvestableResources.Count > 0)
             {
                 ResourceObject closestObject = Utility.GetClosest(harvestableResources, citizen.transform.position);
