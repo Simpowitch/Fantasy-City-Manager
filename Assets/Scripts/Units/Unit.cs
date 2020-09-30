@@ -12,9 +12,8 @@ public abstract class Unit : MonoBehaviour
 
     IMoveVelocity movementSystem = null;
     [SerializeField] PathSeeker seeker = null; public PathSeeker Seeker { get => seeker; private set => seeker = value; }
-    [SerializeField] protected MessageDisplay messageDisplay = null;
     [SerializeField] protected UnitDetector unitDetector = null;
-
+    [SerializeField] UnitCanvasController canvasController = null;
     protected string unitName;
     public enum Personality
     {
@@ -105,7 +104,7 @@ public abstract class Unit : MonoBehaviour
         FSM.EnterState();
     }
 
-    public void SendThought(string thought) => StartCoroutine(messageDisplay.ShowMessage(3, thought, MessageDisplay.MessageType.Chatbubble));
+    public void SendThought(string thought) => canvasController.ShowChatbubble(3, thought);
 
     protected virtual void FindNewTask()
     {
@@ -173,6 +172,7 @@ public abstract class Unit : MonoBehaviour
 
         public override void EnterState()
         {
+            unit.canvasController.ShowProgressbar(true);
             unit.currentTask.Arrived();
             unit.SendThought(unit.currentTask.Thought);
             base.EnterState();
@@ -182,7 +182,15 @@ public abstract class Unit : MonoBehaviour
         {
             if (unit.currentTask.TaskCompleted)
                 unit.ChangeState(new IdleState(unit));
+            else
+                unit.canvasController.UpdateProgressbar(unit.currentTask.ActionTimer.Progress); //Show progressbar of task
             base.DuringState();
+        }
+
+        public override void ExitState()
+        {
+            unit.canvasController.ShowProgressbar(false);
+            base.ExitState();
         }
     }
 }

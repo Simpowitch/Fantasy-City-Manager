@@ -64,8 +64,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seeker: {fileID: 3704443307884447362}
-  messageDisplay: {fileID: 8348642413612590701}
   unitDetector: {fileID: 0}
+  canvasController: {fileID: 4073366793181401790}
   leaveRandomizerPercentage: 20
 --- !u!58 &3215648386294320103
 CircleCollider2D:
@@ -356,15 +356,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2929943838086704193}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8348642413612590701 stripped
+--- !u!114 &4073366793181401790 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6590198297823267372, guid: 7daf381114e23f94ba4310ab57722b0c,
+  m_CorrespondingSourceObject: {fileID: 1166082529849229055, guid: 7daf381114e23f94ba4310ab57722b0c,
     type: 3}
   m_PrefabInstance: {fileID: 2929943838086704193}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cf231808d4789f4dacf85598fd96b2f, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a67fa2403a55694f9cf574dc6b1d395, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
