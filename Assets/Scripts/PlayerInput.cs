@@ -29,7 +29,7 @@ public class PlayerInput : MonoBehaviour
     List<ObjectTile> selectedObjectTiles;
 
     bool canMultiSelect = false;
-    public enum InputMode { Selection, BuildRoad, BuildStructure, RemoveRoad, RemoveStructure, Zone, RemoveZone, MAX = 6 }
+    public enum InputMode { Selection, BuildRoad, BuildStructure, RemoveRoad, RemoveStructure, Harvest, CancelHarvest, MAX = 6 }
     InputMode mode;
     InputMode Mode
     {
@@ -37,7 +37,7 @@ public class PlayerInput : MonoBehaviour
         set
         {
             mode = value;
-            AllowerConstruction = true;
+            AllowedConstruction = true;
             constructionSystem.ClearPreviews();
             canvasGrid.SetGridOutlines(value != InputMode.Selection);
             Color modeObjectColor = modeObjectRenderer.color;
@@ -74,8 +74,8 @@ public class PlayerInput : MonoBehaviour
                     modeObjectRenderer.sprite = remove;
                     constructionSystem.ConstructionMode = ConstructionSystem.Mode.Off;
                     break;
-                case InputMode.Zone:
-                case InputMode.RemoveZone:
+                case InputMode.Harvest:
+                case InputMode.CancelHarvest:
                     canMultiSelect = true;
                     modeObjectColor.a = 1;
                     modeObjectRenderer.sprite = build;
@@ -85,8 +85,9 @@ public class PlayerInput : MonoBehaviour
             modeObjectRenderer.color = modeObjectColor;
         }
     }
+
     bool allowedConstruction;
-    bool AllowerConstruction
+    bool AllowedConstruction
     {
         get => allowedConstruction;
         set
@@ -172,7 +173,7 @@ public class PlayerInput : MonoBehaviour
                 {
                     constructionSystem.ShowRoadPreview(centeredWorldPosition);
                 }
-                AllowerConstruction = constructionSystem.CanConstructPreviewRoad(out string roadExplanation, out string roadConstructionCost);
+                AllowedConstruction = constructionSystem.CanConstructPreviewRoad(out string roadExplanation, out string roadConstructionCost);
                 string roadTooltip = "";
                 if (roadExplanation != "")
                     roadTooltip += roadExplanation;
@@ -182,13 +183,13 @@ public class PlayerInput : MonoBehaviour
                         roadTooltip += "\n";
                     roadTooltip += roadConstructionCost;
                 }
-                mouseTooltip.SetUp(AllowerConstruction ? MouseTooltip.ColorText.Allowed : MouseTooltip.ColorText.Forbidden, roadTooltip);
+                mouseTooltip.SetUp(AllowedConstruction ? MouseTooltip.ColorText.Allowed : MouseTooltip.ColorText.Forbidden, roadTooltip);
                 break;
             case InputMode.RemoveRoad:
                 break;
             case InputMode.BuildStructure:
                 constructionSystem.ShowStructurePreview(centeredWorldPosition);
-                AllowerConstruction = constructionSystem.CanConstructPreviewStructure(out string structureExplanation, out string structureConstructionCost);
+                AllowedConstruction = constructionSystem.CanConstructPreviewStructure(out string structureExplanation, out string structureConstructionCost);
                 string structureTooltip = "";
                 if (structureExplanation != "")
                     structureTooltip += structureExplanation;
@@ -198,7 +199,7 @@ public class PlayerInput : MonoBehaviour
                         structureTooltip += "\n";
                     structureTooltip += structureConstructionCost;
                 }
-                mouseTooltip.SetUp(AllowerConstruction ? MouseTooltip.ColorText.Allowed : MouseTooltip.ColorText.Forbidden, structureTooltip);
+                mouseTooltip.SetUp(AllowedConstruction ? MouseTooltip.ColorText.Allowed : MouseTooltip.ColorText.Forbidden, structureTooltip);
                 break;
             case InputMode.RemoveStructure:
                 break;
@@ -261,6 +262,22 @@ public class PlayerInput : MonoBehaviour
                     constructionSystem.RemoveStructure(worldPosition);
                 }
                 break;
+            case InputMode.Harvest:
+                foreach (var objectTile in selectedObjectTiles)
+                {
+                    ResourceObject resourceObject = objectTile.ResourceObject;
+                    if (resourceObject != null && resourceObject.CanBeHarvested && resourceObject.HarvestMode == ResourceObject.HarvestMarkMode.Manual)
+                        resourceObject.MarkForHarvest(true);
+                }
+                break;
+            case InputMode.CancelHarvest:
+                foreach (var objectTile in selectedObjectTiles)
+                {
+                    ResourceObject resourceObject = objectTile.ResourceObject;
+                    if (resourceObject != null && resourceObject.CanBeHarvested && resourceObject.HarvestMode == ResourceObject.HarvestMarkMode.Manual)
+                        resourceObject.MarkForHarvest(false);
+                }
+                break;
         }
         //Reset selections
         SetNewSelectedObjectTiles(null);
@@ -302,7 +319,7 @@ public class PlayerInput : MonoBehaviour
         {
             foreach (var objectTile in newObjectTiles)
             {
-                objectTile.CanvasTileObject.SetSelectionFillState(AllowerConstruction ? CanvasTile.SelectionFillState.Allowed : CanvasTile.SelectionFillState.Disallowed);
+                objectTile.CanvasTileObject.SetSelectionFillState(AllowedConstruction ? CanvasTile.SelectionFillState.Allowed : CanvasTile.SelectionFillState.Disallowed);
             }
         }
         selectedObjectTiles = newObjectTiles;

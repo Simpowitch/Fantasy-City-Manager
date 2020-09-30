@@ -9,9 +9,12 @@ public class ResourceObject : MonoBehaviour
     [SerializeField] SpriteRenderer markRenderer = null;
     public CityResource.Type Type { get => yieldOnHarvest.type; }
 
-    public Citizen workOccupiedBy;
-
+    [HideInInspector] public Citizen workOccupiedBy;
+    public bool CanBeHarvested { get; protected set; } = true;
     public bool MarkedForHarvest { get; private set; }
+    public enum HarvestMarkMode { Automatic, Manual}
+    [SerializeField] HarvestMarkMode harvestMode = HarvestMarkMode.Manual;
+    public HarvestMarkMode HarvestMode { get => harvestMode; }
 
     //Called when the object is spawned in
     public virtual void Spawned(ResourceObjectNetwork network, ObjectTile objectTile)

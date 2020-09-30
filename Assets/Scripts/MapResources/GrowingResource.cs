@@ -2,22 +2,20 @@
 
 public class GrowingResource : ResourceObject
 {
-    [SerializeField] bool markForHarvestWhenGrown = false;
     [SerializeField] float timeToHarvestable = 60;
     [SerializeField] SpriteRenderer spriteRenderer = null;
     [SerializeField] Sprite grownStage = null;
-
-    public bool CanBeHarvested { get; private set; } = false;
-
-    private void Start()
+    public override void Spawned(ResourceObjectNetwork network, ObjectTile objectTile)
     {
+        CanBeHarvested = false;
         ActionTimer growTimer = new ActionTimer(timeToHarvestable, FullyGrown, true);
+        base.Spawned(network, objectTile);
     }
 
     void FullyGrown()
     {
         spriteRenderer.sprite = grownStage;
-        if (markForHarvestWhenGrown)
+        if (HarvestMode == HarvestMarkMode.Automatic)
             MarkForHarvest(true);
         CanBeHarvested = true;
     }

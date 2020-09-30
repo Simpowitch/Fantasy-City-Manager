@@ -11,17 +11,17 @@ public class Farmhouse : GoodsProducer
         if (citizen.inventory.HasResourceType(CityResource.Type.Food)) //If citizen is carrying any food
             return GetLeaveResourceTask(citizen);
 
-        List<Farmland> farmlandsWithEmptyTiles = new List<Farmland>();
-        farmlandsWithEmptyTiles.PopulateListWithMatchingConditions(Farmlands, (farmland) => farmland.PlantableFarmTiles.Count > 0);
-
-        if (farmlandsWithEmptyTiles.Count > 0) //If any farmlands have empty farmtiles
-            return GetPlantSeedTask(citizen, farmlandsWithEmptyTiles);
-
         List<Farmland> farmlandsWithHarvestableCrops = new List<Farmland>();
         farmlandsWithHarvestableCrops.PopulateListWithMatchingConditions(Farmlands, (farmland) => farmland.HarvestableFarmTiles.Count > 0);
 
         if (farmlandsWithHarvestableCrops.Count > 0) //If farmlands have harvestable crops
             return GetHarvestTask(citizen, farmlandsWithHarvestableCrops);
+
+        List<Farmland> farmlandsWithEmptyTiles = new List<Farmland>();
+        farmlandsWithEmptyTiles.PopulateListWithMatchingConditions(Farmlands, (farmland) => farmland.PlantableFarmTiles.Count > 0);
+
+        if (farmlandsWithEmptyTiles.Count > 0) //If any farmlands have empty farmtiles
+            return GetPlantSeedTask(citizen, farmlandsWithEmptyTiles);
         else
             return GetIdleTask(citizen);
     }
