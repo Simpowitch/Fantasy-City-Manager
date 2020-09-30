@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2307000181291119641}
   - component: {fileID: 2307000181291119643}
   m_Layer: 5
-  m_Name: Radial Progress Bar
+  m_Name: Radial Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,17 +85,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 2307000181291119639}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf3ca3a57e21ed447b898b6f30a4d26a, type: 3}
+  m_Script: {fileID: 11500000, guid: 9e7e0b762770eca4abf5feb792179598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   minimumValue: 0
-  maximumValue: 100
-  currentValue: 62
-  mask: {fileID: 2307000182114075987}
+  maximumValue: 0
+  currentValue: 0
+  mask: {fileID: 2307000182691574978}
   fill: {fileID: 2307000182114075987}
   currentValueText: {fileID: 0}
-  animationTime: 2
-  color: {r: 1, g: 0, b: 0, a: 1}
+  animationTime: 0.5
+  color: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &2307000182114075985
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
-  m_FillAmount: 0.16
+  m_FillAmount: NaN
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
