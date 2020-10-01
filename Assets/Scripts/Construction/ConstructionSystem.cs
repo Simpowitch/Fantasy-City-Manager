@@ -230,7 +230,7 @@ public class ConstructionSystem : MonoBehaviour
         constructionCost = "Costs:";
         foreach (var cost in costGroup.ResourceCosts)
         {
-            int difference = cost.Value - city.cityStats.GetResource(cost.type).Value;
+            int difference = cost.Value - city.cityStats.Inventory.GetCityResourceOfType(cost.type).Value;
             if (constructionCost != "")
                 constructionCost += "\n";
             constructionCost += $"{cost.Value} {cost.type}";
@@ -254,7 +254,7 @@ public class ConstructionSystem : MonoBehaviour
         roadTilemap.SetTile(cellTilemapPosition, roadTiles[constructionIndex]);
         RoadNetwork.AddRoad(tilePosition, (RoadNetwork.GroundType) constructionIndex);
 
-        city.cityStats.RemoveResources(roadCosts[constructionIndex].ResourceCosts);
+        city.cityStats.Inventory.TryToRemove(roadCosts[constructionIndex].ResourceCosts);
     }
 
     public void RemoveRoad(Vector3 tilePosition)
@@ -280,7 +280,7 @@ public class ConstructionSystem : MonoBehaviour
         {
             item.Structure = spawnedBuilding;
         }
-        city.cityStats.RemoveResources(structurePreview.ConstructionCost.ResourceCosts);
+        city.cityStats.Inventory.TryToRemove(structurePreview.ConstructionCost.ResourceCosts);
     }
 
     public void RemoveStructure(Vector3 centeredWorldPosition)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GoodsProducer : Workplace
@@ -9,32 +10,58 @@ public class GoodsProducer : Workplace
     public override Task GetWorkTask(Citizen citizen)
     {
         if (citizen.inventory.HasResourceType(acceptedResourceType)) // Citizen is carrying the type produced at this workplace - Create work to leave at this building
-        {
-            ActionTimer leaveTimer = new ActionTimer(5f, () =>
-            {
-                citizen.inventory.RemoveAllOfType(acceptedResourceType, out CityResource resourcesRemoved);
-                city.cityStats.AddResource(resourcesRemoved);
-            }
-            , false);
-            return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), leaveTimer, Utility.ReturnRandom(workTaskTiles).position);
-        }
+            return GetLeaveResourceTask(citizen);
         else //Create work to collect resource
         {
             List<ResourceObject> harvestableResources = city.ResourceObjectNetwork.GetHarvestable(acceptedResourceType);
             if (harvestableResources.Count > 0)
-            {
-                ResourceObject closestObject = Utility.GetClosest(harvestableResources, citizen.transform.position);
-                closestObject.workOccupiedBy = citizen;
-                ActionTimer collectTimer = new ActionTimer(5f, () =>
-                {
-                    citizen.inventory.Add(closestObject.Harvest());
-                },
-                    false);
-                return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, closestObject.transform.position);
-            }
+                return GetHarvestTask(citizen, harvestableResources);
             else
                 return GetIdleTask(citizen);
         }
+    }
+
+    protected Task GetLeaveResourceTask(Citizen citizen)
+    {
+        citizen.UnitAnimator.PlayCarryObjectAnimation(acceptedResourceType);
+        ActionTimer leaveResource = new ActionTimer(2f, () =>
+        {
+            citizen.inventory.RemoveAllOfType(acceptedResourceType, out CityResource resourcesRemoved);
+            city.cityStats.Inventory.Add(resourcesRemoved);
+        }
+            , false);
+        Vector3 pos = Utility.ReturnRandom(workTaskTiles).position;
+        Vector3 dir = pos - citizen.transform.position;
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), leaveResource, pos, () => citizen.UnitAnimator.PlayCarryNoObjectAnimation());
+    }
+
+    private Task GetHarvestTask(Citizen citizen, List<ResourceObject> harvestableResources)
+    {
+        ResourceObject closestObject = Utility.GetClosest(harvestableResources, citizen.transform.position);
+        closestObject.workOccupiedBy = citizen;
+        ActionTimer collectTimer = new ActionTimer(5f, () =>
+        {
+            citizen.inventory.Add(closestObject.Harvest());
+        },
+            false);
+        Vector3 pos = closestObject.transform.position;
+        Vector3 dir = pos - citizen.transform.position;
+        Action onArrivalMethod = null;
+        switch (acceptedResourceType)
+        {
+            case CityResource.Type.Gold:
+            case CityResource.Type.Iron:
+            case CityResource.Type.Stone:
+                onArrivalMethod = () => citizen.UnitAnimator.PlayMiningAnimation(dir);
+                break;
+            case CityResource.Type.Wood:
+                onArrivalMethod = () => citizen.UnitAnimator.PlayWoodChopAnimation(dir);
+                break;
+            case CityResource.Type.Food:
+                Debug.LogError("Not implemented");
+                break;
+        }
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, pos, onArrivalMethod);
     }
 
     private Task GetIdleTask(Citizen citizen)

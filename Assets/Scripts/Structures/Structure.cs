@@ -24,7 +24,7 @@ public abstract class Structure : MonoBehaviour
     [SerializeField] protected float cellSize = 1;
 
     [Header("Floor setup")]
-    [SerializeField] Transform[] wallTiles = null;
+    [SerializeField] Transform wallTileParent = null;
 
     protected City city;
     Vector3 rotationOffset;
@@ -162,9 +162,12 @@ public abstract class Structure : MonoBehaviour
 
 
         //Set walls to non-walkable tiles
-        foreach (Transform tile in wallTiles)
+        if (wallTileParent != null)
         {
-            city.RoadNetwork.ChangeWalkable(tile.position, false);
+            for (int i = 0; i < wallTileParent.childCount; i++)
+            {
+                city.RoadNetwork.ChangeWalkable(wallTileParent.GetChild(i).position, false);
+            }
         }
     }
 
@@ -225,9 +228,12 @@ public abstract class Structure : MonoBehaviour
         }
 
         //Set walls to walkable tiles
-        foreach (Transform tile in wallTiles)
+        if (wallTileParent != null)
         {
-            city.RoadNetwork.ChangeWalkable(tile.position, true);
+            for (int i = 0; i < wallTileParent.childCount; i++)
+            {
+                city.RoadNetwork.ChangeWalkable(wallTileParent.GetChild(i).position, true);
+            }
         }
 
         Destroy(this.gameObject);

@@ -43,6 +43,7 @@ public class ResourceObjectNetwork : MonoBehaviour
         UpdateSpawnTimer(ref treeSpawnTimer, CityResource.Type.Wood);
     }
 
+    //Update spawn timer for city resources, spawn if timer reaches 0
     private void UpdateSpawnTimer(ref float timer, CityResource.Type type)
     {
         timer -= Time.deltaTime;
@@ -58,8 +59,7 @@ public class ResourceObjectNetwork : MonoBehaviour
                         blueprint = treeBlueprint;
                         break;
                     case CityResource.Type.Stone:
-                        blueprint = stoneBlueprint;
-                        break;
+                    case CityResource.Type.Iron:
                     case CityResource.Type.Gold:
                     case CityResource.Type.Food:
                     default:
@@ -77,6 +77,7 @@ public class ResourceObjectNetwork : MonoBehaviour
                 case CityResource.Type.Food:
                 case CityResource.Type.Gold:
                 case CityResource.Type.Stone:
+                case CityResource.Type.Iron:
                 default:
                     Debug.LogError("Type not found");
                     break;
@@ -95,7 +96,7 @@ public class ResourceObjectNetwork : MonoBehaviour
     private ObjectTile FindFreeObjectTile(CityResource.Type type)
     {
         List<ObjectTile> freeTiles = new List<ObjectTile>();
-        if (type == CityResource.Type.Wood && harvestableTrees.Count > 0 && Utility.RandomizeBool(25)) //Get Tile Near Other Trees
+        if (type == CityResource.Type.Wood && harvestableTrees.Count > 0 && Utility.RandomizeBool(25)) //Get Tile Near Other Trees. ONLY APLICABLE FOR TREES
         {
             foreach (var tree in harvestableTrees)
             {
@@ -135,6 +136,7 @@ public class ResourceObjectNetwork : MonoBehaviour
                 harvestableTrees.Add(spawnedTree);
                 break;
             case CityResource.Type.Food:
+            case CityResource.Type.Iron:
             case CityResource.Type.Gold:
             default:
                 Debug.LogError("Type not found to add to list");
@@ -153,6 +155,7 @@ public class ResourceObjectNetwork : MonoBehaviour
             case CityResource.Type.Wood:
             case CityResource.Type.Food:
             case CityResource.Type.Gold:
+            case CityResource.Type.Iron:
             default:
                 Debug.LogError("Type not found to remove");
                 break;
@@ -165,6 +168,7 @@ public class ResourceObjectNetwork : MonoBehaviour
         {
             case CityResource.Type.Gold:
             case CityResource.Type.Stone:
+            case CityResource.Type.Iron:
             case CityResource.Type.Food:
                 Debug.LogError("Type not found to remove");
                 break;
@@ -188,6 +192,7 @@ public class ResourceObjectNetwork : MonoBehaviour
                 return list;
             case CityResource.Type.Food:
             case CityResource.Type.Gold:
+            case CityResource.Type.Iron:
             default:
                 Debug.LogError("List not found");
                 return null;
@@ -210,6 +215,7 @@ public class ResourceObjectNetwork : MonoBehaviour
                 break;
             case CityResource.Type.Stone:
             case CityResource.Type.Food:
+            case CityResource.Type.Iron:
             case CityResource.Type.Gold:
             default:
                 Debug.LogError("List not found");

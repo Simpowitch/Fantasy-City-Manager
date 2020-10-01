@@ -26,17 +26,6 @@ public class Farmhouse : GoodsProducer
             return GetIdleTask(citizen);
     }
 
-    private Task GetLeaveResourceTask(Citizen citizen)
-    {
-        ActionTimer leaveResource = new ActionTimer(2f, () =>
-        {
-            citizen.inventory.RemoveAllOfType(CityResource.Type.Food, out CityResource resourcesRemoved);
-            city.cityStats.AddResource(resourcesRemoved);
-        }
-            , false);
-        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), leaveResource, Utility.ReturnRandom(workTaskTiles).position);
-    }
-
     private Task GetPlantSeedTask(Citizen citizen, List<Farmland> farmlands)
     {
         Farmland closestFarmland = Utility.GetClosest(farmlands, citizen.transform.position);
@@ -50,7 +39,9 @@ public class Farmhouse : GoodsProducer
                 closestFarmland.PlantSeed(freeFarmTile);
                 freeFarmTile.plantingSeedOccupiedBy = null;
             }, false);
-            return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), plantSeed, freeFarmTile.ObjectTile.CenteredWorldPosition);
+            Vector3 pos = freeFarmTile.ObjectTile.CenteredWorldPosition;
+            Vector3 dir = pos - citizen.transform.position;
+            return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), plantSeed, pos, () => citizen.UnitAnimator.PlayPlantSeedAnimation(dir));
         }
         else
         {
@@ -78,7 +69,10 @@ public class Farmhouse : GoodsProducer
                     citizen.inventory.Add(cityResource);
                 }
             , false);
-            return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, nearestCrop.transform.position);
+
+            Vector3 pos = nearestCrop.transform.position;
+            Vector3 dir = pos - citizen.transform.position;
+            return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, pos, () => citizen.UnitAnimator.PlayHarvestFoodAnimation(dir));
         }
         else
         {

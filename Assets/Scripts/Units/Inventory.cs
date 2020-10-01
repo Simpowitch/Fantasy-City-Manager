@@ -2,62 +2,115 @@
 
 public class Inventory
 {
-    public List<CityResource> resources { get; private set; } = new List<CityResource>();
+    CityResource[] existingResources
+    {
+        get
+        {
+            return new CityResource[] { gold, wood, stone, iron, food };
+        }
+    }
+    CityResource gold = new CityResource(CityResource.Type.Gold, 0);
+    CityResource wood = new CityResource(CityResource.Type.Wood, 0);
+    CityResource stone = new CityResource(CityResource.Type.Wood, 0);
+    CityResource iron = new CityResource(CityResource.Type.Wood, 0);
+    CityResource food = new CityResource(CityResource.Type.Wood, 0);
+
+    public delegate void InventoryHandler(Inventory inventory);
+    public event InventoryHandler OnInventoryChanged;
+
+    public void SendValuesToListeners()
+    {
+        foreach (var resource in existingResources)
+        {
+            resource.OnValueChanged?.Invoke(resource.Value);
+        }
+        OnInventoryChanged?.Invoke(this);
+    }
 
     public void Add(CityResource resourceToAdd)
     {
-        foreach (var existingResource in resources)
+        switch (resourceToAdd.type)
         {
-            if (resourceToAdd.type == existingResource.type)
-            {
-                existingResource.Value += resourceToAdd.Value;
-                return;
-            }
+            case CityResource.Type.Gold:
+                gold.Value += resourceToAdd.Value;
+                break;
+            case CityResource.Type.Wood:
+                wood.Value += resourceToAdd.Value;
+                break;
+            case CityResource.Type.Stone:
+                stone.Value += resourceToAdd.Value;
+                break;
+            case CityResource.Type.Iron:
+                iron.Value += resourceToAdd.Value;
+                break;
+            case CityResource.Type.Food:
+                food.Value += resourceToAdd.Value;
+                break;
         }
-        resources.Add(resourceToAdd);
+        OnInventoryChanged?.Invoke(this);
+    }
+
+    public bool TryToRemove(List<CityResource> resourcesToRemove)
+    {
+        foreach (var askedFor in resourcesToRemove)
+        {
+            if (HasResourceWithValue(askedFor, out CityResource foundResource))
+                continue;
+            else
+                return false;
+        }
+        foreach (var askedFor in resourcesToRemove)
+        {
+            TryToRemove(askedFor);
+        }
+        return true;
     }
 
     public bool TryToRemove(CityResource resourceToRemove)
     {
-        foreach (var existingResource in resources)
+        if (HasResourceWithValue(resourceToRemove, out CityResource foundResource))
         {
-            if (resourceToRemove.type == existingResource.type)
-            {
-                if (existingResource.Value < resourceToRemove.Value)
-                {
-                    return false;
-                }
-                else
-                {
-                    existingResource.Value -= resourceToRemove.Value;
-                    if (existingResource.Value <= 0)
-                        resources.Remove(existingResource);
-                    return true;
-                }
-            }
+            foundResource.Value -= resourceToRemove.Value;
+            OnInventoryChanged?.Invoke(this);
+            return true;
         }
-        return false;
+        else
+            return false;
     }
 
     public void RemoveAllOfType(CityResource.Type type, out CityResource resourcesRemoved)
     {
-        resourcesRemoved = new CityResource(type, 0);
-        foreach (var resource in resources)
+        resourcesRemoved = GetCityResourceOfType(type);
+        TryToRemove(resourcesRemoved);
+    }
+
+    public CityResource GetCityResourceOfType(CityResource.Type askedFor)
+    {
+        switch (askedFor)
         {
-            if (resource.type == type)
-            {
-                resourcesRemoved.Value += resource.Value;
-                TryToRemove(resource);
-            }
+            case CityResource.Type.Gold:
+                return gold;
+            case CityResource.Type.Wood:
+                return wood;
+            case CityResource.Type.Stone:
+                return stone;
+            case CityResource.Type.Iron:
+                return iron;
+            case CityResource.Type.Food:
+                return food;
+            default:
+                return null;
         }
     }
 
-    public bool HasResourceType(CityResource.Type type)
+    public bool HasResourceType(CityResource.Type type) => GetCityResourceOfType(type) != null;
+
+    public bool HasResourceWithValue(CityResource askedFor, out CityResource foundResource)
     {
-        foreach (var resource in resources)
+        foundResource = GetCityResourceOfType(askedFor.type);
+        if (foundResource != null)
         {
-            if (resource.type == type)
-                return true;
+            return foundResource.Value >= askedFor.Value;
         }
         return false;
     }

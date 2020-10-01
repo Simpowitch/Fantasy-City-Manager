@@ -201,7 +201,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -712667465
-  m_SortingLayer: -4
+  m_SortingLayer: -5
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -568,7 +568,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -712667465
-  m_SortingLayer: -4
+  m_SortingLayer: -5
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -590,7 +590,7 @@ GameObject:
   - component: {fileID: 2733115593445245358}
   - component: {fileID: 5217708615405840495}
   m_Layer: 0
-  m_Name: Quarry
+  m_Name: Quarry Stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -641,6 +641,7 @@ MonoBehaviour:
   ySize: 2
   cellSize: 1
   wallTiles: []
+  facingDirection: 0
   startShiftHour: 8
   endShiftHour: 18
   employments:
@@ -660,9 +661,7 @@ MonoBehaviour:
   - {fileID: 6374523834409481032}
   - {fileID: 5878930381068340121}
   - {fileID: 459207431032780200}
-  producedByWorker:
-    type: 0
-    value: 0
+  acceptedResourceType: 2
 --- !u!61 &5217708615405840495
 BoxCollider2D:
   m_ObjectHideFlags: 0
