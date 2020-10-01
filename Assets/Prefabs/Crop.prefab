@@ -178,11 +178,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   yieldOnHarvest:
-    type: 3
+    type: 4
     value: 5
   markRenderer: {fileID: 2673664580604476332}
   workOccupiedBy: {fileID: 0}
   harvestMode: 0
+  objectName: 
   timeToHarvestable: 60
   spriteRenderer: {fileID: 8087356332231223454}
   grownStage: {fileID: 21300000, guid: b285ce7ce42d5cd4a81050b2d8caa236, type: 3}

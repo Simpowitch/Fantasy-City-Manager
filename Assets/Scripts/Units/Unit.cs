@@ -96,6 +96,10 @@ public abstract class Unit : MonoBehaviour
         {
             movementSystem.SetVelocity(Vector3.zero);
             unitAnimator.PlayIdleAnimation(Vector3.zero);
+            if (currentTask != null && currentTask.HasArrived(transform.position))
+                ChangeState(new TaskState(this));
+            else
+                ChangeState(new IdleState(this));
         }
     }
 
@@ -161,13 +165,6 @@ public abstract class Unit : MonoBehaviour
 
             unit.seeker.FindPathTo(targetPosition);
             base.EnterState();
-        }
-
-        public override void DuringState()
-        {
-            if (unit.currentTask.HasArrived(unit.transform.position))
-                unit.ChangeState(new TaskState(unit));
-            base.DuringState();
         }
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class BuilderEmployment : Employment
 {
-    const float BUILDTIME = 0.5f;
+    const float BUILDTIME = 2f;
     public List<Structure> unfinishedStructures;
     List<Structure> AvailableForConstruction
     {
@@ -29,7 +29,9 @@ public class BuilderEmployment : Employment
                 targetStructure = Utility.GetClosest(unfinishedStructures, citizen);
             targetStructure.constructionArea.OccupyTick();
             ActionTimer onTaskEndTimer = new ActionTimer(BUILDTIME, WorkAction, false);
-            return new Task("Constructing", ThoughtFileReader.GetText(citizen.UnitPersonality, "constructing"), onTaskEndTimer, targetStructure.GetRandomLocation());
+            Vector3 pos = targetStructure.GetRandomLocation();
+            Vector3 dir = pos - citizen.transform.position;
+            return new Task("Constructing", ThoughtFileReader.GetText(citizen.UnitPersonality, "constructing"), onTaskEndTimer, pos, () => citizen.UnitAnimator.PlayBuildAnimation(dir));
         }
         else //No unfinished structures
         {

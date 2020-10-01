@@ -19,11 +19,17 @@ public class UnitAnimator : MonoBehaviour
     //[SerializeField] Sprite[] rHands = null;
     //[SerializeField] Sprite[] rFeets = null;
 
+    [SerializeField] GameObject carryObjectHolder = null;
+
     [Header("Animations")]
     [SerializeField] Animator animator = null;
     [SerializeField] string idle = "idle";
-    [SerializeField] string walk = "walk";
-    [SerializeField] string work = "work";
+    [SerializeField] string walk = "walking";
+    [SerializeField] string harvest = "harvest";
+    [SerializeField] string chop = "chop";
+    [SerializeField] string mine = "mine";
+    [SerializeField] string plant = "plant";
+    [SerializeField] string build = "build";
 
     string lastTag;
 
@@ -38,7 +44,7 @@ public class UnitAnimator : MonoBehaviour
         if (lastTag == idle)
             return;
         lastTag = idle;
-        animator.SetTrigger(idle);
+        animator.SetTrigger(lastTag);
     }
 
     public void PlayWalkAnimation(Vector3 dir)
@@ -47,46 +53,63 @@ public class UnitAnimator : MonoBehaviour
         if (lastTag == walk)
             return;
         lastTag = walk;
-        animator.SetTrigger(walk);
+        animator.SetTrigger(lastTag);
     }
+
 
     public void PlayHarvestFoodAnimation(Vector3 dir)
     {
         ChangeSpriteDirections(dir);
-        if (lastTag == work)
+        if (lastTag == harvest)
             return;
-        lastTag = work;
-        animator.SetTrigger(work);
+        lastTag = harvest;
+        animator.SetTrigger(lastTag);
     }
 
     public void PlayMiningAnimation(Vector3 dir)
     {
         ChangeSpriteDirections(dir);
-        if (lastTag == work)
+        if (lastTag == mine)
             return;
-        lastTag = work;
-        animator.SetTrigger(work);
+        lastTag = mine;
+        animator.SetTrigger(lastTag);
     }
 
     public void PlayWoodChopAnimation(Vector3 dir)
     {
         ChangeSpriteDirections(dir);
-        if (lastTag == work)
+        if (lastTag == chop)
             return;
-        lastTag = work;
-        animator.SetTrigger(work);
+        lastTag = chop;
+        animator.SetTrigger(lastTag);
     }
+
     public void PlayPlantSeedAnimation(Vector3 dir)
     {
-
+        ChangeSpriteDirections(dir);
+        if (lastTag == plant)
+            return;
+        lastTag = plant;
+        animator.SetTrigger(lastTag);
     }
+
+    public void PlayBuildAnimation(Vector3 dir)
+    {
+        ChangeSpriteDirections(dir);
+        if (lastTag == build)
+            return;
+        lastTag = build;
+        animator.SetTrigger(lastTag);
+    }
+
     public void PlayCarryObjectAnimation(CityResource.Type type)
     {
-
+        carryObjectHolder.SetActive(true);
     }
+
     public void PlayCarryNoObjectAnimation()
     {
-
+        carryObjectHolder.SetActive(false);
     }
 
     private void ChangeSpriteDirections(Vector3 dir)

@@ -11,9 +11,9 @@ public class Inventory
     }
     CityResource gold = new CityResource(CityResource.Type.Gold, 0);
     CityResource wood = new CityResource(CityResource.Type.Wood, 0);
-    CityResource stone = new CityResource(CityResource.Type.Wood, 0);
-    CityResource iron = new CityResource(CityResource.Type.Wood, 0);
-    CityResource food = new CityResource(CityResource.Type.Wood, 0);
+    CityResource stone = new CityResource(CityResource.Type.Stone, 0);
+    CityResource iron = new CityResource(CityResource.Type.Iron, 0);
+    CityResource food = new CityResource(CityResource.Type.Food, 0);
 
     public delegate void InventoryHandler(Inventory inventory);
     public event InventoryHandler OnInventoryChanged;
@@ -80,8 +80,9 @@ public class Inventory
 
     public void RemoveAllOfType(CityResource.Type type, out CityResource resourcesRemoved)
     {
-        resourcesRemoved = GetCityResourceOfType(type);
-        TryToRemove(resourcesRemoved);
+        CityResource foundResource = GetCityResourceOfType(type);
+        resourcesRemoved = new CityResource(foundResource.type, foundResource.Value);
+        TryToRemove(foundResource);
     }
 
     public CityResource GetCityResourceOfType(CityResource.Type askedFor)
@@ -103,7 +104,11 @@ public class Inventory
         }
     }
 
-    public bool HasResourceType(CityResource.Type type) => GetCityResourceOfType(type) != null;
+    public bool HasResourceType(CityResource.Type type)
+    {
+        CityResource cityResource = GetCityResourceOfType(type);
+        return cityResource != null && cityResource.Value > 0;
+    }
 
     public bool HasResourceWithValue(CityResource askedFor, out CityResource foundResource)
     {
