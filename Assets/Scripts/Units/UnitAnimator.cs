@@ -23,6 +23,7 @@ public class UnitAnimator : MonoBehaviour
     [SerializeField] Animator animator = null;
     [SerializeField] string idle = "idle";
     [SerializeField] string walk = "walk";
+    [SerializeField] string work = "work";
 
     string lastTag;
 
@@ -51,15 +52,39 @@ public class UnitAnimator : MonoBehaviour
 
     public void PlayHarvestFoodAnimation(Vector3 dir)
     {
-
+        ChangeSpriteDirections(dir);
+        if (lastTag == work)
+            return;
+        lastTag = work;
+        animator.SetTrigger(work);
     }
 
     public void PlayMiningAnimation(Vector3 dir)
     {
-
+        ChangeSpriteDirections(dir);
+        if (lastTag == work)
+            return;
+        lastTag = work;
+        animator.SetTrigger(work);
     }
 
     public void PlayWoodChopAnimation(Vector3 dir)
+    {
+        ChangeSpriteDirections(dir);
+        if (lastTag == work)
+            return;
+        lastTag = work;
+        animator.SetTrigger(work);
+    }
+    public void PlayPlantSeedAnimation(Vector3 dir)
+    {
+
+    }
+    public void PlayCarryObjectAnimation(CityResource.Type type)
+    {
+
+    }
+    public void PlayCarryNoObjectAnimation()
     {
 
     }
