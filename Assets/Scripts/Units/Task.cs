@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Task
 {
-    const float DISTANCETOARRIVED = 1f;
+    const float DISTANCETOARRIVED = 0.1f;
     public string Description { get; private set; }
     public string Thought { get; private set; }
     public Action OnArrival { get; private set; }

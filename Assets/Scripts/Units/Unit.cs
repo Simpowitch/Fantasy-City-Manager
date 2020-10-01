@@ -11,6 +11,7 @@ public abstract class Unit : MonoBehaviour
     }
 
     IMoveVelocity movementSystem = null;
+    [SerializeField] UnitAnimator unitAnimator = null;
     [SerializeField] PathSeeker seeker = null; public PathSeeker Seeker { get => seeker; private set => seeker = value; }
     [SerializeField] protected UnitDetector unitDetector = null;
     [SerializeField] UnitCanvasController canvasController = null;
@@ -67,30 +68,34 @@ public abstract class Unit : MonoBehaviour
 
     protected abstract void InfoChanged();
 
-    protected void GoToNextNode()
-    {
-        if (seeker.HasPath)
-        {
-            PathNode nextNode = seeker.Path[0];
-            movementSystem.MoveTowards(nextNode.WorldPosition);
-            Debug.DrawLine(transform.position, nextNode.WorldPosition, Color.white, 1f);
-        }
-        else
-        {
-            movementSystem.SetVelocity(Vector3.zero);
-        }
-    }
+    //protected void GoToNextNode()
+    //{
+    //    if (seeker.HasPath)
+    //    {
+    //        PathNode nextNode = seeker.Path[0];
+    //        movementSystem.MoveTowards(nextNode.WorldPosition);
+    //        unitAnimator.PlayWalkAnimation(nextNode.WorldPosition - transform.position);
+    //        Debug.DrawLine(transform.position, nextNode.WorldPosition, Color.white, 1f);
+    //    }
+    //    else
+    //    {
+    //        movementSystem.SetVelocity(Vector3.zero);
+    //        unitAnimator.PlayIdleAnimation(Vector3.zero);
+    //    }
+    //}
 
     protected virtual void NewNodeReached(PathNode newNode)
     {
         if (newNode != null)
         {
             movementSystem.MoveTowards(newNode.WorldPosition);
+            unitAnimator.PlayWalkAnimation(newNode.WorldPosition - transform.position);
             Debug.DrawLine(transform.position, newNode.WorldPosition, Color.white, 1f);
         }
         else
         {
             movementSystem.SetVelocity(Vector3.zero);
+            unitAnimator.PlayIdleAnimation(Vector3.zero);
         }
     }
 
@@ -119,14 +124,14 @@ public abstract class Unit : MonoBehaviour
         protected Unit unit;
         public virtual void EnterState()
         {
-            unit.GoToNextNode();
+            //unit.GoToNextNode();
             unit.InfoChanged();
         }
 
         public virtual void DuringState()
         {
             unit.seeker.CheckIfNodeArrived();
-            if (unit.seeker.IsLost()) unit.GoToNextNode();
+            //if (unit.seeker.IsLost()) unit.GoToNextNode();
         }
         public virtual void ExitState() { }
 
