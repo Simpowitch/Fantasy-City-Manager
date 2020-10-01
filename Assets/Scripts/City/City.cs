@@ -10,6 +10,7 @@ public class City : MonoBehaviour
     [SerializeField] int startGold = 10;
     [SerializeField] int startWood = 10;
     [SerializeField] int startStone = 10;
+    [SerializeField] int startIron = 10;
     [SerializeField] int startFood = 10;
 
     [Header("Static references")]
@@ -105,11 +106,8 @@ public class City : MonoBehaviour
             SpawnCitizen(residence);
         }
     }
-
-    public void Setup()
-    {
-        cityStats.Setup(startGold, startWood, startStone, startFood);
-    }
+     
+    public void Setup() => cityStats.Setup(startGold, startWood, startStone, startIron, startFood);
 
     void ConfirmBuildingPlacements(Structure structure)
     {
@@ -246,7 +244,7 @@ public class City : MonoBehaviour
                 change -= builderFee;
         }
 
-        cityStats.AddResource(new CityResource(CityResource.Type.Gold, change));
+        cityStats.Inventory.Add(new CityResource(CityResource.Type.Gold, change));
     }
 
     public Task CreateLeaveCityTask(Unit unit)

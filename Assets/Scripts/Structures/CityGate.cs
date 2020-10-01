@@ -15,7 +15,7 @@ public class CityGate : Workplace
             Visitor visitor = unitVisiting as Visitor;
             if (!visitor.PaidEntryToll)
             {
-                city.cityStats.AddResource(new CityResource(CityResource.Type.Gold, city.cityGateToll));
+                city.cityStats.Inventory.Add(new CityResource(CityResource.Type.Gold, city.cityGateToll));
                 visitor.PaidEntryToll = true;
             }
         }

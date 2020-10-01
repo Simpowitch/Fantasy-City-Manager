@@ -11,8 +11,8 @@ public abstract class Unit : MonoBehaviour
     }
 
     IMoveVelocity movementSystem = null;
-    [SerializeField] UnitAnimator unitAnimator = null;
-    [SerializeField] PathSeeker seeker = null; public PathSeeker Seeker { get => seeker; private set => seeker = value; }
+    [SerializeField] UnitAnimator unitAnimator = null; public UnitAnimator UnitAnimator { get => unitAnimator; }
+    [SerializeField] PathSeeker seeker = null;
     [SerializeField] protected UnitDetector unitDetector = null;
     [SerializeField] UnitCanvasController canvasController = null;
     protected string unitName;
@@ -159,7 +159,7 @@ public abstract class Unit : MonoBehaviour
         {
             Vector3 targetPosition = unit.currentTask.Position;
 
-            unit.Seeker.FindPathTo(targetPosition);
+            unit.seeker.FindPathTo(targetPosition);
             base.EnterState();
         }
 

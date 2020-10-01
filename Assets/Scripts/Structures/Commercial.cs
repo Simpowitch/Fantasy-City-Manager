@@ -63,7 +63,7 @@ public class Commercial : Workplace, INeedProvider
         ActionTimer onTaskEnd = new ActionTimer(3f, () =>
         {
             needToSatisfy.Satisfy();
-            city.cityStats.RemoveResource(consumedOfPatreon);
+            city.cityStats.Inventory.TryToRemove(consumedOfPatreon);
         }, false);
         return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(patreonTaskTiles).position);
     }
