@@ -49,7 +49,17 @@ public class UnitAnimator : MonoBehaviour
         animator.SetTrigger(walk);
     }
 
-    public void PlayHarvestAnimation(Vector3 dir)
+    public void PlayHarvestFoodAnimation(Vector3 dir)
+    {
+
+    }
+
+    public void PlayMiningAnimation(Vector3 dir)
+    {
+
+    }
+
+    public void PlayWoodChopAnimation(Vector3 dir)
     {
 
     }
