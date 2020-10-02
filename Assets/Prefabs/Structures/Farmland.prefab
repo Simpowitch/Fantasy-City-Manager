@@ -991,14 +991,14 @@ MonoBehaviour:
       value: 5
   constructionArea:
     constructionTick: 0
-    constructionTickMax: 10
+    constructionTickMax: 4
   tmConstructed: {fileID: 1948700978225365818}
   tmConstructionArea: {fileID: 6695196517027708554}
   constructionProgressBar: {fileID: 856366385041182493}
   xSize: 5
   ySize: 5
   cellSize: 1
-  wallTiles: []
+  wallTileParent: {fileID: 0}
   facingDirection: 0
   cropBlueprint: {fileID: 5610693161667060007, guid: 7c872bcf1d29d5c4d943e52b7d0ad5d1,
     type: 3}

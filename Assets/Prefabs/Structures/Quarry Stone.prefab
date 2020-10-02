@@ -633,14 +633,14 @@ MonoBehaviour:
       value: 25
   constructionArea:
     constructionTick: 0
-    constructionTickMax: 40
+    constructionTickMax: 4
   tmConstructed: {fileID: 1948700978225365818}
   tmConstructionArea: {fileID: 4413985429479521181}
   constructionProgressBar: {fileID: 4269393411799484765}
   xSize: 2
   ySize: 2
   cellSize: 1
-  wallTiles: []
+  wallTileParent: {fileID: 0}
   facingDirection: 0
   startShiftHour: 8
   endShiftHour: 18

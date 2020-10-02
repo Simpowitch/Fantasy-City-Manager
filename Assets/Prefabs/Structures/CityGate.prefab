@@ -889,7 +889,7 @@ MonoBehaviour:
       value: 60
   constructionArea:
     constructionTick: 0
-    constructionTickMax: 40
+    constructionTickMax: 4
   tmConstructed: {fileID: 1948700978225365818}
   tmConstructionArea: {fileID: 3186392964450808286}
   constructionProgressBar: {fileID: 3276486502402792251}
