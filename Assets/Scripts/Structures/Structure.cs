@@ -14,8 +14,7 @@ public abstract class Structure : MonoBehaviour
 
     public ConstructionCost ConstructionCost { get => constructionCost; }
     [Header("References")]
-    [SerializeField] Tilemap tmConstructed = null;
-    [SerializeField] Tilemap tmConstructionArea = null;
+    [SerializeField] Tilemap tilemap = null;
     public Bar constructionProgressBar = null;
 
     [Header("Setup")]
@@ -131,22 +130,18 @@ public abstract class Structure : MonoBehaviour
     public void BuildConstructionArea(City city)
     {
         constructionProgressBar.gameObject.SetActive(true);
+        SetTransparent(true);
         this.city = city;
         constructionArea.Setup(() => Constructed(city, true));
-        tmConstructed.gameObject.SetActive(false);
-        tmConstructionArea.gameObject.SetActive(true);
-        GetComponent<Collider2D>().enabled = true;
         city.AddConstructionArea(this);
     }
 
     protected virtual void Constructed(City city, bool addToCityList)
     {
         constructionProgressBar.gameObject.SetActive(false);
+        SetTransparent(false);
         this.city = city;
         DayNightSystem.OnPartOfTheDayChanged += PartOfDayChange;
-        tmConstructed.gameObject.SetActive(true);
-        tmConstructionArea.gameObject.SetActive(false);
-        GetComponent<Collider2D>().enabled = true;
         city.RemoveConstructionArea(this);
 
         FloorSetup();
@@ -201,20 +196,20 @@ public abstract class Structure : MonoBehaviour
 
     protected virtual void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay) { }
 
-    public void SetTransparent()
+    public void SetTransparent(bool state)
     {
-        GetComponent<Collider2D>().enabled = false;
-        Color color = tmConstructed.color;
-        color.a = 0.5f;
-        tmConstructed.color = color;
+        GetComponent<Collider2D>().enabled = !state;
+        Color color = state ? Color.grey : Color.white;
+        color.a = state ? 0.4f : 1f;
+        tilemap.color = color;
     }
 
     public void ChangeBuildable(bool canBeBuilt)
     {
-        float alpha = tmConstructed.color.a;
+        float alpha = tilemap.color.a;
         Color newColor = canBeBuilt ? Color.green : Color.red;
         newColor.a = alpha;
-        tmConstructed.color = newColor;
+        tilemap.color = newColor;
     }
 
     public virtual void Despawn()

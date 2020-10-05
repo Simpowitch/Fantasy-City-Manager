@@ -28968,8 +28968,8 @@ MonoBehaviour:
   maxPosTransform: {fileID: 1241636808}
   maxPos: {x: 0, y: 0, z: 0}
   minPos: {x: 0, y: 0, z: 0}
-  zoomMin: 1
-  zoomMax: 18
+  zoomMin: 5
+  zoomMax: 22
   cameraSpeed: 0.2
   zoomSpeed: 5
   zoomRigidness: 5

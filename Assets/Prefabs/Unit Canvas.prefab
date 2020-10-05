@@ -258,7 +258,7 @@ MonoBehaviour:
   chatbubbleObject: {fileID: 1234276681855135190}
   chatbubbleText: {fileID: 2167875383307092115}
   backgroundRectTransform: {fileID: 3855675498149519407}
-  textPaddingWidth: 0.2
+  textPaddingWidth: 0.5
   textPaddingHeight: 0.2
 --- !u!1 &2817931944568696706
 GameObject:
@@ -607,7 +607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -638,7 +638,7 @@ MonoBehaviour:
   chatbubbleObject: {fileID: 7093522591015598749}
   chatbubbleText: {fileID: 7474097408419989221}
   backgroundRectTransform: {fileID: 1131568230805150397}
-  textPaddingWidth: 0.2
+  textPaddingWidth: 0.4
   textPaddingHeight: 0.2
 --- !u!1 &7994942416379334892
 GameObject:
@@ -698,7 +698,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:

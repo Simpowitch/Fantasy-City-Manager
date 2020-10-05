@@ -112,7 +112,7 @@ public class ConstructionSystem : MonoBehaviour
         {
             Structure spawnedBuilding = Instantiate(structures[constructionIndex], structureParent);
             structurePreview = spawnedBuilding;
-            structurePreview.SetTransparent();
+            structurePreview.SetTransparent(true);
         }
         //Move preview object
         Vector3 lowerLeftPosition = ObjectGrid.GetWorldPosition(worldPosition, false);
