@@ -170,10 +170,10 @@ public class Citizen : Unit, IViewable
     public string ActionDescription { get => currentTask.Description; }
     public string Name
     {
-        get => unitName; 
+        get => UnitName; 
         set
         {
-            unitName = value;
+            UnitName = value;
             InfoChanged();
         }
     }

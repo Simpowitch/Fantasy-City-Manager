@@ -15,7 +15,16 @@ public abstract class Unit : MonoBehaviour
     [SerializeField] PathSeeker seeker = null;
     [SerializeField] protected UnitDetector unitDetector = null;
     [SerializeField] UnitCanvasController canvasController = null;
-    protected string unitName;
+    private string unitName;
+    protected string UnitName
+    {
+        get => unitName;
+        set
+        {
+            unitName = value;
+            canvasController.ShowNameTag(value);
+        }
+    }
     public enum Personality
     {
         Grumpy,
@@ -59,7 +68,7 @@ public abstract class Unit : MonoBehaviour
     {
         this.City = city;
         this.seeker.City = city;
-        unitName = NameGenerator.GetName();
+        UnitName = NameGenerator.GetName();
 
         ChangeState(new IdleState(this));
     }

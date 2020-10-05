@@ -132,10 +132,10 @@ public class Visitor : Unit, IViewable
 
     public string Name
     {
-        get => unitName;
+        get => UnitName;
         set
         {
-            unitName = value;
+            UnitName = value;
             InfoChanged();
         }
     }

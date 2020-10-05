@@ -73,8 +73,9 @@ SpriteRenderer:
   m_SortingLayerID: -567436445
   m_SortingLayer: -3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d5d2907259d605e459eb9ef5aa83ea36, type: 3}
-  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Sprite: {fileID: -939189766869041865, guid: 359fe5a2bcc31724bbb884e9c6915d85,
+    type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -102,6 +103,7 @@ MonoBehaviour:
   markRenderer: {fileID: 550393996074202617}
   workOccupiedBy: {fileID: 0}
   harvestMode: 1
+  objectName: 
 --- !u!61 &6916519004237140861
 BoxCollider2D:
   m_ObjectHideFlags: 0

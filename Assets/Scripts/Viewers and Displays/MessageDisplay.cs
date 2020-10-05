@@ -8,18 +8,17 @@ public class MessageDisplay : MonoBehaviour
     [SerializeField] Text chatbubbleText = null;
     [SerializeField] RectTransform backgroundRectTransform = null;
 
-    float textPaddingWidth = 1;
-    float textPaddingHeight = 1;
+    [SerializeField] float textPaddingWidth = 1;
+    [SerializeField] float textPaddingHeight = 1;
 
     public bool IsShowingMessage { get; private set; }
 
     public IEnumerator ShowMessage(float timeToShow, string message)
     {
         IsShowingMessage = true;
-        Vector2 backgroundSize = Vector2.zero;
 
         UpdateUI(message, true);
-        backgroundSize = new Vector2(chatbubbleText.preferredWidth + textPaddingWidth * 2, chatbubbleText.preferredHeight + textPaddingHeight * 2);
+        Vector2 backgroundSize = new Vector2(chatbubbleText.preferredWidth + textPaddingWidth * 2, chatbubbleText.preferredHeight + textPaddingHeight * 2);
 
         //Rezise to fit text
         backgroundRectTransform.sizeDelta = backgroundSize;
@@ -29,6 +28,14 @@ public class MessageDisplay : MonoBehaviour
         UpdateUI("", false);
     }
 
+    public void ShowMessage(string message)
+    {
+        UpdateUI(message, true);
+        Vector2 backgroundSize = new Vector2(chatbubbleText.preferredWidth + textPaddingWidth * 2, chatbubbleText.preferredHeight + textPaddingHeight * 2);
+
+        //Rezise to fit text
+        backgroundRectTransform.sizeDelta = backgroundSize;
+    }
 
     private void UpdateUI(string message, bool status)
     {
