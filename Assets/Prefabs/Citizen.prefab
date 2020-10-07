@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7401592734451320682}
   - component: {fileID: 8688156400258148232}
   - component: {fileID: 8033300393647027598}
+  - component: {fileID: 7141638331733656525}
   m_Layer: 0
   m_Name: Citizen
   m_TagString: Untagged
@@ -130,6 +131,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 547f42aadccedb949a0fe2e0dc376c0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!210 &7141638331733656525
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3179896000703979151}
+  m_Enabled: 1
+  m_SortingLayerID: -567436445
+  m_SortingLayer: -3
+  m_SortingOrder: 0
 --- !u!1001 &2049398077674740228
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -581,7 +593,8 @@ PrefabInstance:
       propertyPath: m_FlipX
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6130002061301870418, guid: cce19445ed30d504e8529583a519e596, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: cce19445ed30d504e8529583a519e596, type: 3}
 --- !u!4 &3552588866634606765 stripped
 Transform:

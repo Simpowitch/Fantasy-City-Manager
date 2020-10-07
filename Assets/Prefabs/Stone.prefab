@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4817760357077662986}
   - component: {fileID: 8087356332231223454}
   - component: {fileID: 1718922722777156607}
-  - component: {fileID: 6916519004237140861}
+  - component: {fileID: -1917913653600958901}
   m_Layer: 0
   m_Name: Stone
   m_TagString: Untagged
@@ -49,6 +49,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -104,7 +105,7 @@ MonoBehaviour:
   workOccupiedBy: {fileID: 0}
   harvestMode: 1
   objectName: 
---- !u!61 &6916519004237140861
+--- !u!61 &-1917913653600958901
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,6 +177,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
