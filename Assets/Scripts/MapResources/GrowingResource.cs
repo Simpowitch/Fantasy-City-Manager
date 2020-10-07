@@ -22,7 +22,7 @@ public class GrowingResource : ResourceObject
 
     private void InfoChanged() => InfoChangeHandler?.Invoke(this);
 
-    public void StartHarvesting()
+    public override void StartHarvesting()
     {
         if (animator) 
             animator.SetTrigger(harvestingAnimationName);

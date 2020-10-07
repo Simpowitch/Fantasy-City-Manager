@@ -52,10 +52,18 @@ public class GoodsProducer : Workplace
             case CityResource.Type.Gold:
             case CityResource.Type.Iron:
             case CityResource.Type.Stone:
-                onArrivalMethod = () => citizen.UnitAnimator.PlayMiningAnimation(dir);
+                onArrivalMethod = () =>
+                {
+                    closestObject.StartHarvesting();
+                    citizen.UnitAnimator.PlayMiningAnimation(dir);
+                };
                 break;
             case CityResource.Type.Wood:
-                onArrivalMethod = () => citizen.UnitAnimator.PlayWoodChopAnimation(dir);
+                onArrivalMethod = () =>
+                    {
+                        closestObject.StartHarvesting();
+                        citizen.UnitAnimator.PlayWoodChopAnimation(dir);
+                    };
                 break;
             case CityResource.Type.Food:
                 Debug.LogError("Not implemented");

@@ -28,6 +28,8 @@ public class ResourceObject : MonoBehaviour, IViewable
         this.ObjectTile.ResourceObject = this;
     }
 
+    public virtual void StartHarvesting() { }
+
     public virtual CityResource Harvest()
     {
         Despawn();
