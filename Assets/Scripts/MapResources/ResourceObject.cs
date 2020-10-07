@@ -28,7 +28,7 @@ public class ResourceObject : MonoBehaviour, IViewable
         this.ObjectTile.ResourceObject = this;
     }
 
-    public CityResource Harvest()
+    public virtual CityResource Harvest()
     {
         Despawn();
         return yieldOnHarvest;

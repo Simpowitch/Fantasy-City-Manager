@@ -3,11 +3,17 @@
 public class GrowingResource : ResourceObject
 {
     [SerializeField] float timeToHarvestable = 60;
-    [SerializeField] SpriteRenderer spriteRenderer = null;
-    [SerializeField] Sprite grownStage = null;
+    [SerializeField] SpriteRenderer[] saplingStageRenderers = null;
+    [SerializeField] SpriteRenderer[] grownStageRenderers = null;
     ActionTimer growTimer;
+    [SerializeField] Animator animator = null;
+    string growAnimationName = "Grow";
+    string harvestCompletedAnimationName = "HarvestEnd";
+    string harvestingAnimationName = "Harvesting";
+
     public override void Spawned(ResourceObjectNetwork network, ObjectTile objectTile)
     {
+        ChangeRendererStage(false);
         CanBeHarvested = false;
         growTimer = new ActionTimer(timeToHarvestable, FullyGrown, true);
         base.Spawned(network, objectTile);
@@ -16,9 +22,22 @@ public class GrowingResource : ResourceObject
 
     private void InfoChanged() => InfoChangeHandler?.Invoke(this);
 
+    public void StartHarvesting()
+    {
+        if (animator) 
+            animator.SetTrigger(harvestingAnimationName);
+    }
+
+    public override CityResource Harvest()
+    {
+        if (animator)
+            animator.SetTrigger(harvestCompletedAnimationName);
+        return base.Harvest();
+    }
+
     void FullyGrown()
     {
-        spriteRenderer.sprite = grownStage;
+        ChangeRendererStage(true);
         if (HarvestMode == HarvestMarkMode.Automatic)
             MarkForHarvest(true);
         CanBeHarvested = true;
@@ -36,4 +55,21 @@ public class GrowingResource : ResourceObject
     public override float GetPrimaryStatValue() => growTimer.Progress;
 
     public override string GetPrimaryStatName() => "Growth";
+
+    private void ChangeRendererStage(bool nextStage)
+    {
+        foreach (var renderer in saplingStageRenderers)
+        {
+            renderer.enabled = !nextStage;
+        }
+        foreach (var renderer in grownStageRenderers)
+        {
+            renderer.enabled = nextStage;
+        }
+        if (nextStage)
+        {
+            if (animator)
+                animator.SetTrigger(growAnimationName);
+        }
+    }
 }
