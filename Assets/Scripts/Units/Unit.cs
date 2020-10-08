@@ -7,7 +7,7 @@ public abstract class Unit : MonoBehaviour
     protected State FSM
     {
         private set;
-        get;
+         get;
     }
 
     IMoveVelocity movementSystem = null;
@@ -42,13 +42,13 @@ public abstract class Unit : MonoBehaviour
     private void OnEnable()
     {
         Clock.OnHourChanged += NewHour;
-        seeker.OnPathUpdated += NewNodeReached;
+        seeker.OnPathUpdated += NextNodeChanged;
     }
 
     private void OnDisable()
     {
         Clock.OnHourChanged -= NewHour;
-        seeker.OnPathUpdated -= NewNodeReached;
+        seeker.OnPathUpdated -= NextNodeChanged;
     }
 
     private void Awake()
@@ -56,9 +56,10 @@ public abstract class Unit : MonoBehaviour
         movementSystem = GetComponent<IMoveVelocity>();
     }
 
+    int updateInterval = 5;
     private void Update()
     {
-        if (FSM != null)
+        if (FSM != null && Time.frameCount % updateInterval == 0)
         {
             FSM.DuringState();
         }
@@ -77,29 +78,21 @@ public abstract class Unit : MonoBehaviour
 
     protected abstract void InfoChanged();
 
-    //protected void GoToNextNode()
-    //{
-    //    if (seeker.HasPath)
-    //    {
-    //        PathNode nextNode = seeker.Path[0];
-    //        movementSystem.MoveTowards(nextNode.WorldPosition);
-    //        unitAnimator.PlayWalkAnimation(nextNode.WorldPosition - transform.position);
-    //        Debug.DrawLine(transform.position, nextNode.WorldPosition, Color.white, 1f);
-    //    }
-    //    else
-    //    {
-    //        movementSystem.SetVelocity(Vector3.zero);
-    //        unitAnimator.PlayIdleAnimation(Vector3.zero);
-    //    }
-    //}
-
-    protected virtual void NewNodeReached(PathNode newNode)
+    protected void GoToCurrentNode()
     {
-        if (newNode != null)
+        if (seeker.HasPath)
+            NextNodeChanged(seeker.Path[0]);
+        else
+            NextNodeChanged(null);
+    }
+
+    protected virtual void NextNodeChanged(PathNode nextNode)
+    {
+        if (nextNode != null)
         {
-            movementSystem.MoveTowards(newNode.WorldPosition);
-            unitAnimator.PlayWalkAnimation(newNode.WorldPosition - transform.position);
-            Debug.DrawLine(transform.position, newNode.WorldPosition, Color.white, 1f);
+            movementSystem.MoveTowards(nextNode.WorldPosition);
+            unitAnimator.PlayWalkAnimation(nextNode.WorldPosition - transform.position);
+            Debug.DrawLine(transform.position, nextNode.WorldPosition, Color.white, 1f);
         }
         else
         {
@@ -137,14 +130,13 @@ public abstract class Unit : MonoBehaviour
         protected Unit unit;
         public virtual void EnterState()
         {
-            //unit.GoToNextNode();
             unit.InfoChanged();
         }
 
         public virtual void DuringState()
         {
             unit.seeker.CheckIfNodeArrived();
-            //if (unit.seeker.IsLost()) unit.GoToNextNode();
+            if (unit.seeker.IsLost()) unit.GoToCurrentNode();
         }
         public virtual void ExitState() { }
 

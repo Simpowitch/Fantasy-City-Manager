@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class PathSeeker : MonoBehaviour
 {
-    public delegate void PathHandler(PathNode node);
+    public delegate void PathHandler(PathNode nextNode);
     public event PathHandler OnPathUpdated;
 
-    [SerializeField] float distanceToAcceptAsArrived = 0.25f;
-    [SerializeField] float pathLostDistance = 2f;
+    float distanceToAcceptAsArrived = 0.1f;
+    float pathLostDistance = 2f;
 
     public City City { get; set; }
 

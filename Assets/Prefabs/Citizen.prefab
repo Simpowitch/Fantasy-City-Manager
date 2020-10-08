@@ -67,8 +67,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5e4dde291d1c444d943e5ead449a460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distanceToAcceptAsArrived: 0.05
-  pathLostDistance: 2
 --- !u!58 &6148082900579779767
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -625,6 +623,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Unit Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5393918942533617135, guid: 7daf381114e23f94ba4310ab57722b0c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5707599010083695176, guid: 7daf381114e23f94ba4310ab57722b0c,
         type: 3}

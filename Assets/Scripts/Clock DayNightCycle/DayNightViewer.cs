@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Experimental.Rendering.Universal;
 
 public class DayNightViewer : MonoBehaviour
 {
-    public Image image;
+    public Light2D lightSource;
 
     public Color[] dayFilters = new Color[DayNightSystem.PARTSOFTHEDAY];
 
@@ -11,5 +11,5 @@ public class DayNightViewer : MonoBehaviour
 
     private void OnDisable() => DayNightSystem.OnPartOfTheDayChanged -= PartOfTheDayChanged;
 
-    private void PartOfTheDayChanged(DayNightSystem.PartOfTheDay partOfTheDay) => image.color = dayFilters[(int)partOfTheDay];
+    private void PartOfTheDayChanged(DayNightSystem.PartOfTheDay partOfTheDay) => lightSource.color = dayFilters[(int)partOfTheDay];
 }
