@@ -35,7 +35,7 @@ MonoBehaviour:
     height: 0.96
     softness:
       enable: 1
-      intensity: 0.1
+      intensity: 0.2
     bumpMap:
       height: 1
       strength: 1
