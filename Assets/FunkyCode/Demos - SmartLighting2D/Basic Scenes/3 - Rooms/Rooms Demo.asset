@@ -16,7 +16,7 @@ MonoBehaviour:
     list:
     - name: 'Preset (Id: 1)'
       sortingLayer:
-        Name: 
+        Name: Default
         Order: 0
       darknessColor: {r: 1, g: 1, b: 1, a: 1}
       lightingResolution: 1

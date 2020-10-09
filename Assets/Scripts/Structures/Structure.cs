@@ -14,16 +14,21 @@ public abstract class Structure : MonoBehaviour
 
     public ConstructionCost ConstructionCost { get => constructionCost; }
     [Header("References")]
-    [SerializeField] Tilemap tilemap = null;
+    [SerializeField] Tilemap groundTilemap = null;
+    [SerializeField] Tilemap wallTilemap = null;
     public Bar constructionProgressBar = null;
 
     [Header("Setup")]
     [SerializeField] protected int xSize = 1;
     [SerializeField] protected int ySize = 1;
-    [SerializeField] protected float cellSize = 1;
+    float CellSize { get => city != null ? city.CellSize : 1f; }
 
-    [Header("Floor setup")]
-    [SerializeField] Transform wallTileParent = null;
+    //[Header("Floor setup")]
+    //[SerializeField] Transform wallTileParent = null;
+
+    List<ObjectTile> groundTiles;
+    List<ObjectTile> wallTiles;
+    public List<ObjectTile> StructureTiles { get; private set; }
 
     protected City city;
     Vector3 rotationOffset;
@@ -43,13 +48,13 @@ public abstract class Structure : MonoBehaviour
                     rotationOffset = new Vector3(0, 0);
                     break;
                 case Facing.Left:
-                    rotationOffset = new Vector3(0, cellSize);
+                    rotationOffset = new Vector3(0, CellSize);
                     break;
                 case Facing.Up:
-                    rotationOffset = new Vector3(cellSize, cellSize);
+                    rotationOffset = new Vector3(CellSize, CellSize);
                     break;
                 case Facing.Right:
-                    rotationOffset = new Vector3(cellSize, 0);
+                    rotationOffset = new Vector3(CellSize, 0);
                     break;
             }
             transform.position = anchorPoint + rotationOffset;
@@ -75,11 +80,11 @@ public abstract class Structure : MonoBehaviour
                 case Facing.Down:
                     return anchorPoint + rotationOffset;
                 case Facing.Left:
-                    return anchorPoint + new Vector3(0, -xSize * cellSize) + rotationOffset;
+                    return anchorPoint + new Vector3(0, -xSize * CellSize) + rotationOffset;
                 case Facing.Up:
-                    return anchorPoint + new Vector3(-xSize * cellSize, -ySize * cellSize) + rotationOffset;
+                    return anchorPoint + new Vector3(-xSize * CellSize, -ySize * CellSize) + rotationOffset;
                 case Facing.Right:
-                    return anchorPoint + new Vector3(-ySize * cellSize, 0) + rotationOffset;
+                    return anchorPoint + new Vector3(-ySize * CellSize, 0) + rotationOffset;
                 default:
                     return anchorPoint;
             }
@@ -95,10 +100,10 @@ public abstract class Structure : MonoBehaviour
             {
                 case Facing.Down:
                 case Facing.Up:
-                    return corner + new Vector2(xSize * cellSize, ySize * cellSize);
+                    return corner + new Vector2(xSize * CellSize, ySize * CellSize);
                 case Facing.Left:
                 case Facing.Right:
-                    return corner + new Vector2(ySize * cellSize, xSize * cellSize);
+                    return corner + new Vector2(ySize * CellSize, xSize * CellSize);
                 default:
                     return corner;
             }
@@ -114,16 +119,15 @@ public abstract class Structure : MonoBehaviour
             {
                 case Facing.Down:
                 case Facing.Up:
-                    return corner + new Vector2(xSize * cellSize / 2, ySize * cellSize / 2);
+                    return corner + new Vector2(xSize * CellSize / 2, ySize * CellSize / 2);
                 case Facing.Left:
                 case Facing.Right:
-                    return corner + new Vector2(ySize * cellSize / 2, xSize * cellSize / 2);
+                    return corner + new Vector2(ySize * CellSize / 2, xSize * CellSize / 2);
                 default:
                     return corner;
             }
         }
     }
-    public List<ObjectTile> ObjectTiles { get => city.ObjectGrid.GetGridObjects(LowerLeftCorner, UpperRightCorner); }
 
     protected List<Unit> unitsInside = new List<Unit>();
 
@@ -144,24 +148,74 @@ public abstract class Structure : MonoBehaviour
         DayNightSystem.OnPartOfTheDayChanged += PartOfDayChange;
         city.RemoveConstructionArea(this);
 
-        FloorSetup();
-    }
+        SetupObjectTiles();
 
-    private void FloorSetup()
-    {
         //Change pathfinding cost to indoor cost of all tiles
-        foreach (ObjectTile tile in ObjectTiles)
+        foreach (ObjectTile tile in groundTiles)
         {
             city.RoadNetwork.AddRoad(tile.CenteredWorldPosition, RoadNetwork.GroundType.Indoor);
         }
 
-
         //Set walls to non-walkable tiles
-        if (wallTileParent != null)
+        foreach (ObjectTile tile in wallTiles)
         {
-            for (int i = 0; i < wallTileParent.childCount; i++)
+            city.RoadNetwork.ChangeWalkable(tile.CenteredWorldPosition, false);
+        }
+    }
+
+    private void SetupObjectTiles()
+    {
+        ////Change pathfinding cost to indoor cost of all tiles
+        //foreach (ObjectTile tile in ObjectTiles)
+        //{
+        //    city.RoadNetwork.AddRoad(tile.CenteredWorldPosition, RoadNetwork.GroundType.Indoor);
+        //}
+
+
+        ////Set walls to non-walkable tiles
+        //if (wallTileParent != null)
+        //{
+        //    for (int i = 0; i < wallTileParent.childCount; i++)
+        //    {
+        //        city.RoadNetwork.ChangeWalkable(wallTileParent.GetChild(i).position, false);
+        //    }
+        //}
+
+        StructureTiles = new List<ObjectTile>();
+        groundTiles = new List<ObjectTile>();
+        wallTiles = new List<ObjectTile>();
+
+        List<ObjectTile> ObjectTiles = city.ObjectGrid.GetGridObjects(LowerLeftCorner, UpperRightCorner);
+
+        //Ground Tiles
+        if (groundTilemap != null)
+        {
+            Tilemap tilemap = groundTilemap;
+
+            foreach (var tile in ObjectTiles)
             {
-                city.RoadNetwork.ChangeWalkable(wallTileParent.GetChild(i).position, false);
+                Vector3Int cellTilemapPosition = tilemap.WorldToCell(tile.CenteredWorldPosition);
+                if (tilemap.HasTile(cellTilemapPosition))
+                {
+                    groundTiles.Add(tile);
+                    StructureTiles.Add(tile);
+                }
+            }
+        }
+
+        //Wall Tiles
+        if (wallTilemap != null)
+        {
+            Tilemap tilemap = wallTilemap;
+
+            foreach (var tile in ObjectTiles)
+            {
+                Vector3Int cellTilemapPosition = tilemap.WorldToCell(tile.CenteredWorldPosition);
+                if (tilemap.HasTile(cellTilemapPosition))
+                {
+                    wallTiles.Add(tile);
+                    StructureTiles.Add(tile);
+                }
             }
         }
     }
@@ -191,7 +245,7 @@ public abstract class Structure : MonoBehaviour
         OnUnitVisiting?.Invoke(unitVisiting);
     }
 
-    public Vector3 GetRandomLocation() => Utility.ReturnRandom(ObjectTiles).CenteredWorldPosition;
+    public Vector3 GetRandomLocation() => Utility.ReturnRandom(groundTiles).CenteredWorldPosition;
 
 
     protected virtual void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay) { }
@@ -201,34 +255,46 @@ public abstract class Structure : MonoBehaviour
         GetComponent<Collider2D>().enabled = !state;
         Color color = state ? Color.grey : Color.white;
         color.a = state ? 0.4f : 1f;
-        tilemap.color = color;
+        groundTilemap.color = color;
     }
 
     public void ChangeBuildable(bool canBeBuilt)
     {
-        float alpha = tilemap.color.a;
+        float alpha = groundTilemap.color.a;
         Color newColor = canBeBuilt ? Color.green : Color.red;
         newColor.a = alpha;
-        tilemap.color = newColor;
+        groundTilemap.color = newColor;
     }
 
     public virtual void Despawn()
     {
         DayNightSystem.OnPartOfTheDayChanged -= PartOfDayChange;
 
-        //Change pathfinding cost to outdoor cost of all tiles
-        foreach (var item in ObjectTiles)
+        ////Change pathfinding cost to outdoor cost of all tiles
+        //foreach (var item in ObjectTiles)
+        //{
+        //    city.RoadNetwork.AddRoad(item.CenteredWorldPosition, RoadNetwork.GroundType.Grass);
+        //}
+
+        ////Set walls to walkable tiles
+        //if (wallTileParent != null)
+        //{
+        //    for (int i = 0; i < wallTileParent.childCount; i++)
+        //    {
+        //        city.RoadNetwork.ChangeWalkable(wallTileParent.GetChild(i).position, true);
+        //    }
+        //}
+
+        //Change pathfinding cost to indoor cost of all tiles
+        foreach (ObjectTile tile in groundTiles)
         {
-            city.RoadNetwork.AddRoad(item.CenteredWorldPosition, RoadNetwork.GroundType.Grass);
+            city.RoadNetwork.AddRoad(tile.CenteredWorldPosition, RoadNetwork.GroundType.Grass);
         }
 
-        //Set walls to walkable tiles
-        if (wallTileParent != null)
+        //Set walls to non-walkable tiles
+        foreach (ObjectTile tile in wallTiles)
         {
-            for (int i = 0; i < wallTileParent.childCount; i++)
-            {
-                city.RoadNetwork.ChangeWalkable(wallTileParent.GetChild(i).position, true);
-            }
+            city.RoadNetwork.ChangeWalkable(tile.CenteredWorldPosition, true);
         }
 
         Destroy(this.gameObject);

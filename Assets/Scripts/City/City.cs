@@ -5,7 +5,7 @@ public class City : MonoBehaviour
 {
     [Header("Setup - Initializers")]
     [SerializeField] int xSize = 40, ySize = 15;
-    [SerializeField] float cellSize = 1;
+    public float CellSize { get; } = 1;
     
     [SerializeField] int startGold = 10;
     [SerializeField] int startWood = 10;
@@ -70,8 +70,8 @@ public class City : MonoBehaviour
     {
         RoadNetwork = GetComponent<RoadNetwork>();
         ResourceObjectNetwork = GetComponent<ResourceObjectNetwork>();
-        Pathfinding = new Pathfinding(xSize, ySize, cellSize, Vector3.zero);
-        ObjectGrid = new Grid<ObjectTile>(xSize, ySize, cellSize, Vector3.zero, (Grid<ObjectTile> g, int x, int y) => new ObjectTile(g, x, y));
+        Pathfinding = new Pathfinding(xSize, ySize, CellSize, Vector3.zero);
+        ObjectGrid = new Grid<ObjectTile>(xSize, ySize, CellSize, Vector3.zero, (Grid<ObjectTile> g, int x, int y) => new ObjectTile(g, x, y));
         RoadNetwork.SetUp(ObjectGrid, Pathfinding.grid);
         ResourceObjectNetwork.Setup(ObjectGrid);
         canvasGrid.Setup(ObjectGrid, Pathfinding.grid);
@@ -114,7 +114,7 @@ public class City : MonoBehaviour
         structure.AnchorPoint = structure.transform.position;
         structure.Load(this);
         
-        foreach (ObjectTile item in structure.ObjectTiles)
+        foreach (ObjectTile item in structure.StructureTiles)
         {
             item.Structure = structure;
         }

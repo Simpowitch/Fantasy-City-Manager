@@ -18,7 +18,7 @@ MonoBehaviour:
       sortingLayer:
         Name: Lighting
         Order: 0
-      darknessColor: {r: 1, g: 1, b: 1, a: 0}
+      darknessColor: {r: 0, g: 0, b: 0, a: 0}
       lightingResolution: 1
       dayLayers:
         list: 00000000
