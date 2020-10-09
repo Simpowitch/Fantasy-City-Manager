@@ -3,8 +3,8 @@
 public class GrowingResource : ResourceObject
 {
     [SerializeField] float timeToHarvestable = 60;
-    [SerializeField] SpriteRenderer[] saplingStageRenderers = null;
-    [SerializeField] SpriteRenderer[] grownStageRenderers = null;
+    [SerializeField] GameObject[] saplingStage = null;
+    [SerializeField] GameObject[] grownStage = null;
     ActionTimer growTimer;
     [SerializeField] Animator animator = null;
     string growAnimationName = "Grow";
@@ -58,13 +58,13 @@ public class GrowingResource : ResourceObject
 
     private void ChangeRendererStage(bool nextStage)
     {
-        foreach (var renderer in saplingStageRenderers)
+        foreach (var gameObject in saplingStage)
         {
-            renderer.enabled = !nextStage;
+            gameObject.SetActive(!nextStage);
         }
-        foreach (var renderer in grownStageRenderers)
+        foreach (var gameObject in grownStage)
         {
-            renderer.enabled = nextStage;
+            gameObject.SetActive(nextStage);
         }
         if (nextStage)
         {
