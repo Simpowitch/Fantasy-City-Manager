@@ -30,9 +30,9 @@ MonoBehaviour:
     updateMethod: 0
   dayLightingSettings:
     enable: 1
-    alpha: 0.374
-    direction: 131
-    height: 0.96
+    alpha: 0
+    direction: 0
+    height: 0
     softness:
       enable: 1
       intensity: 0.2

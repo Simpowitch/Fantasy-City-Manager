@@ -7,14 +7,36 @@ public class DayNightViewer : MonoBehaviour
     public Light2D lightSource;
 
     public Color[] dayFilters = new Color[DayNightSystem.PARTSOFTHEDAY];
-    public float fluidChangeTime = 2f;
-    private void OnEnable() => DayNightSystem.OnPartOfTheDayChanged += PartOfTheDayChanged;
+    public float fluidChangeTime = 5f;
 
-    private void OnDisable() => DayNightSystem.OnPartOfTheDayChanged -= PartOfTheDayChanged;
+    int sunHighHour = 12, hoursBetweenHighAndLow = 6;
+    [SerializeField] float sunAlphaMin = 0, sunAlphaMax = 0.5f;
+    [SerializeField] float heightMin = 0, heightMax = 4;
+    const int sunDayRotationDegrees = 360;
+    float DegreesPerHour { get => sunDayRotationDegrees / Clock.HOURSPERDAY; }
+
+    private void OnEnable()
+    {
+        Clock.OnHourChanged += HourChanged;
+        DayNightSystem.OnPartOfTheDayChanged += PartOfTheDayChanged;
+    }
+
+    private void OnDisable()
+    {
+        Clock.OnHourChanged -= HourChanged;
+        DayNightSystem.OnPartOfTheDayChanged -= PartOfTheDayChanged;
+    }
+
+    private void PartOfTheDayChanged(DayNightSystem.PartOfTheDay partOfTheDay)
+    {
+        if (fluidChangeTime > 0)
+            StartCoroutine(PerformColorChange(dayFilters[(int)partOfTheDay], fluidChangeTime));
+        else
+            lightSource.color = dayFilters[(int)partOfTheDay];
+    }
 
     IEnumerator PerformColorChange(Color newColor, float animationTime)
     {
-        Debug.Log("foo");
         float timer = 0;
         Color startCurrent = lightSource.color;
         float r1, g1, b1, a1;
@@ -45,15 +67,64 @@ public class DayNightViewer : MonoBehaviour
             lightSource.color = c;
             yield return null;
         }
-        Debug.Log("done");
         lightSource.color = newColor;
     }
 
-    private void PartOfTheDayChanged(DayNightSystem.PartOfTheDay partOfTheDay)
+
+    private void HourChanged(int newHour)
     {
-        if (fluidChangeTime > 0)
-            StartCoroutine(PerformColorChange(dayFilters[(int)partOfTheDay], fluidChangeTime));
-        else
-            lightSource.color = dayFilters[(int)partOfTheDay];
+        int hoursFromSunHigh = Mathf.Abs(newHour - sunHighHour);
+        float daylightPercentage = (float) (hoursBetweenHighAndLow - hoursFromSunHigh) / hoursBetweenHighAndLow;
+
+        float newDirection = DegreesPerHour * newHour;
+        float newAlpha = Mathf.Lerp(sunAlphaMin, sunAlphaMax, daylightPercentage);
+        float newHeight = Mathf.Lerp(heightMin, heightMax, daylightPercentage);
+
+        
+
+        if (hoursFromSunHigh > hoursBetweenHighAndLow) //Darkness
+        {
+            Lighting2D.Profile.dayLightingSettings.direction = 0;
+            Lighting2D.Profile.dayLightingSettings.alpha = 0;
+            Lighting2D.Profile.dayLightingSettings.height = 0;
+        }
+        else //Day
+        {
+            Lighting2D.Profile.dayLightingSettings.direction = newDirection;
+            Lighting2D.Profile.dayLightingSettings.alpha = newAlpha;
+            Lighting2D.Profile.dayLightingSettings.height = newHeight;
+        }
+
+        //if (hoursFromSunHigh > hoursBetweenHighAndLow) //Darkness
+        //{
+        //    StartCoroutine(PerformSunlightChange(0, 0, 0, 1f, fluidChangeTime));
+        //}
+        //else //Day
+        //{
+        //    StartCoroutine(PerformSunlightChange(newAngle, newAlpha, newHeight, 1f, fluidChangeTime));
+        //}
+    }
+
+    IEnumerator PerformSunlightChange(float newDirection, float newAlpha, float newHeight, float timeBetweenUpdates, float animationTime)
+    {
+        float timer = 0;
+
+        float startDirection = Lighting2D.Profile.dayLightingSettings.direction;
+        float startAlpha = Lighting2D.Profile.dayLightingSettings.alpha;
+        float startHeight = Lighting2D.Profile.dayLightingSettings.height;
+
+        while (timer < animationTime)
+        {
+            timer += timeBetweenUpdates;
+            float t = timer / animationTime;
+
+            Lighting2D.Profile.dayLightingSettings.direction = Mathf.Lerp(startDirection, newDirection, t);
+            Lighting2D.Profile.dayLightingSettings.alpha = Mathf.Lerp(startAlpha, newAlpha, t);
+            Lighting2D.Profile.dayLightingSettings.height = Mathf.Lerp(startHeight, newHeight, t);
+            yield return new WaitForSeconds(timeBetweenUpdates);
+        }
+        Lighting2D.Profile.dayLightingSettings.direction = newDirection;
+        Lighting2D.Profile.dayLightingSettings.alpha = newAlpha;
+        Lighting2D.Profile.dayLightingSettings.height = newHeight;
     }
 }
