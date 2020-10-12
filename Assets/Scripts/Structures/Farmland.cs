@@ -50,7 +50,7 @@ public class Farmland : Structure
         city.farmlands.Add(this);
 
         farmTiles = new List<FarmTile>();
-        foreach (var objectTile in ObjectTiles)
+        foreach (var objectTile in StructureTiles)
         {
             farmTiles.Add(new FarmTile(objectTile));
         }

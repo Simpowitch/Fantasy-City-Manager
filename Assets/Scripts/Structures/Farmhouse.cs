@@ -8,7 +8,7 @@ public class Farmhouse : GoodsProducer
 
     public override Task GetWorkTask(Citizen citizen)
     {
-        if (citizen.inventory.HasResourceType(CityResource.Type.Food)) //If citizen is carrying any food
+        if (citizen.ResourceCarried != null && citizen.ResourceCarried.type == CityResource.Type.Food) //If citizen is carrying any food
             return GetLeaveResourceTask(citizen);
 
         List<Farmland> farmlandsWithHarvestableCrops = new List<Farmland>();
@@ -66,7 +66,7 @@ public class Farmhouse : GoodsProducer
             ActionTimer collectTimer = new ActionTimer(5f, () =>
                 {
                     CityResource cityResource = nearestCrop.Harvest();
-                    citizen.inventory.Add(cityResource);
+                    citizen.ResourceCarried =cityResource;
                 }
             , false);
 

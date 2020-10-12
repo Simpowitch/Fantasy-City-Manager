@@ -2,7 +2,7 @@
 
 public class DayNightSystem : MonoBehaviour
 {
-    const int MORNINGHOUR = 6, DAYHOUR = 9, EVENINGHOUR = 16, NIGHTHOUR = 19;
+    const int MORNINGHOUR = 6, DAYHOUR = 9, EVENINGHOUR = 18, NIGHTHOUR = 20;
 
     public delegate void PartOfTheDayHandler(PartOfTheDay partOfTheDay);
     public static event PartOfTheDayHandler OnPartOfTheDayChanged;

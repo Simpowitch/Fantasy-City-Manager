@@ -13,8 +13,8 @@ public class Clock : MonoBehaviour
     public delegate void TimeHandler(string newTime);
     public static event TimeHandler OnTimeChanged;
 
-    const int HOURSPERDAY = 24;
-    const int MINUTESPERHOUR = 60;
+    public const int HOURSPERDAY = 24;
+    public const int MINUTESPERHOUR = 60;
 
     [Header("Settings")]
     [SerializeField] float realworldSecondsPerGameMinute = 0.5f;
