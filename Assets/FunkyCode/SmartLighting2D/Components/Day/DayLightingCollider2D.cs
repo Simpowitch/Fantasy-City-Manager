@@ -45,7 +45,7 @@ public class DayLightingCollider2D : MonoBehaviour {
 		LightingManager2D manager = LightingManager2D.Get();
 		CameraSettings[] cameraSettings = manager.cameraSettings;
 
-		for(int i = 0; i < cameraSettings.Length; i++) {
+		for (int i = 0; i < cameraSettings.Length; i++) {
 			Camera camera = manager.GetCamera(i);
 
 			if (camera == null) {

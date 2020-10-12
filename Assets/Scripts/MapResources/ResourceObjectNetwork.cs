@@ -19,15 +19,15 @@ public class ResourceObjectNetwork : MonoBehaviour
 
 
     #region SpawnTimers
-    const float TREEMINSPAWNTIME = 5f;
-    const float TREEMAXSPAWNTIME = 20f;
+    [SerializeField] float treeMinSpawnTime = 5f;
+    [SerializeField] float treeMaxSpawnTime = 20f;
     float treeSpawnTimer = 0;
     #endregion
 
 
     private void Start()
     {
-        treeSpawnTimer = Random.Range(TREEMINSPAWNTIME, TREEMAXSPAWNTIME);
+        treeSpawnTimer = Random.Range(treeMinSpawnTime, treeMaxSpawnTime);
         for (int i = 0; i < startStone; i++)
         {
             SpawnObject(FindFreeObjectTile(CityResource.Type.Stone), stoneBlueprint);
@@ -72,7 +72,7 @@ public class ResourceObjectNetwork : MonoBehaviour
             switch (type)
             {
                 case CityResource.Type.Wood:
-                    timer = Random.Range(TREEMINSPAWNTIME, TREEMAXSPAWNTIME);
+                    timer = Random.Range(treeMinSpawnTime, treeMaxSpawnTime);
                     break;
                 case CityResource.Type.Food:
                 case CityResource.Type.Gold:
