@@ -23,9 +23,6 @@ public abstract class Structure : MonoBehaviour
     [SerializeField] protected int ySize = 1;
     float CellSize { get => city != null ? city.CellSize : 1f; }
 
-    //[Header("Floor setup")]
-    //[SerializeField] Transform wallTileParent = null;
-
     List<ObjectTile> groundTiles;
     List<ObjectTile> wallTiles;
     public List<ObjectTile> StructureTiles { get; private set; }
@@ -138,6 +135,7 @@ public abstract class Structure : MonoBehaviour
         this.city = city;
         constructionArea.Setup(() => Constructed(city, true));
         city.AddConstructionArea(this);
+        SetupObjectTiles();
     }
 
     protected virtual void Constructed(City city, bool addToCityList)
@@ -148,7 +146,9 @@ public abstract class Structure : MonoBehaviour
         DayNightSystem.OnPartOfTheDayChanged += PartOfDayChange;
         city.RemoveConstructionArea(this);
 
-        SetupObjectTiles();
+
+        if (StructureTiles == null)
+            SetupObjectTiles();
 
         //Change pathfinding cost to indoor cost of all tiles
         foreach (ObjectTile tile in groundTiles)

@@ -78,7 +78,7 @@ public class DayNightViewer : MonoBehaviour
 
         float newDirection = DegreesPerHour * newHour;
         float newAlpha = Mathf.Lerp(sunAlphaMin, sunAlphaMax, daylightPercentage);
-        float newHeight = Mathf.Lerp(heightMin, heightMax, daylightPercentage);
+        float newHeight = Mathf.Lerp(heightMax, heightMin, daylightPercentage);
 
         
 
