@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 1948700978225365818}
   - component: {fileID: 5198799281095744076}
   m_Layer: 0
-  m_Name: Constructed
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -362,12 +362,11 @@ MonoBehaviour:
   constructionArea:
     constructionTick: 0
     constructionTickMax: 4
-  tilemap: {fileID: 1948700978225365818}
+  groundTilemap: {fileID: 1948700978225365818}
+  wallTilemap: {fileID: 0}
   constructionProgressBar: {fileID: 5207751414604075891}
   xSize: 2
   ySize: 2
-  cellSize: 1
-  wallTileParent: {fileID: 0}
   facingDirection: 0
   startShiftHour: 8
   endShiftHour: 18
