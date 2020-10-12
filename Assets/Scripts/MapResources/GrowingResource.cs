@@ -49,6 +49,7 @@ public class GrowingResource : ResourceObject
         if (network)
             network.RemoveGrowable(this);
         ObjectTile.ResourceObject = null;
+        GameObject.Destroy(this.gameObject, 2f);
     }
 
     public override float GetPrimaryStatValue() => growTimer.Progress;
