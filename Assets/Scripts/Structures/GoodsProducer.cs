@@ -9,7 +9,7 @@ public class GoodsProducer : Workplace
 
     public override Task GetWorkTask(Citizen citizen)
     {
-        if (citizen.ResourceCarried != null && citizen.ResourceCarried.type == acceptedResourceType) // Citizen is carrying the type produced at this workplace - Create work to leave at this building
+        if (citizen.inventory.HasResourceType(acceptedResourceType)) // Citizen is carrying the type produced at this workplace - Create work to leave at this building
             return GetLeaveResourceTask(citizen);
         else //Create work to collect resource
         {
@@ -26,8 +26,8 @@ public class GoodsProducer : Workplace
         citizen.UnitAnimator.PlayCarryObjectAnimation(acceptedResourceType);
         ActionTimer leaveResource = new ActionTimer(2f, () =>
         {
-            city.cityStats.Inventory.Add(citizen.ResourceCarried);
-            citizen.ResourceCarried = null;
+            citizen.inventory.RemoveAllOfType(acceptedResourceType, out CityResource resourcesRemoved);
+            city.cityStats.Inventory.Add(resourcesRemoved);
         }
             , false);
         Vector3 pos = Utility.ReturnRandom(workTaskTiles).position;
@@ -41,7 +41,7 @@ public class GoodsProducer : Workplace
         closestObject.workOccupiedBy = citizen;
         ActionTimer collectTimer = new ActionTimer(5f, () =>
         {
-            citizen.ResourceCarried = closestObject.Harvest();
+            citizen.inventory.Add(closestObject.Harvest());
         },
             false);
         Vector3 pos = closestObject.transform.position;

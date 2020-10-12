@@ -105,22 +105,10 @@ ScriptedImporter:
     spriteBone: []
     spriteOutline: []
     vertices: []
-    spritePhysicsOutline:
-    - outline:
-      - {x: 27, y: 70}
-      - {x: -30, y: 70}
-      - {x: -66, y: 43}
-      - {x: -70, y: 26}
-      - {x: -70, y: -33}
-      - {x: -52, y: -67}
-      - {x: -38, y: -70}
-      - {x: 42, y: -70}
-      - {x: 70, y: -41}
-      - {x: 70, y: 29}
-      - {x: 50, y: 60}
+    spritePhysicsOutline: []
     indices: 
     edges: []
-    tessellationDetail: 0.1
+    tessellationDetail: 0
     parentGroupIndex: -1
     uvTransform: {x: -683, y: 280}
   - name: R hand
@@ -139,21 +127,10 @@ ScriptedImporter:
     spriteBone: []
     spriteOutline: []
     vertices: []
-    spritePhysicsOutline:
-    - outline:
-      - {x: 70, y: 45}
-      - {x: 57, y: 70}
-      - {x: -36, y: 70}
-      - {x: -70, y: 43}
-      - {x: -70, y: -37}
-      - {x: -35, y: -70}
-      - {x: 33, y: -70}
-      - {x: 58, y: -48}
-      - {x: 66, y: -31}
-      - {x: 70, y: -30}
+    spritePhysicsOutline: []
     indices: 
     edges: []
-    tessellationDetail: 0.1
+    tessellationDetail: 0
     parentGroupIndex: -1
     uvTransform: {x: -22, y: 280}
   - name: L foot
@@ -172,22 +149,10 @@ ScriptedImporter:
     spriteBone: []
     spriteOutline: []
     vertices: []
-    spritePhysicsOutline:
-    - outline:
-      - {x: 32, y: 65}
-      - {x: -35, y: 65}
-      - {x: -46, y: 62}
-      - {x: -71, y: 12}
-      - {x: -71, y: -46}
-      - {x: -53, y: -64}
-      - {x: -48, y: -65}
-      - {x: 68, y: -65}
-      - {x: 71, y: -56}
-      - {x: 71, y: 5}
-      - {x: 61, y: 46}
+    spritePhysicsOutline: []
     indices: 
     edges: []
-    tessellationDetail: 0.1
+    tessellationDetail: 0
     parentGroupIndex: -1
     uvTransform: {x: -237, y: 509}
   - name: R foot
@@ -206,22 +171,10 @@ ScriptedImporter:
     spriteBone: []
     spriteOutline: []
     vertices: []
-    spritePhysicsOutline:
-    - outline:
-      - {x: 46, y: 65}
-      - {x: -32, y: 65}
-      - {x: -58, y: 50}
-      - {x: -54, y: 38}
-      - {x: -51, y: 28}
-      - {x: -71, y: -24}
-      - {x: -71, y: -62}
-      - {x: -58, y: -65}
-      - {x: 54, y: -65}
-      - {x: 71, y: -53}
-      - {x: 71, y: 23}
+    spritePhysicsOutline: []
     indices: 
     edges: []
-    tessellationDetail: 0.1
+    tessellationDetail: 0
     parentGroupIndex: -1
     uvTransform: {x: 129, y: 509}
   - name: Head
@@ -240,37 +193,10 @@ ScriptedImporter:
     spriteBone: []
     spriteOutline: []
     vertices: []
-    spritePhysicsOutline:
-    - outline:
-      - {x: 189.5, y: -135.5}
-      - {x: 189.5, y: -116.5}
-      - {x: 166.5, y: -95.5}
-      - {x: 183.5, y: -79.5}
-      - {x: 157.5, y: 34.5}
-      - {x: 163.5, y: 39.5}
-      - {x: 161.5, y: 114.5}
-      - {x: 150.5, y: 131.5}
-      - {x: 35.5, y: 171.5}
-      - {x: -27.5, y: 194.5}
-      - {x: -80.5, y: 194.5}
-      - {x: -115.5, y: 184.5}
-      - {x: -189.5, y: 81.5}
-      - {x: -189.5, y: 26.5}
-      - {x: -172.5, y: -8.5}
-      - {x: -140.5, y: -63.5}
-      - {x: -174.5, y: -75.5}
-      - {x: -163.5, y: -113.5}
-      - {x: -172.5, y: -141.5}
-      - {x: -139.5, y: -164.5}
-      - {x: -110.5, y: -167.5}
-      - {x: -72.5, y: -162.5}
-      - {x: -17.5, y: -194.5}
-      - {x: 14.5, y: -194.5}
-      - {x: 57.5, y: -166.5}
-      - {x: 103.5, y: -168.5}
+    spritePhysicsOutline: []
     indices: 
     edges: []
-    tessellationDetail: 0.1
+    tessellationDetail: 0
     parentGroupIndex: -1
     uvTransform: {x: 204, y: -481}
   - name: Body
@@ -289,62 +215,10 @@ ScriptedImporter:
     spriteBone: []
     spriteOutline: []
     vertices: []
-    spritePhysicsOutline:
-    - outline:
-      - {x: 194.5, y: -161.5}
-      - {x: 201.5, y: -129.5}
-      - {x: 219.5, y: -123.5}
-      - {x: 227.5, y: -95.5}
-      - {x: 171.5, y: -39.5}
-      - {x: 159.5, y: -4.5}
-      - {x: 172.5, y: 6.5}
-      - {x: 174.5, y: 20.5}
-      - {x: 158.5, y: 58.5}
-      - {x: 174.5, y: 56.5}
-      - {x: 222.5, y: 74.5}
-      - {x: 239.5, y: 92.5}
-      - {x: 251.5, y: 116.5}
-      - {x: 251.5, y: 156.5}
-      - {x: 206.5, y: 208.5}
-      - {x: 189.5, y: 218.5}
-      - {x: 173.5, y: 220.5}
-      - {x: 109.5, y: 202.5}
-      - {x: 93.5, y: 223.5}
-      - {x: 66.5, y: 240.5}
-      - {x: 35.5, y: 248.5}
-      - {x: -35.5, y: 248.5}
-      - {x: -77.5, y: 236.5}
-      - {x: -99.5, y: 221.5}
-      - {x: -107.5, y: 202.5}
-      - {x: -163.5, y: 219.5}
-      - {x: -186.5, y: 219.5}
-      - {x: -217.5, y: 197.5}
-      - {x: -251.5, y: 152.5}
-      - {x: -251.5, y: 123.5}
-      - {x: -243.5, y: 91.5}
-      - {x: -251.5, y: 75.5}
-      - {x: -251.5, y: 26.5}
-      - {x: -250.5, y: 23.5}
-      - {x: -222.5, y: 1.5}
-      - {x: -183.5, y: 3.5}
-      - {x: -164.5, y: -5.5}
-      - {x: -163.5, y: -35.5}
-      - {x: -181.5, y: -66.5}
-      - {x: -219.5, y: -107.5}
-      - {x: -223.5, y: -122.5}
-      - {x: -200.5, y: -148.5}
-      - {x: -171.5, y: -198.5}
-      - {x: -132.5, y: -223.5}
-      - {x: -108.5, y: -234.5}
-      - {x: -43.5, y: -248.5}
-      - {x: 45.5, y: -248.5}
-      - {x: 95.5, y: -240.5}
-      - {x: 133.5, y: -222.5}
-      - {x: 165.5, y: -201.5}
-      - {x: 178.5, y: -190.5}
+    spritePhysicsOutline: []
     indices: 
     edges: []
-    tessellationDetail: 0.1
+    tessellationDetail: 0
     parentGroupIndex: -1
     uvTransform: {x: -245, y: -112}
   platformSettings: []

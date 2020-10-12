@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1948700978225365818}
   - component: {fileID: 5198799281095744076}
   m_Layer: 0
-  m_Name: Ground
+  m_Name: Constructed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -552,11 +552,12 @@ MonoBehaviour:
   constructionArea:
     constructionTick: 0
     constructionTickMax: 4
-  groundTilemap: {fileID: 1948700978225365818}
-  wallTilemap: {fileID: 0}
+  tilemap: {fileID: 1948700978225365818}
   constructionProgressBar: {fileID: 7772306586856992666}
   xSize: 5
   ySize: 5
+  cellSize: 1
+  wallTileParent: {fileID: 0}
   facingDirection: 0
   cropBlueprint: {fileID: 5610693161667060007, guid: 7c872bcf1d29d5c4d943e52b7d0ad5d1,
     type: 3}

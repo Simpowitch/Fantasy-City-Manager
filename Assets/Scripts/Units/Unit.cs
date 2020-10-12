@@ -36,17 +36,7 @@ public abstract class Unit : MonoBehaviour
 
     public Task currentTask;
 
-    //public Inventory Inventory { get; private set; } = new Inventory();
-    CityResource resourceCarried; 
-    public CityResource ResourceCarried 
-    { 
-        get => resourceCarried; 
-        set
-        {
-            resourceCarried = value;
-            unitAnimator.SetIsCarrying(value);
-        }
-    }
+    public Inventory inventory = new Inventory();
     public float Happiness { protected set; get; }
 
     private void OnEnable()
@@ -159,12 +149,6 @@ public abstract class Unit : MonoBehaviour
     public class IdleState : State
     {
         public IdleState(Unit unit) : base(unit) { }
-
-        public override void EnterState()
-        {
-            base.EnterState();
-            unit.UnitAnimator.PlayIdleAnimation(Vector3.zero);
-        }
 
         public override void DuringState()
         {
