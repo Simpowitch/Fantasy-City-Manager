@@ -11,6 +11,7 @@ public class UnitAnimator : MonoBehaviour
     [SerializeField] SpriteRenderer lFoot = null;
     [SerializeField] SpriteRenderer rHand = null;
     [SerializeField] SpriteRenderer rFoot = null;
+    [SerializeField] SpriteRenderer itemRenderer = null;
 
     [SerializeField] Sprite[] bodies = new Sprite[3];
     [SerializeField] Sprite[] heads = new Sprite[3];
@@ -31,17 +32,19 @@ public class UnitAnimator : MonoBehaviour
 
     [Header("Animations")]
     [SerializeField] Animator animator = null;
-    [SerializeField] string idle = "idle";
-    [SerializeField] string walkUp = "walkUp";
-    [SerializeField] string walkRight = "walkRight";
-    [SerializeField] string walkDown = "walkDown";
-    [SerializeField] string walkLeft = "walkLeft";
 
+    [SerializeField] string xDir = "xDir";
+    [SerializeField] string yDir = "yDir";
+
+    [SerializeField] string idle = "idle";
     [SerializeField] string harvest = "harvest";
     [SerializeField] string chop = "chop";
     [SerializeField] string mine = "mine";
     [SerializeField] string plant = "plant";
     [SerializeField] string build = "build";
+
+    [SerializeField] string isWalking = "walking";
+    [SerializeField] string isCarrying = "carrying";
 
     string lastTag;
 
@@ -50,9 +53,19 @@ public class UnitAnimator : MonoBehaviour
         lastTag = idle;
     }
 
+    public void SetIsCarrying(CityResource cityResource)
+    {
+        animator.SetBool(isCarrying, cityResource != null);
+        bool haveItem = cityResource != null;
+        if (haveItem)
+            itemRenderer.sprite = cityResource.Sprite;
+        itemRenderer.enabled = haveItem;
+    }
+
     public void PlayIdleAnimation(Vector3 dir)
     {
         ChangeSpriteDirection(Direction2D.S);
+        animator.SetBool(isWalking, false);
         if (lastTag == idle)
             return;
         lastTag = idle;
@@ -62,11 +75,12 @@ public class UnitAnimator : MonoBehaviour
     public void PlayWalkAnimation(Vector3 dir)
     {
         Direction2D direction = ChangeSpriteDirection(dir);
-        string newTag = GetWalkTag(direction);
-        if (lastTag == newTag)
-            return;
-        lastTag = newTag;
-        animator.SetTrigger(lastTag);
+
+        Vector3 normalizedDir = dir.normalized;
+
+        animator.SetBool(isWalking, true);
+        animator.SetFloat(xDir, normalizedDir.x);
+        animator.SetFloat(yDir, normalizedDir.y);
     }
 
 
@@ -198,26 +212,5 @@ public class UnitAnimator : MonoBehaviour
             lHand.sprite = lHands[spriteIndex];
         if (rHands.Length > 0)
             rHand.sprite = rHands[spriteIndex];
-    }
-
-    private string GetWalkTag(Direction2D direction)
-    {
-        switch (direction)
-        {
-            case Direction2D.N:
-                return walkUp;
-            case Direction2D.NE:
-            case Direction2D.E:
-            case Direction2D.SE:
-                return walkRight;
-            case Direction2D.S:
-                return walkDown;
-            case Direction2D.SW:
-            case Direction2D.W:
-            case Direction2D.NW:
-                return walkLeft;
-            default:
-                return "";
-        }
     }
 }
