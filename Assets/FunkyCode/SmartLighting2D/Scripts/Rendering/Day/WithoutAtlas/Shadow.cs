@@ -29,7 +29,7 @@ namespace Rendering.Day.WithoutAtlas {
 
             float intensity = Lighting2D.dayLightingSettings.softness.intensity;
             bool softness = Lighting2D.dayLightingSettings.softness.enable;
-            
+
             for(int i = 0; i < colliderCount; i++) {
                 id = colliderList[i];
                 
@@ -76,6 +76,7 @@ namespace Rendering.Day.WithoutAtlas {
             }
 
             GL.End();
+
         }
     }
 }

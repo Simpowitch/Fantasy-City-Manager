@@ -449,9 +449,7 @@ MonoBehaviour:
     employmentName: City Guard
   workTaskThoughtHeader: 
   workTaskDescription: 
-  workTaskTiles:
-  - {fileID: 1327430351588961195}
-  - {fileID: 1968524437540078337}
+  workTaskTileParent: {fileID: 5479857108664079737}
 --- !u!61 &6260248930114242720
 BoxCollider2D:
   m_ObjectHideFlags: 0

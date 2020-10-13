@@ -18,7 +18,7 @@ MonoBehaviour:
       sortingLayer:
         Name: Lighting
         Order: 0
-      darknessColor: {r: 0, g: 0, b: 0, a: 0}
+      darknessColor: {r: 0, g: 0, b: 0, a: 1}
       lightingResolution: 0.25
       dayLayers:
         list: 00000000
@@ -30,9 +30,9 @@ MonoBehaviour:
     updateMethod: 0
   dayLightingSettings:
     enable: 1
-    alpha: 0.25
-    direction: 135
-    height: 1.25
+    alpha: 0.5
+    direction: 180
+    height: 0.5
     softness:
       enable: 1
       intensity: 0.2

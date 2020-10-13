@@ -4904,6 +4904,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1275141386484086533}
   - component: {fileID: 9142487583213940255}
+  - component: {fileID: 1588222628039417181}
   m_Layer: 0
   m_Name: Sapling
   m_TagString: Untagged
@@ -4976,6 +4977,29 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1588222628039417181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2226025227906683238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionDayLayer: 0
+  maskDayLayer: 0
+  shape:
+    maskType: 1
+    colliderType: 1
+    height: 1
+    transform: {fileID: 1275141386484086533}
+  normalMapMode:
+    textureType: 0
+    texture: {fileID: 0}
+    sprite: {fileID: 0}
 --- !u!1 &2801750103096360605
 GameObject:
   m_ObjectHideFlags: 0
@@ -4986,6 +5010,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8734403952255595946}
   - component: {fileID: 772716993964844511}
+  - component: {fileID: 59881627238692877}
   m_Layer: 0
   m_Name: Crown
   m_TagString: Untagged
@@ -5058,6 +5083,29 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &59881627238692877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2801750103096360605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionDayLayer: 0
+  maskDayLayer: 0
+  shape:
+    maskType: 1
+    colliderType: 1
+    height: 1
+    transform: {fileID: 8734403952255595946}
+  normalMapMode:
+    textureType: 0
+    texture: {fileID: 0}
+    sprite: {fileID: 0}
 --- !u!1 &2904798994162249705
 GameObject:
   m_ObjectHideFlags: 0
@@ -5068,6 +5116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4126432427127268066}
   - component: {fileID: 6327632280671839676}
+  - component: {fileID: 1831102024401501139}
   m_Layer: 0
   m_Name: Trunk
   m_TagString: Untagged
@@ -5140,6 +5189,29 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1831102024401501139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2904798994162249705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionDayLayer: 0
+  maskDayLayer: 0
+  shape:
+    maskType: 1
+    colliderType: 1
+    height: 1
+    transform: {fileID: 4126432427127268066}
+  normalMapMode:
+    textureType: 0
+    texture: {fileID: 0}
+    sprite: {fileID: 0}
 --- !u!1 &3046353624999827794
 GameObject:
   m_ObjectHideFlags: 0
@@ -15184,6 +15256,7 @@ GameObject:
   - component: {fileID: 8165718655437847784}
   - component: {fileID: 8165718655437847785}
   - component: {fileID: 1656733261085762768}
+  - component: {fileID: 3696206767942889714}
   m_Layer: 0
   m_Name: Stump
   m_TagString: Untagged
@@ -15282,3 +15355,26 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.3934103, y: 0.117020845}
   m_EdgeRadius: 0
+--- !u!114 &3696206767942889714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8165718655437847787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionDayLayer: 0
+  maskDayLayer: 0
+  shape:
+    maskType: 1
+    colliderType: 1
+    height: 1
+    transform: {fileID: 8165718655437847784}
+  normalMapMode:
+    textureType: 0
+    texture: {fileID: 0}
+    sprite: {fileID: 0}

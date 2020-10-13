@@ -144,10 +144,12 @@ public class LightingManager2D : LightingMonoBehaviour {
 		foreach(DayLightingCollider2D collider in DayLightingCollider2D.GetList()) {
 			collider.UpdateLoop();
 		}
+
 		
 		foreach(LightingCollider2D collider in LightingCollider2D.GetList()) {
 			collider.UpdateLoop();
 		}
+
 
 		foreach(LightingSource2D source in LightingSource2D.GetList()) {
 			source.UpdateLoop();

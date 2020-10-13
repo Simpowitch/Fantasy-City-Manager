@@ -28,4 +28,9 @@ public class Task
         OnArrival?.Invoke();
         ActionTimer.PlayPause(true);
     }
+
+    public static Task CreateIdleTask(string description, string thought, Vector3 position)
+    {
+        return new Task(description, thought, new ActionTimer(1, null, false), position);
+    }
 }

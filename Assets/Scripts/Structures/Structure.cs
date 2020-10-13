@@ -165,22 +165,6 @@ public abstract class Structure : MonoBehaviour
 
     private void SetupObjectTiles()
     {
-        ////Change pathfinding cost to indoor cost of all tiles
-        //foreach (ObjectTile tile in ObjectTiles)
-        //{
-        //    city.RoadNetwork.AddRoad(tile.CenteredWorldPosition, RoadNetwork.GroundType.Indoor);
-        //}
-
-
-        ////Set walls to non-walkable tiles
-        //if (wallTileParent != null)
-        //{
-        //    for (int i = 0; i < wallTileParent.childCount; i++)
-        //    {
-        //        city.RoadNetwork.ChangeWalkable(wallTileParent.GetChild(i).position, false);
-        //    }
-        //}
-
         StructureTiles = new List<ObjectTile>();
         groundTiles = new List<ObjectTile>();
         wallTiles = new List<ObjectTile>();
@@ -269,21 +253,6 @@ public abstract class Structure : MonoBehaviour
     public virtual void Despawn()
     {
         DayNightSystem.OnPartOfTheDayChanged -= PartOfDayChange;
-
-        ////Change pathfinding cost to outdoor cost of all tiles
-        //foreach (var item in ObjectTiles)
-        //{
-        //    city.RoadNetwork.AddRoad(item.CenteredWorldPosition, RoadNetwork.GroundType.Grass);
-        //}
-
-        ////Set walls to walkable tiles
-        //if (wallTileParent != null)
-        //{
-        //    for (int i = 0; i < wallTileParent.childCount; i++)
-        //    {
-        //        city.RoadNetwork.ChangeWalkable(wallTileParent.GetChild(i).position, true);
-        //    }
-        //}
 
         //Change pathfinding cost to indoor cost of all tiles
         foreach (ObjectTile tile in groundTiles)

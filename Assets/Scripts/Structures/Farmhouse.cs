@@ -66,7 +66,7 @@ public class Farmhouse : GoodsProducer
             ActionTimer collectTimer = new ActionTimer(5f, () =>
                 {
                     CityResource cityResource = nearestCrop.Harvest();
-                    citizen.ResourceCarried =cityResource;
+                    citizen.ResourceCarried = cityResource;
                 }
             , false);
 
@@ -79,12 +79,6 @@ public class Farmhouse : GoodsProducer
             Debug.LogError("No task could be created, no crops found");
             return null;
         }
-    }
-
-    private Task GetIdleTask(Citizen citizen)
-    {
-        ActionTimer collectTimer = new ActionTimer(2f, null, false);
-        return new Task("Idle", "I have nothing to do!", collectTimer, Utility.ReturnRandom(workTaskTiles).position);
     }
 }
 

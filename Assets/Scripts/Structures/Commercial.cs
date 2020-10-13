@@ -10,7 +10,8 @@ public class Commercial : Workplace, INeedProvider
     [Header("Patreon Task setup")]
     [SerializeField] protected string patreonTaskThoughtHeader = "";
     [SerializeField] protected string patreonTaskDescription = "";
-    [SerializeField] protected Transform[] patreonTaskTiles = null;
+    [SerializeField] Transform patreonTaskTileParent = null;
+    protected PatreonTaskTile[] PatreonTaskTiles { get; private set; } = null;
 
     public List<Need.NeedType> NeedTypes => providedNeeds;
 
@@ -38,18 +39,19 @@ public class Commercial : Workplace, INeedProvider
                     break;
             }
         }
+
+        //Set up patreon task tiles
+        PatreonTaskTiles = new PatreonTaskTile[patreonTaskTileParent.childCount];
+        for (int i = 0; i < PatreonTaskTiles.Length; i++)
+        {
+            PatreonTaskTiles[i] = new PatreonTaskTile(city.ObjectGrid.GetGridObject(patreonTaskTileParent.GetChild(i).position));
+        }
     }
 
     public override void Despawn()
     {
         base.city.commercialBuidlings.Remove(this);
         base.Despawn();
-    }
-
-    public override Task GetWorkTask(Citizen citizen)
-    {
-        ActionTimer onTaskEnd = new ActionTimer(3f, null, false);
-        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(workTaskTiles).position);
     }
 
     public Task CreateSatisfyNeedTask(Unit unit, Need needToSatisfy)
@@ -60,11 +62,32 @@ public class Commercial : Workplace, INeedProvider
             return null;
         }
 
-        ActionTimer onTaskEnd = new ActionTimer(3f, () =>
+        PatreonTaskTile freeTile = Utility.ReturnRandomElementWithCondition(PatreonTaskTiles, (tile) => !tile.Occupied);
+        if (freeTile != null)
         {
-            needToSatisfy.Satisfy();
-            city.cityStats.Inventory.TryToRemove(consumedOfPatreon);
-        }, false);
-        return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, Utility.ReturnRandom(patreonTaskTiles).position);
+            freeTile.Occupied = true;
+
+            ActionTimer onTaskEnd = new ActionTimer(3f, () =>
+            {
+                needToSatisfy.Satisfy();
+                city.cityStats.Inventory.TryToRemove(consumedOfPatreon);
+                freeTile.Occupied = false;
+            }, false);
+            return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition);
+        }
+        else
+            return Task.CreateIdleTask("Waiting", $"The {transform.name} is too crowded", unit.transform.position);
+    }
+
+
+    protected class PatreonTaskTile
+    {
+        public ObjectTile ObjectTile { get; private set; }
+        public bool Occupied { get; set; }
+
+        public PatreonTaskTile(ObjectTile objectTile)
+        {
+            ObjectTile = objectTile;
+        }
     }
 }

@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1718922722777156607}
   - component: {fileID: -1917913653600958901}
   - component: {fileID: 1333763123294108211}
-  - component: {fileID: 9071363322994153504}
   m_Layer: 0
   m_Name: Stone
   m_TagString: Untagged
@@ -156,31 +155,6 @@ MonoBehaviour:
     textureType: 0
     texture: {fileID: 0}
     sprite: {fileID: 0}
---- !u!114 &9071363322994153504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5132961994826326783}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d49409fd39a1d5647b5d964a9747d4b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lightingCollisionLayer: 0
-  lightingMaskLayer: 0
-  maskEffect: 0
-  shape:
-    colliderType: 1
-    maskType: 1
-    gameObject: {fileID: 5132961994826326783}
-    transform: {fileID: 4817760357077662986}
-  normalMapMode:
-    type: 0
-    textureType: 0
-    texture: {fileID: 0}
-    sprite: {fileID: 0}
 --- !u!1 &8706725727731644760
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,7 +205,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

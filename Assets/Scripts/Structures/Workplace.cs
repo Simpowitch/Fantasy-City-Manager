@@ -14,7 +14,8 @@ public abstract class Workplace : Structure
     [Header("Patreon Task setup")]
     [SerializeField] protected string workTaskThoughtHeader = "";
     [SerializeField] protected string workTaskDescription = "";
-    [SerializeField] protected Transform[] workTaskTiles = null;
+    [SerializeField] Transform workTaskTileParent = null;
+    protected WorkplaceTaskTile[] WorkplaceTaskTiles { get; private set; } = null;
 
 
     public List<Employment> Employments { get => employments; private set => employments = value; }
@@ -55,6 +56,13 @@ public abstract class Workplace : Structure
             employment.workplace = this;
         }
         Clock.OnHourChanged += NewHour;
+
+        //Set up work task tiles
+        WorkplaceTaskTiles = new WorkplaceTaskTile[workTaskTileParent.childCount];
+        for (int i = 0; i < WorkplaceTaskTiles.Length; i++)
+        {
+            WorkplaceTaskTiles[i] = new WorkplaceTaskTile(city.ObjectGrid.GetGridObject(workTaskTileParent.GetChild(i).position));
+        }
     }
 
     protected override void UnitVisiting(Unit unitVisiting)
@@ -78,5 +86,52 @@ public abstract class Workplace : Structure
         base.Despawn();
     }
 
-    public abstract Task GetWorkTask(Citizen citizen);
+    public virtual Task GetWorkTask(Citizen citizen)
+    {
+        WorkplaceTaskTile freeTile = Utility.ReturnRandomElementWithCondition(WorkplaceTaskTiles, (tile) => !tile.Occupied);
+        if (freeTile != null)
+        {
+            freeTile.Occupied = true;
+        ActionTimer onTaskEnd = new ActionTimer(3f, () =>
+        {
+            freeTile.Occupied = false;
+        }, false);
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition);
+        }
+        else
+        {
+            Debug.LogError("No free worktiles, is the number of workers higher than the available tiles?");
+            return null;
+        }
+    }
+
+    protected Task GetIdleTask(Citizen citizen)
+    {
+        ActionTimer collectTimer = new ActionTimer(2f, null, false);
+
+        WorkplaceTaskTile freeTile = Utility.ReturnRandomElementWithCondition(WorkplaceTaskTiles, (tile) => !tile.Occupied);
+        if (freeTile != null)
+        {
+            freeTile.Occupied = true;
+            return new Task("Idle", "I have nothing to do!", new ActionTimer(1f, () =>
+            {
+                freeTile.Occupied = false;
+            }, false), freeTile.ObjectTile.CenteredWorldPosition);
+        }
+        else
+        {
+            return Task.CreateIdleTask("Idle", "I have nothing to do!", citizen.transform.position);
+        }
+    }
+
+    protected class WorkplaceTaskTile
+    {
+        public ObjectTile ObjectTile { get; private set; }
+        public bool Occupied { get; set; }
+
+        public WorkplaceTaskTile(ObjectTile objectTile)
+        {
+            ObjectTile = objectTile;
+        }
+    }
 }

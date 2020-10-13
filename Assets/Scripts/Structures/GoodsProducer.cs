@@ -30,7 +30,7 @@ public class GoodsProducer : Workplace
             citizen.ResourceCarried = null;
         }
             , false);
-        Vector3 pos = Utility.ReturnRandom(workTaskTiles).position;
+        Vector3 pos = Utility.ReturnRandom(WorkplaceTaskTiles).ObjectTile.CenteredWorldPosition;
         Vector3 dir = pos - citizen.transform.position;
         return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), leaveResource, pos, () => citizen.UnitAnimator.PlayCarryNoObjectAnimation());
     }
@@ -70,11 +70,5 @@ public class GoodsProducer : Workplace
                 break;
         }
         return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, pos, onArrivalMethod);
-    }
-
-    private Task GetIdleTask(Citizen citizen)
-    {
-        ActionTimer collectTimer = new ActionTimer(2f, null, false);
-        return new Task("Idle", "I have nothing to do!", collectTimer, Utility.ReturnRandom(workTaskTiles).position);
     }
 }
