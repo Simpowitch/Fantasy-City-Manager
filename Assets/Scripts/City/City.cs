@@ -111,13 +111,8 @@ public class City : MonoBehaviour
 
     void ConfirmBuildingPlacements(Structure structure)
     {
-        structure.AnchorPoint = structure.transform.position;
         structure.Load(this);
-        
-        foreach (ObjectTile item in structure.StructureTiles)
-        {
-            item.Structure = structure;
-        }
+        structure.AnchorPoint = structure.transform.position;
     }
     public void AddConstructionArea(Structure unfinishedStructure)
     {

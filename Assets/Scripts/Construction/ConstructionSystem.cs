@@ -62,7 +62,7 @@ public class ConstructionSystem : MonoBehaviour
         switch (constructionMode)
         {
             case Mode.Off:
-                break; 
+                break;
             case Mode.Road:
                 constructionInformation.SetText(GetRoadCostString());
                 break;
@@ -184,9 +184,10 @@ public class ConstructionSystem : MonoBehaviour
     public bool CanConstructPreviewStructure(out string explanation, out string constructionCost)
     {
         bool canConstruct = true;
-        List<ObjectTile> objectTiles = ObjectGrid.GetGridObjects(structurePreview.LowerLeftCorner, structurePreview.UpperRightCorner);
+        if (structurePreview.StructureTiles == null)
+            structurePreview.AnalyzeTiles();
         explanation = "";
-        if (objectTiles == null)
+        if (structurePreview.StructureTiles == null)
         {
             if (explanation != "")
             {
@@ -195,7 +196,7 @@ public class ConstructionSystem : MonoBehaviour
             explanation += "Improper location";
             canConstruct = false;
         }
-        foreach (ObjectTile tile in objectTiles)
+        foreach (ObjectTile tile in structurePreview.StructureTiles)
         {
             if (!tile.IsFree)
             {
@@ -252,7 +253,7 @@ public class ConstructionSystem : MonoBehaviour
     {
         Vector3Int cellTilemapPosition = roadTilemap.WorldToCell(tilePosition);
         roadTilemap.SetTile(cellTilemapPosition, roadTiles[constructionIndex]);
-        RoadNetwork.AddRoad(tilePosition, (RoadNetwork.GroundType) constructionIndex);
+        RoadNetwork.AddRoad(tilePosition, (RoadNetwork.GroundType)constructionIndex);
 
         city.cityStats.Inventory.TryToRemove(roadCosts[constructionIndex].ResourceCosts);
     }
@@ -275,11 +276,6 @@ public class ConstructionSystem : MonoBehaviour
 
         spawnedBuilding.BuildConstructionArea(city);
 
-        List<ObjectTile> objectTiles = ObjectGrid.GetGridObjects(spawnedBuilding.LowerLeftCorner, spawnedBuilding.UpperRightCorner);
-        foreach (ObjectTile item in objectTiles)
-        {
-            item.Structure = spawnedBuilding;
-        }
         city.cityStats.Inventory.TryToRemove(structurePreview.ConstructionCost.ResourceCosts);
     }
 
@@ -288,14 +284,7 @@ public class ConstructionSystem : MonoBehaviour
         ObjectTile objectTile = ObjectGrid.GetGridObject(centeredWorldPosition);
         Structure foundBuilding = objectTile.Structure;
         if (foundBuilding != null)
-        {
-            List<ObjectTile> objectTiles = ObjectGrid.GetGridObjects(foundBuilding.LowerLeftCorner, foundBuilding.UpperRightCorner);
-            foreach (ObjectTile item in objectTiles)
-            {
-                item.Structure = null;
-            }
             foundBuilding.Despawn();
-        }
     }
     #endregion
 }
