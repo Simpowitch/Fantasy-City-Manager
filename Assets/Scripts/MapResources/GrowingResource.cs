@@ -8,7 +8,7 @@ public class GrowingResource : ResourceObject
     ActionTimer growTimer;
     [SerializeField] Animator animator = null;
     string growAnimationName = "Grow";
-    string harvestCompletedAnimationName = "HarvestEnd";
+    string harvestCompletedAnimationName = "Harvested";
     string harvestingAnimationName = "Harvesting";
 
     public override void Spawned(ResourceObjectNetwork network, ObjectTile objectTile)
