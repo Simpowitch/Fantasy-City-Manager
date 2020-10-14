@@ -61,6 +61,6 @@ public class Residence : Structure, INeedProvider
         {
             needToSatisfy.Satisfy();
         }, false);
-        return new Task("Going to bed", ThoughtFileReader.GetText(unit.UnitPersonality, "Sleeping"), onTaskEnd, bedTile.position);
+        return new Task("Going to bed", ThoughtFileReader.GetText(unit.UnitPersonality, "Sleeping"), onTaskEnd, bedTile.position, UnitAnimator.ActionAnimation.Idle);
     }
 }

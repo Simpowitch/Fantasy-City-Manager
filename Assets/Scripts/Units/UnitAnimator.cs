@@ -12,7 +12,8 @@ public class UnitAnimator : MonoBehaviour
         Mine,
         PlantSeed,
         Build,
-        Drink
+        Drink,
+        ServingTavern
     }
 
     [Header("Renderers and sprites")]
@@ -47,7 +48,7 @@ public class UnitAnimator : MonoBehaviour
     [SerializeField] string isWalking = "walking";
     [SerializeField] string isCarrying = "carrying";
 
-    ActionAnimation lastAnimationTag = ActionAnimation.Idle;
+    string lastAnimationTag = ActionAnimation.Idle.ToString();
     Direction2D lastDirection;
 
 
@@ -56,17 +57,6 @@ public class UnitAnimator : MonoBehaviour
         animator.SetBool(isCarrying, cityResource != null);
         itemRenderer.sprite = cityResource != null ? cityResource.Sprite : null;
     }
-
-    //public void PlayIdleAnimation(Vector3 dir)
-    //{
-    //    ChangeSpriteDirection(dir);
-    //    animator.SetBool(isWalking, false);
-    //    if (lastTag == idle)
-    //        return;
-    //    lastTag = idle;
-    //    animator.SetTrigger(lastTag);
-    //    itemRenderer.enabled = true;
-    //}
 
     public void PlayWalkAnimation(Vector3 dir)
     {
@@ -78,6 +68,7 @@ public class UnitAnimator : MonoBehaviour
         animator.SetFloat(xDir, normalizedDir.x);
         animator.SetFloat(yDir, normalizedDir.y);
         itemRenderer.enabled = true;
+        lastAnimationTag = "Walking";
     }
 
     public void PlayActionAnimation(ActionAnimation actionAnimation) => PlayActionAnimation(Vector3.zero, actionAnimation);
@@ -120,13 +111,21 @@ public class UnitAnimator : MonoBehaviour
             case ActionAnimation.Mine:
             case ActionAnimation.PlantSeed:
             case ActionAnimation.Build:
+            case ActionAnimation.ServingTavern:
                 ChangeSpriteDirection(Direction2D.S);
                 break;
         }
-        if (lastAnimationTag == actionAnimation)
+        if (dir != Vector3.zero)
+        {
+            Vector3 normalizedDir = dir.normalized;
+            animator.SetFloat(xDir, normalizedDir.x);
+            animator.SetFloat(yDir, normalizedDir.y);
+        }
+        if (lastAnimationTag == actionAnimation.ToString())
             return;
-        lastAnimationTag = actionAnimation;
+        lastAnimationTag = actionAnimation.ToString();
         animator.SetTrigger(lastAnimationTag.ToString());
+        animator.SetBool(isWalking, false);
 
         switch (actionAnimation)
         {
@@ -139,66 +138,17 @@ public class UnitAnimator : MonoBehaviour
             case ActionAnimation.Mine:
             case ActionAnimation.PlantSeed:
             case ActionAnimation.Build:
+            case ActionAnimation.ServingTavern:
                 itemRenderer.enabled = false;
                 break;
         }
     }
 
-    //public void PlayHarvestFoodAnimation(Vector3 dir)
-    //{
-    //    ChangeSpriteDirection(Direction2D.S);
-    //    if (lastTag == harvest)
-    //        return;
-    //    lastTag = harvest;
-    //    animator.SetTrigger(lastTag);
-    //    itemRenderer.enabled = false;
-    //}
-
-    //public void PlayMiningAnimation(Vector3 dir)
-    //{
-    //    ChangeSpriteDirection(Direction2D.S);
-    //    if (lastTag == mine)
-    //        return;
-    //    lastTag = mine;
-    //    animator.SetTrigger(lastTag);
-    //    itemRenderer.enabled = false;
-    //}
-
-    //public void PlayWoodChopAnimation(Vector3 dir)
-    //{
-    //    ChangeSpriteDirection(Direction2D.S);
-    //    if (lastTag == chop)
-    //        return;
-    //    lastTag = chop;
-    //    animator.SetTrigger(lastTag);
-    //    itemRenderer.enabled = false;
-    //}
-
-    //public void PlayPlantSeedAnimation(Vector3 dir)
-    //{
-    //    ChangeSpriteDirection(Direction2D.S);
-    //    if (lastTag == plant)
-    //        return;
-    //    lastTag = plant;
-    //    animator.SetTrigger(lastTag);
-    //    itemRenderer.enabled = false;
-    //}
-
-    //public void PlayBuildAnimation(Vector3 dir)
-    //{
-    //    ChangeSpriteDirection(Direction2D.S);
-    //    if (lastTag == build)
-    //        return;
-    //    lastTag = build;
-    //    animator.SetTrigger(lastTag);
-    //    itemRenderer.enabled = false;
-    //}
-
     //Converts a vector to a direction and then calls for sprite changes
     private void ChangeSpriteDirection(Vector3 dir)
     {
         Direction2D direction;
-        if (dir == Vector3.zero) 
+        if (dir == Vector3.zero)
             direction = lastDirection; //Keep the old direction
         else
             direction = Utility.GetDirection(this.transform.position, this.transform.position + dir); //Calculate new direction

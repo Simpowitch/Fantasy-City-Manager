@@ -193,6 +193,13 @@ public abstract class Unit : MonoBehaviour
         {
             unit.canvasController.ShowProgressbar(true);
             unit.currentTask.Arrived();
+
+            //Animation
+            if (unit.currentTask.SetAnimationDirection)
+                unit.UnitAnimator.PlayActionAnimation(unit.currentTask.Direction, unit.currentTask.TaskAnimation);
+            else
+                unit.UnitAnimator.PlayActionAnimation(unit.currentTask.TaskAnimation);
+
             unit.SendThought(unit.currentTask.Thought);
             base.EnterState();
         }

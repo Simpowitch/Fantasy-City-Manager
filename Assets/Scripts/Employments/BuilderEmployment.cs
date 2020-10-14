@@ -31,12 +31,12 @@ public class BuilderEmployment : Employment
             ActionTimer onTaskEndTimer = new ActionTimer(BUILDTIME, WorkAction, false);
             Vector3 pos = targetStructure.GetRandomLocation();
             Vector3 dir = pos - citizen.transform.position;
-            return new Task("Constructing", ThoughtFileReader.GetText(citizen.UnitPersonality, "constructing"), onTaskEndTimer, pos, () => citizen.UnitAnimator.PlayActionAnimation(dir, UnitAnimator.ActionAnimation.Build));
+            return new Task("Constructing", ThoughtFileReader.GetText(citizen.UnitPersonality, "constructing"), onTaskEndTimer, pos, UnitAnimator.ActionAnimation.Build);
         }
         else //No unfinished structures
         {
             Debug.LogError("Tried to get task when unfinished structures are less than 1");
-            return new Task("Practicing hammering nails", ThoughtFileReader.GetText(citizen.UnitPersonality, ""), new ActionTimer(3, null, false), citizen.transform.position);
+            return new Task("Practicing hammering nails", ThoughtFileReader.GetText(citizen.UnitPersonality, ""), new ActionTimer(3, null, false), citizen.transform.position, UnitAnimator.ActionAnimation.Build);
         }
     }
 

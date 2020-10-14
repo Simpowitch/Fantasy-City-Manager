@@ -44,9 +44,9 @@ public class PlayerCharacter : MonoBehaviour, IViewable
             ActionDescription = "Moving";
             moving.Satisfy();
         }
-        else
+        else if (ActionDescription != "Idle")
         {
-            unitAnimator.PlayActionAnimation(aim, UnitAnimator.ActionAnimation.Idle);
+            unitAnimator.PlayActionAnimation(aim-transform.position, UnitAnimator.ActionAnimation.Idle);
             ActionDescription = "Idle";
         }
     }
