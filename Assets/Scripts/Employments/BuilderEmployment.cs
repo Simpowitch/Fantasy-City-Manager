@@ -31,7 +31,7 @@ public class BuilderEmployment : Employment
             ActionTimer onTaskEndTimer = new ActionTimer(BUILDTIME, WorkAction, false);
             Vector3 pos = targetStructure.GetRandomLocation();
             Vector3 dir = pos - citizen.transform.position;
-            return new Task("Constructing", ThoughtFileReader.GetText(citizen.UnitPersonality, "constructing"), onTaskEndTimer, pos, () => citizen.UnitAnimator.PlayBuildAnimation(dir));
+            return new Task("Constructing", ThoughtFileReader.GetText(citizen.UnitPersonality, "constructing"), onTaskEndTimer, pos, () => citizen.UnitAnimator.PlayActionAnimation(dir, UnitAnimator.ActionAnimation.Build));
         }
         else //No unfinished structures
         {

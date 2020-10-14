@@ -107,7 +107,7 @@ public abstract class Unit : MonoBehaviour
         else
         {
             movementSystem.SetVelocity(Vector3.zero);
-            unitAnimator.PlayIdleAnimation(Vector3.zero);
+            unitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.Idle);
             if (currentTask != null && currentTask.HasArrived(transform.position))
                 ChangeState(new TaskState(this));
             else
@@ -163,7 +163,7 @@ public abstract class Unit : MonoBehaviour
         public override void EnterState()
         {
             base.EnterState();
-            unit.UnitAnimator.PlayIdleAnimation(Vector3.zero);
+            unit.UnitAnimator.PlayActionAnimation(Vector3.zero, UnitAnimator.ActionAnimation.Idle);
         }
 
         public override void DuringState()

@@ -41,7 +41,7 @@ public class Farmhouse : GoodsProducer
             }, false);
             Vector3 pos = freeFarmTile.ObjectTile.CenteredWorldPosition;
             Vector3 dir = pos - citizen.transform.position;
-            return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), plantSeed, pos, () => citizen.UnitAnimator.PlayPlantSeedAnimation(dir));
+            return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), plantSeed, pos, () => citizen.UnitAnimator.PlayActionAnimation(dir, UnitAnimator.ActionAnimation.PlantSeed));
         }
         else
         {
@@ -72,7 +72,7 @@ public class Farmhouse : GoodsProducer
 
             Vector3 pos = nearestCrop.transform.position;
             Vector3 dir = pos - citizen.transform.position;
-            return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, pos, () => citizen.UnitAnimator.PlayHarvestFoodAnimation(dir));
+            return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, pos, () => citizen.UnitAnimator.PlayActionAnimation(dir, UnitAnimator.ActionAnimation.Harvest));
         }
         else
         {

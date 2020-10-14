@@ -55,14 +55,14 @@ public class GoodsProducer : Workplace
                 onArrivalMethod = () =>
                 {
                     closestObject.StartHarvesting();
-                    citizen.UnitAnimator.PlayMiningAnimation(dir);
+                    citizen.UnitAnimator.PlayActionAnimation(dir, UnitAnimator.ActionAnimation.Mine);
                 };
                 break;
             case CityResource.Type.Wood:
                 onArrivalMethod = () =>
                     {
                         closestObject.StartHarvesting();
-                        citizen.UnitAnimator.PlayWoodChopAnimation(dir);
+                        citizen.UnitAnimator.PlayActionAnimation(dir, UnitAnimator.ActionAnimation.ChopWood);
                     };
                 break;
             case CityResource.Type.Food:

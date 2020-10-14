@@ -29,8 +29,8 @@ public class Task
         ActionTimer.PlayPause(true);
     }
 
-    public static Task CreateIdleTask(string description, string thought, Vector3 position)
+    public static Task CreateIdleTask(string description, string thought, Vector3 position, Unit unit)
     {
-        return new Task(description, thought, new ActionTimer(1, null, false), position);
+        return new Task(description, thought, new ActionTimer(1, null, false), position, () => unit.UnitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.Idle));
     }
 }

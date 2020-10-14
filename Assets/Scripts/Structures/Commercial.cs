@@ -44,7 +44,7 @@ public class Commercial : Workplace, INeedProvider
         PatreonTaskTiles = new PatreonTaskTile[patreonTaskTileParent.childCount];
         for (int i = 0; i < PatreonTaskTiles.Length; i++)
         {
-            PatreonTaskTiles[i] = new PatreonTaskTile(city.ObjectGrid.GetGridObject(patreonTaskTileParent.GetChild(i).position));
+            PatreonTaskTiles[i] = new PatreonTaskTile(city.ObjectGrid.GetGridObject(patreonTaskTileParent.GetChild(i).position), patreonTaskTileParent.GetChild(i));
         }
     }
 
@@ -73,10 +73,10 @@ public class Commercial : Workplace, INeedProvider
                 city.cityStats.Inventory.TryToRemove(consumedOfPatreon);
                 freeTile.Occupied = false;
             }, false);
-            return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition);
+            return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition, () => unit.UnitAnimator.PlayActionAnimation(freeTile.ForwardDirection, UnitAnimator.ActionAnimation.Drink));
         }
         else
-            return Task.CreateIdleTask("Waiting", $"The {transform.name} is too crowded", unit.transform.position);
+            return Task.CreateIdleTask("Waiting", $"The {transform.name} is too crowded", unit.transform.position, unit);
     }
 
 
@@ -85,9 +85,12 @@ public class Commercial : Workplace, INeedProvider
         public ObjectTile ObjectTile { get; private set; }
         public bool Occupied { get; set; }
 
-        public PatreonTaskTile(ObjectTile objectTile)
+        public Direction2D ForwardDirection { get; private set; }
+
+        public PatreonTaskTile(ObjectTile objectTile, Transform transform)
         {
             ObjectTile = objectTile;
+            ForwardDirection = Utility.GetDirection(transform);
         }
     }
 }

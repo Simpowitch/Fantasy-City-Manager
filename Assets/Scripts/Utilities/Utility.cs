@@ -291,6 +291,8 @@ public static class Utility
         return angleDegrees;
     }
 
+    public static Direction2D GetDirection(Transform transform) => GetDirection(transform.position, transform.position + transform.up);
+
     public static Direction2D GetDirection(Vector2 from, Vector2 to)
     {
         float degrees = GetCompassDegree(from, to);
@@ -311,6 +313,7 @@ public static class Utility
         }
         return Direction2D.N;
     }
+
 
     public static bool IsDiagonal(Direction2D direction) => direction == Direction2D.NE || direction == Direction2D.SE || direction == Direction2D.SW || direction == Direction2D.NW;
 

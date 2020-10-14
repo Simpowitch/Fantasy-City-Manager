@@ -61,7 +61,7 @@ public abstract class Workplace : Structure
         WorkplaceTaskTiles = new WorkplaceTaskTile[workTaskTileParent != null ? workTaskTileParent.childCount : 0];
         for (int i = 0; i < WorkplaceTaskTiles.Length; i++)
         {
-            WorkplaceTaskTiles[i] = new WorkplaceTaskTile(city.ObjectGrid.GetGridObject(workTaskTileParent.GetChild(i).position));
+            WorkplaceTaskTiles[i] = new WorkplaceTaskTile(city.ObjectGrid.GetGridObject(workTaskTileParent.GetChild(i).position), workTaskTileParent.GetChild(i));
         }
     }
 
@@ -116,11 +116,11 @@ public abstract class Workplace : Structure
             return new Task("Idle", "I have nothing to do!", new ActionTimer(1f, () =>
             {
                 freeTile.Occupied = false;
-            }, false), freeTile.ObjectTile.CenteredWorldPosition);
+            }, false), freeTile.ObjectTile.CenteredWorldPosition, () => citizen.UnitAnimator.PlayActionAnimation(freeTile.ForwardDirection, UnitAnimator.ActionAnimation.Idle));
         }
         else
         {
-            return Task.CreateIdleTask("Idle", "I have nothing to do!", citizen.transform.position);
+            return Task.CreateIdleTask("Idle", "I have nothing to do!", citizen.transform.position, citizen);
         }
     }
 
@@ -128,10 +128,12 @@ public abstract class Workplace : Structure
     {
         public ObjectTile ObjectTile { get; private set; }
         public bool Occupied { get; set; }
+        public Direction2D ForwardDirection { get; private set; }
 
-        public WorkplaceTaskTile(ObjectTile objectTile)
+        public WorkplaceTaskTile(ObjectTile objectTile, Transform transform)
         {
             ObjectTile = objectTile;
+            ForwardDirection = Utility.GetDirection(transform);
         }
     }
 }
