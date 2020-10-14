@@ -23,7 +23,6 @@ public class GoodsProducer : Workplace
 
     protected Task GetLeaveResourceTask(Citizen citizen)
     {
-        //citizen.UnitAnimator.PlayCarryObjectAnimation(acceptedResourceType);
         ActionTimer leaveResource = new ActionTimer(2f, () =>
         {
             city.cityStats.Inventory.Add(citizen.ResourceCarried);
@@ -32,7 +31,7 @@ public class GoodsProducer : Workplace
             , false);
         Vector3 pos = Utility.ReturnRandom(WorkplaceTaskTiles).ObjectTile.CenteredWorldPosition;
         Vector3 dir = pos - citizen.transform.position;
-        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), leaveResource, pos);
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), leaveResource, pos, UnitAnimator.ActionAnimation.Idle);
     }
 
     private Task GetHarvestTask(Citizen citizen, List<ResourceObject> harvestableResources)
@@ -47,6 +46,7 @@ public class GoodsProducer : Workplace
         Vector3 pos = closestObject.transform.position;
         Vector3 dir = pos - citizen.transform.position;
         Action onArrivalMethod = null;
+        UnitAnimator.ActionAnimation taskAnimation = UnitAnimator.ActionAnimation.Idle;
         switch (acceptedResourceType)
         {
             case CityResource.Type.Gold:
@@ -55,20 +55,20 @@ public class GoodsProducer : Workplace
                 onArrivalMethod = () =>
                 {
                     closestObject.StartHarvesting();
-                    citizen.UnitAnimator.PlayActionAnimation(dir, UnitAnimator.ActionAnimation.Mine);
+                    taskAnimation = UnitAnimator.ActionAnimation.Mine;
                 };
                 break;
             case CityResource.Type.Wood:
                 onArrivalMethod = () =>
                     {
                         closestObject.StartHarvesting();
-                        citizen.UnitAnimator.PlayActionAnimation(dir, UnitAnimator.ActionAnimation.ChopWood);
+                        taskAnimation = UnitAnimator.ActionAnimation.ChopWood;
                     };
                 break;
             case CityResource.Type.Food:
                 Debug.LogError("Not implemented");
                 break;
         }
-        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, pos, onArrivalMethod);
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), collectTimer, pos, taskAnimation);
     }
 }

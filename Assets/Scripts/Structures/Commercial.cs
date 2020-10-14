@@ -73,10 +73,10 @@ public class Commercial : Workplace, INeedProvider
                 city.cityStats.Inventory.TryToRemove(consumedOfPatreon);
                 freeTile.Occupied = false;
             }, false);
-            return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition, () => unit.UnitAnimator.PlayActionAnimation(freeTile.ForwardDirection, UnitAnimator.ActionAnimation.Drink));
+            return new Task(patreonTaskDescription, ThoughtFileReader.GetText(unit.UnitPersonality, patreonTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition, UnitAnimator.ActionAnimation.Drink, true, freeTile.ForwardDirection);
         }
         else
-            return Task.CreateIdleTask("Waiting", $"The {transform.name} is too crowded", unit.transform.position, unit);
+            return Task.CreateIdleTask("Waiting", $"The {transform.name} is too crowded", unit.transform.position);
     }
 
 

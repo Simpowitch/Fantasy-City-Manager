@@ -96,7 +96,7 @@ public abstract class Workplace : Structure
         {
             freeTile.Occupied = false;
         }, false);
-        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition);
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition, UnitAnimator.ActionAnimation.Idle);
         }
         else
         {
@@ -116,11 +116,11 @@ public abstract class Workplace : Structure
             return new Task("Idle", "I have nothing to do!", new ActionTimer(1f, () =>
             {
                 freeTile.Occupied = false;
-            }, false), freeTile.ObjectTile.CenteredWorldPosition, () => citizen.UnitAnimator.PlayActionAnimation(freeTile.ForwardDirection, UnitAnimator.ActionAnimation.Idle));
+            }, false), freeTile.ObjectTile.CenteredWorldPosition, UnitAnimator.ActionAnimation.Idle);
         }
         else
         {
-            return Task.CreateIdleTask("Idle", "I have nothing to do!", citizen.transform.position, citizen);
+            return Task.CreateIdleTask("Idle", "I have nothing to do!", citizen.transform.position);
         }
     }
 
