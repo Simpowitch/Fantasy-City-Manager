@@ -19,7 +19,7 @@ MonoBehaviour:
         Name: Lighting
         Order: 0
       darknessColor: {r: 0, g: 0, b: 0, a: 0}
-      lightingResolution: 0.25
+      lightingResolution: 1
       dayLayers:
         list: 00000000
       nightLayers:
@@ -31,8 +31,8 @@ MonoBehaviour:
   dayLightingSettings:
     enable: 1
     alpha: 0.5
-    direction: 180
-    height: 0.5
+    direction: 255
+    height: 1.75
     softness:
       enable: 1
       intensity: 0.2

@@ -9,7 +9,14 @@ public class DayNightViewer : MonoBehaviour
     public Color[] dayFilters = new Color[DayNightSystem.PARTSOFTHEDAY];
     public float fluidChangeTime = 5f;
 
+    int sunUpStart = 4;
+    int sunUpEnd = 8;
+    int sunDownStart = 18;
+    int sunDownEnd = 22;
+    int hoursBetweenStartAndEnd = 4;
+
     int sunHighHour = 12, hoursBetweenHighAndLow = 6;
+    [SerializeField] float darknessAlphaMin = 0, darknessAlphaMax = 0.75f;
     [SerializeField] float sunAlphaMin = 0, sunAlphaMax = 0.5f;
     [SerializeField] float heightMin = 0, heightMax = 4;
     const int sunDayRotationDegrees = 360;
@@ -74,13 +81,36 @@ public class DayNightViewer : MonoBehaviour
     private void HourChanged(int newHour)
     {
         int hoursFromSunHigh = Mathf.Abs(newHour - sunHighHour);
-        float daylightPercentage = (float) (hoursBetweenHighAndLow - hoursFromSunHigh) / hoursBetweenHighAndLow;
+        float sunPositionPercentage = (float) (hoursBetweenHighAndLow - hoursFromSunHigh) / hoursBetweenHighAndLow;
+
+        float sunStrengthPercentage = 0;
+        if (newHour >= sunUpStart && newHour < sunDownEnd) //Not in the night
+        {
+            if (newHour >= sunUpEnd && newHour < sunDownStart) //Middle of the day
+                sunStrengthPercentage = 1;
+            else
+            {
+                if (newHour >= sunUpStart && newHour <= sunUpEnd) //Morning
+                {
+                    int hoursToFull = Mathf.Abs(sunUpEnd - newHour);
+                    sunStrengthPercentage = (float)(hoursBetweenStartAndEnd - hoursToFull) / hoursBetweenStartAndEnd;
+                }
+                else
+                {
+                    int hoursToDark = Mathf.Abs(sunDownEnd - newHour);
+                    sunStrengthPercentage = 1 - (float)(hoursBetweenStartAndEnd - hoursToDark) / hoursBetweenStartAndEnd;
+                }
+            }
+        }
 
         float newDirection = DegreesPerHour * newHour;
-        float newAlpha = Mathf.Lerp(sunAlphaMin, sunAlphaMax, daylightPercentage);
-        float newHeight = Mathf.Lerp(heightMax, heightMin, daylightPercentage);
+        float newAlpha = Mathf.Lerp(sunAlphaMin, sunAlphaMax, sunStrengthPercentage);
+        float newHeight = Mathf.Lerp(heightMax, heightMin, sunPositionPercentage); //Reversed
+        float newDarknessAlpha = Mathf.Lerp(darknessAlphaMax, darknessAlphaMin, sunStrengthPercentage); //Reversed
 
-        
+        Color newColor = Lighting2D.Profile.DarknessColor;
+        newColor.a = newDarknessAlpha;
+        Lighting2D.Profile.DarknessColor = newColor;
 
         if (hoursFromSunHigh > hoursBetweenHighAndLow) //Darkness
         {
