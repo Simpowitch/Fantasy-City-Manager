@@ -23,11 +23,28 @@ public abstract class Structure : MonoBehaviour
     [SerializeField] protected int ySize = 1;
     float CellSize { get => city != null ? city.CellSize : 1f; }
     [SerializeField] Transform blockerObjectParent = null;
-    ObjectTile[] blockerObjects = null;
+    ObjectTile[] objectBlockedTiles = null;
+    [SerializeField] Transform finalPathPositionParent = null;
+    ObjectTile[] finalPathTiles = null;
 
     List<ObjectTile> groundTiles;
     List<ObjectTile> wallTiles;
-    public List<ObjectTile> StructureTiles { get; private set; }
+    List<ObjectTile> structureTiles;
+    public List<ObjectTile> StructureTiles
+    {
+        get
+        {
+            if (analyzeTilesFlag)
+                AnalyzeTiles();
+            return structureTiles;
+        }
+        set
+        {
+            analyzeTilesFlag = false;
+            structureTiles = value;
+        }
+    }
+    bool analyzeTilesFlag = true;
 
     protected City city;
     Vector3 rotationOffset;
@@ -58,7 +75,7 @@ public abstract class Structure : MonoBehaviour
             }
             transform.position = anchorPoint + rotationOffset;
 
-            AnalyzeTiles();
+            analyzeTilesFlag = true;
         }
     }
 
@@ -70,7 +87,7 @@ public abstract class Structure : MonoBehaviour
             anchorPoint = value;
             transform.position = value + rotationOffset;
 
-            AnalyzeTiles();
+            analyzeTilesFlag = true;
         }
     }
 
@@ -142,8 +159,6 @@ public abstract class Structure : MonoBehaviour
         this.city = city;
         constructionArea.Setup(() => Constructed(city, true));
         city.AddConstructionArea(this);
-        if (StructureTiles == null || StructureTiles.Count < 1)
-            AnalyzeTiles();
         ChangeTiles(true);
     }
 
@@ -155,14 +170,18 @@ public abstract class Structure : MonoBehaviour
         this.city = city;
         DayNightSystem.OnPartOfTheDayChanged += PartOfDayChange;
         city.RemoveConstructionArea(this);
-
-        if (StructureTiles == null || StructureTiles.Count < 1)
-            AnalyzeTiles();
         ChangeTiles(true);
     }
 
+    public void MakePreview(City city)
+    {
+        SetTransparent(true);
+        this.city = city;
+        AnalyzeTiles();
+    }
+
     //Calculates all the different tiles occupied by objects, floors, walls etc.
-    public void AnalyzeTiles()
+    private void AnalyzeTiles()
     {
         StructureTiles = new List<ObjectTile>();
         groundTiles = new List<ObjectTile>();
@@ -203,10 +222,17 @@ public abstract class Structure : MonoBehaviour
         }
 
         //Blocker tiles
-        blockerObjects = new ObjectTile[blockerObjectParent != null ? blockerObjectParent.childCount : 0];
-        for (int i = 0; i < blockerObjects.Length; i++)
+        objectBlockedTiles = new ObjectTile[blockerObjectParent != null ? blockerObjectParent.childCount : 0];
+        for (int i = 0; i < objectBlockedTiles.Length; i++)
         {
-            blockerObjects[i] = city.ObjectGrid.GetGridObject(blockerObjectParent.GetChild(i).transform.position);
+            objectBlockedTiles[i] = city.ObjectGrid.GetGridObject(blockerObjectParent.GetChild(i).transform.position);
+        }
+
+        //Final path tiles
+        finalPathTiles = new ObjectTile[finalPathPositionParent != null ? finalPathPositionParent.childCount : 0];
+        for (int i = 0; i < finalPathTiles.Length; i++)
+        {
+            finalPathTiles[i] = city.ObjectGrid.GetGridObject(finalPathPositionParent.GetChild(i).transform.position);
         }
     }
 
@@ -225,16 +251,22 @@ public abstract class Structure : MonoBehaviour
             city.RoadNetwork.AddRoad(tile.CenteredWorldPosition, constructed ? RoadNetwork.GroundType.Indoor : RoadNetwork.GroundType.Grass);
         }
 
-        //Set walls tiles walkable/not walkable
+        //Set walls tiles to not walkable or free
         foreach (ObjectTile tile in wallTiles)
         {
-            city.RoadNetwork.ChangeWalkable(tile.CenteredWorldPosition, !constructed);
+            city.RoadNetwork.ChangeWalkable(tile.CenteredWorldPosition, constructed ? PathNode.MovementAllowance.Forbidden : PathNode.MovementAllowance.Free);
         }
 
-        //Set tiles with blockerobjects to walkable/non walkable
-        foreach (ObjectTile tile in blockerObjects)
+        //Set tiles with blockerobjects to not walkable or free
+        foreach (ObjectTile tile in objectBlockedTiles)
         {
-            city.RoadNetwork.ChangeWalkable(tile.CenteredWorldPosition, !constructed);
+            city.RoadNetwork.ChangeWalkable(tile.CenteredWorldPosition, constructed ? PathNode.MovementAllowance.Forbidden : PathNode.MovementAllowance.Free);
+        }
+
+        //Set tiles with final path positions to either finalpath marked or free
+        foreach (ObjectTile tile in finalPathTiles)
+        {
+            city.RoadNetwork.ChangeWalkable(tile.CenteredWorldPosition, constructed ? PathNode.MovementAllowance.OnlyFinal : PathNode.MovementAllowance.Free);
         }
     }
 

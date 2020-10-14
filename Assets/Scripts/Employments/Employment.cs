@@ -1,9 +1,10 @@
-﻿
+﻿using UnityEngine;
+
 [System.Serializable]
 public class Employment
 {
-    public Workplace workplace;
-    public Citizen employee;
+    [HideInInspector] public Workplace workplace;
+    [HideInInspector] public Citizen employee;
     public string employmentName = "worker";
 
     public void Employ(Citizen citizen) => employee = citizen;
