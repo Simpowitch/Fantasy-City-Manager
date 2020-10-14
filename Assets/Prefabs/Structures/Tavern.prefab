@@ -1240,6 +1240,7 @@ MonoBehaviour:
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Waiter
+  taskAnimation: 7
   workTaskThoughtHeader: TavernWork
   workTaskDescription: Working at the tavern
   workTaskTileParent: {fileID: 5898960331824159984}

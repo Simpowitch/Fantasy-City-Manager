@@ -10,6 +10,7 @@ public abstract class Workplace : Structure
 
     [Header("Workplace - Employments")]
     [SerializeField] List<Employment> employments = new List<Employment>();
+    [SerializeField] UnitAnimator.ActionAnimation taskAnimation = UnitAnimator.ActionAnimation.Idle;
 
     [Header("Patreon Task setup")]
     [SerializeField] protected string workTaskThoughtHeader = "";
@@ -96,7 +97,7 @@ public abstract class Workplace : Structure
         {
             freeTile.Occupied = false;
         }, false);
-        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition, UnitAnimator.ActionAnimation.Idle);
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), onTaskEnd, freeTile.ObjectTile.CenteredWorldPosition, taskAnimation, true, freeTile.ForwardDirection);
         }
         else
         {
