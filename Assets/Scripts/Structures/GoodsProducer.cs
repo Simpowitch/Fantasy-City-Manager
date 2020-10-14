@@ -23,7 +23,7 @@ public class GoodsProducer : Workplace
 
     protected Task GetLeaveResourceTask(Citizen citizen)
     {
-        citizen.UnitAnimator.PlayCarryObjectAnimation(acceptedResourceType);
+        //citizen.UnitAnimator.PlayCarryObjectAnimation(acceptedResourceType);
         ActionTimer leaveResource = new ActionTimer(2f, () =>
         {
             city.cityStats.Inventory.Add(citizen.ResourceCarried);
@@ -32,7 +32,7 @@ public class GoodsProducer : Workplace
             , false);
         Vector3 pos = Utility.ReturnRandom(WorkplaceTaskTiles).ObjectTile.CenteredWorldPosition;
         Vector3 dir = pos - citizen.transform.position;
-        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), leaveResource, pos, () => citizen.UnitAnimator.PlayCarryNoObjectAnimation());
+        return new Task(workTaskDescription, ThoughtFileReader.GetText(citizen.UnitPersonality, workTaskThoughtHeader), leaveResource, pos);
     }
 
     private Task GetHarvestTask(Citizen citizen, List<ResourceObject> harvestableResources)

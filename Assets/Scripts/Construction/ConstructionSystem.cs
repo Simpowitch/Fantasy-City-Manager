@@ -112,7 +112,7 @@ public class ConstructionSystem : MonoBehaviour
         {
             Structure spawnedBuilding = Instantiate(structures[constructionIndex], structureParent);
             structurePreview = spawnedBuilding;
-            structurePreview.SetTransparent(true);
+            structurePreview.MakePreview(city);
         }
         //Move preview object
         Vector3 lowerLeftPosition = ObjectGrid.GetWorldPosition(worldPosition, false);
@@ -184,8 +184,6 @@ public class ConstructionSystem : MonoBehaviour
     public bool CanConstructPreviewStructure(out string explanation, out string constructionCost)
     {
         bool canConstruct = true;
-        if (structurePreview.StructureTiles == null)
-            structurePreview.AnalyzeTiles();
         explanation = "";
         if (structurePreview.StructureTiles == null)
         {

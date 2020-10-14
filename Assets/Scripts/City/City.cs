@@ -6,7 +6,7 @@ public class City : MonoBehaviour
     [Header("Setup - Initializers")]
     [SerializeField] int xSize = 40, ySize = 15;
     public float CellSize { get; } = 1;
-    
+
     [SerializeField] int startGold = 10;
     [SerializeField] int startWood = 10;
     [SerializeField] int startStone = 10;
@@ -106,13 +106,13 @@ public class City : MonoBehaviour
             SpawnCitizen(residence);
         }
     }
-     
+
     public void Setup() => cityStats.Setup(startGold, startWood, startStone, startIron, startFood);
 
     void ConfirmBuildingPlacements(Structure structure)
     {
-        structure.Load(this);
         structure.AnchorPoint = structure.transform.position;
+        structure.Load(this);
     }
     public void AddConstructionArea(Structure unfinishedStructure)
     {
@@ -248,4 +248,15 @@ public class City : MonoBehaviour
         Task leaveTask = new Task("Leaving the city", ThoughtFileReader.GetText(unit.UnitPersonality, "leaveCity"), onTaskEnd, Utility.ReturnRandom(cityEntrances).position);
         return leaveTask;
     }
+
+    //private void OnDrawGizmos()
+    //{
+    //    if (ObjectGrid != null)
+    //    {
+    //        foreach (ObjectTile tile in ObjectGrid.gridArray)
+    //        {
+    //            tile.PrintStateToCanvasObject();
+    //        }
+    //    }
+    //}
 }

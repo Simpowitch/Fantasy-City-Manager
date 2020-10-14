@@ -1226,6 +1226,7 @@ MonoBehaviour:
   xSize: 14
   ySize: 6
   blockerObjectParent: {fileID: 4997611256799274884}
+  finalPathPositionParent: {fileID: 4355257341688255629}
   facingDirection: 0
   startShiftHour: 8
   endShiftHour: 18

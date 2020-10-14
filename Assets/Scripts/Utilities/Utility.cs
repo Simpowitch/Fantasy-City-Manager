@@ -197,7 +197,10 @@ public static class Utility
     public static T ReturnRandomElementWithCondition<T>(this IList<T> inList, params Func<T, bool>[] conditions)
     {
         IList<T> passedItems = new List<T>().PopulateListWithMatchingConditions(inList, conditions);
-        return passedItems[Random.Range(0, passedItems.Count)];
+        if (passedItems.Count > 0)
+            return passedItems[Random.Range(0, passedItems.Count)];
+        else
+            return default(T);
     }
 
     public static T ReturnElementWithCondition<T>(this IList<T> inList, Func<IList<T>, int> index, params Func<T, bool>[] conditions)

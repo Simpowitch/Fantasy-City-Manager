@@ -26,15 +26,16 @@ public class PathNode
         set;
     }
 
-    private bool isWalkable = true;
-    public bool IsWalkable
+    public enum MovementAllowance { Free, Forbidden, OnlyFinal }
+    private MovementAllowance movementAllowanceMode = MovementAllowance.Free;
+    public MovementAllowance MovementAllowanceMode
     {
-        private set
+        set
         {
-            isWalkable = value;
+            movementAllowanceMode = value;
             grid.TriggerGridObjectChanged(x, y);
         }
-        get => isWalkable;
+        get => movementAllowanceMode;
     }
 
     public PathNode cameFromNode;
@@ -53,8 +54,6 @@ public class PathNode
 
     public void CalculateFCost() => fCost = gCost + hCost;
 
-    public void ChangeIsWalkable(bool newState) => IsWalkable = newState;
-
     public void ChangeMovementPenalty(int newValue) => MovementPenalty = newValue;
 
     public override string ToString()
@@ -62,10 +61,18 @@ public class PathNode
         return x + "," + y;
     }
 
-    public static bool CanTravelToNeighbor(PathNode to, PathNode from, List<PathNode> fromNeighbors)
+    public static bool CanTravelToNeighbor(PathNode to, PathNode from, List<PathNode> fromNeighbors, bool toNodeIsEndNode)
     {
-        if (!to.IsWalkable)
-            return false;
+        if (toNodeIsEndNode)
+        {
+            if (to.movementAllowanceMode == MovementAllowance.Forbidden)
+                return false;
+        }
+        else
+        {
+            if (to.MovementAllowanceMode != MovementAllowance.Free)
+                return false;
+        }
         if (!fromNeighbors.Contains(to))
             return false;
         Direction2D direction = Utility.GetDirection(from.WorldPosition, to.WorldPosition);
@@ -73,7 +80,7 @@ public class PathNode
         {
             PathNode next = from.grid.GetGridObjectInDirection(from.WorldPosition, direction.Next());
             PathNode previous = from.grid.GetGridObjectInDirection(from.WorldPosition, direction.Previous());
-            return (next.IsWalkable && previous.IsWalkable);
+            return (next.MovementAllowanceMode == MovementAllowance.Free && previous.MovementAllowanceMode == MovementAllowance.Free);
         }
         else
             return true;

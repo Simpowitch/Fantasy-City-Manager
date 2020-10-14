@@ -80,10 +80,10 @@ public class RoadNetwork : MonoBehaviour
         }
     }
 
-    public void ChangeWalkable(Vector3 worldPosition, bool walkable)
+    public void ChangeWalkable(Vector3 worldPosition, PathNode.MovementAllowance walkType)
     {
         PathNode node = pathGrid.GetGridObject(worldPosition);
-        node.ChangeIsWalkable(walkable);
+        node.MovementAllowanceMode = walkType;
     }
 
     public void ShowPathfindingPenalties(bool enabled)

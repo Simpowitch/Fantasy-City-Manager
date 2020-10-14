@@ -50,6 +50,18 @@ public class ObjectTile
 
     public List<ObjectTile> GetNeighbors() => grid.GetNeighbourList(x, y);
 
+    public void PrintStateToCanvasObject()
+    {
+        string text = "";
+        if (IsFree)
+            text = "F";
+        if (Structure)
+            text = "S";
+        if (HasRoad)
+            text = "R";
+        CanvasTileObject.SetText(text);
+    }
+
     public override string ToString()
     {
         return $"X: {x}. Y: {y}";

@@ -58,7 +58,7 @@ public abstract class Workplace : Structure
         Clock.OnHourChanged += NewHour;
 
         //Set up work task tiles
-        WorkplaceTaskTiles = new WorkplaceTaskTile[workTaskTileParent.childCount];
+        WorkplaceTaskTiles = new WorkplaceTaskTile[workTaskTileParent != null ? workTaskTileParent.childCount : 0];
         for (int i = 0; i < WorkplaceTaskTiles.Length; i++)
         {
             WorkplaceTaskTiles[i] = new WorkplaceTaskTile(city.ObjectGrid.GetGridObject(workTaskTileParent.GetChild(i).position));

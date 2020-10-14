@@ -69,12 +69,18 @@ public class Pathfinding
             foreach (PathNode neighbourNode in neighbors)
             {
                 if (closedList.Contains(neighbourNode)) continue;
-                if (!neighbourNode.IsWalkable)
+
+                if (neighbourNode.MovementAllowanceMode == PathNode.MovementAllowance.Forbidden)
                 {
                     closedList.Add(neighbourNode);
                     continue;
                 }
-                if (!PathNode.CanTravelToNeighbor(neighbourNode, currentNode, neighbors)) //If we can't go diagonally
+                if (neighbourNode.MovementAllowanceMode == PathNode.MovementAllowance.OnlyFinal && neighbourNode != endNode)
+                {
+                    closedList.Add(neighbourNode);
+                    continue;
+                }
+                if (!PathNode.CanTravelToNeighbor(neighbourNode, currentNode, neighbors, neighbourNode == endNode)) //If we can't go diagonally to the next position
                 {
                     continue;
                 }
