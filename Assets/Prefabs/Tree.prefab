@@ -4915,12 +4915,12 @@ MonoBehaviour:
     maskType: 0
     colliderType: 2
     transform: {fileID: 2016455476920970684}
-    height: 1.25
+    height: 1
   shapes:
   - maskType: 0
     colliderType: 2
     transform: {fileID: 2016455476920970684}
-    height: 1.25
+    height: 1
   normalMapMode:
     textureType: 0
     texture: {fileID: 0}

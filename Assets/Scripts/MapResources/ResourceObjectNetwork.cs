@@ -49,25 +49,23 @@ public class ResourceObjectNetwork : MonoBehaviour
         timer -= Time.deltaTime;
         if (timer <= 0)
         {
-            ObjectTile freeTile = FindFreeObjectTile(type);
-            if (freeTile != null)
+            ObjectTile freeTile = null;
+            ResourceObject blueprint = null;
+            switch (type)
             {
-                ResourceObject blueprint = null;
-                switch (type)
-                {
-                    case CityResource.Type.Wood:
-                        blueprint = treeBlueprint;
-                        break;
-                    case CityResource.Type.Stone:
-                    case CityResource.Type.Iron:
-                    case CityResource.Type.Gold:
-                    case CityResource.Type.Food:
-                    default:
-                        Debug.LogError("Type not found");
-                        break;
-                }
-                SpawnObject(freeTile, blueprint);
+                case CityResource.Type.Wood:
+                    blueprint = treeBlueprint;
+                    freeTile = FindFreeObjectTile(type, true, 20);
+                    break;
+                case CityResource.Type.Stone:
+                case CityResource.Type.Iron:
+                case CityResource.Type.Gold:
+                case CityResource.Type.Food:
+                default:
+                    Debug.LogError("Type not found");
+                    break;
             }
+            SpawnObject(freeTile, blueprint);
 
             switch (type)
             {
@@ -93,23 +91,53 @@ public class ResourceObjectNetwork : MonoBehaviour
     }
 
     //Finds a free tile
-    private ObjectTile FindFreeObjectTile(CityResource.Type type)
+    private ObjectTile FindFreeObjectTile(CityResource.Type type, bool spawnNearOthersOfSameType = false, int spawnChancePercentageNearOther = 0)
     {
         List<ObjectTile> freeTiles = new List<ObjectTile>();
-        if (type == CityResource.Type.Wood && harvestableTrees.Count > 0 && Utility.RandomizeBool(25)) //Get Tile Near Other Trees. ONLY APLICABLE FOR TREES
+
+        if (spawnNearOthersOfSameType && Utility.RandomizeBool(spawnChancePercentageNearOther)) //Get Tile Near Other Trees. ONLY APLICABLE FOR TREES
         {
-            foreach (var tree in harvestableTrees)
+            List<ResourceObject> existingObjects = new List<ResourceObject>();
+
+            switch (type)
             {
-                ObjectTile tile = tree.ObjectTile;
-                foreach (var neighbor in tile.GetNeighbors())
+                case CityResource.Type.Gold:
+                    break;
+                case CityResource.Type.Wood:
+                    existingObjects.AddRange(harvestableTrees);
+                    break;
+                case CityResource.Type.Stone:
+                    existingObjects.AddRange(harvestableStones);
+                    break;
+                case CityResource.Type.Iron:
+                    break;
+                case CityResource.Type.Food:
+                    break;
+            }
+
+            if (existingObjects.Count > 0)
+            {
+                foreach (var resourceObject in existingObjects)
                 {
-                    if (neighbor.IsFree)
-                        freeTiles.Add(neighbor);
-                    //We intentionally don't check if it has already been added, this increases spawnrate for spots with multiple neighbor tiles with trees
+                    ObjectTile tile = resourceObject.ObjectTile;
+                    foreach (var neighbor in tile.GetNeighbors())
+                    {
+                        if (neighbor.IsFree)
+                            freeTiles.Add(neighbor);
+                        //We intentionally don't check if it has already been added, this increases spawnrate for spots with multiple neighbor tiles with trees
+                    }
+                }
+            }
+            else //No other objects of type exists yet - Get All free tiles on the map
+            {
+                foreach (var tile in objectGrid.gridArray)
+                {
+                    if (tile.IsFree)
+                        freeTiles.Add(tile);
                 }
             }
         }
-        else //Get Random free position on map
+        else //Get All free tiles on the map
         {
             foreach (var tile in objectGrid.gridArray)
             {
