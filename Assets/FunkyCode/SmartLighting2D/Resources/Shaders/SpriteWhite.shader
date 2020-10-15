@@ -1,9 +1,8 @@
-﻿Shader "SmartLighting2D/SpriteWhite" {
+﻿Shader "SmartLighting2D/SpriteMask" {
 	Properties
 	{
-		[PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+		_MainTex ("Sprite Texture", 2D) = "white" {}
 		_Color ("Tint", Color) = (1,1,1,1)
-		[MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
 	}
 
 	SubShader
@@ -25,12 +24,15 @@
 		Pass
 		{
 			
-		CGPROGRAM
+			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma multi_compile _ PIXELSNAP_ON
+	
 			#include "UnityCG.cginc"
-			
+		
+			fixed4 _Color;
+			sampler2D _MainTex;
+
 			struct appdata_t
 			{
 				float4 vertex   : POSITION;
@@ -44,8 +46,6 @@
 				fixed4 color    : COLOR;
 				float2 texcoord  : TEXCOORD0;
 			};
-			
-			fixed4 _Color;
 
 			v2f vert(appdata_t IN)
 			{
@@ -53,39 +53,23 @@
 				OUT.vertex = UnityObjectToClipPos(IN.vertex);
 				OUT.texcoord = IN.texcoord;
 				OUT.color = IN.color * _Color;
-				#ifdef PIXELSNAP_ON
-				OUT.vertex = UnityPixelSnap (OUT.vertex);
-				#endif
-
+		
 				return OUT;
-			}
-
-			sampler2D _MainTex;
-			sampler2D _AlphaTex;
-			float _AlphaSplitEnabled;
-
-			fixed4 SampleSpriteTexture (float2 uv)
-			{
-				fixed4 color = tex2D (_MainTex, uv);
-				color.r  = 1;
-				color.g  = 1;
-				color.b  = 1;
-
-				#if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
-
-
-				#endif //UNITY_TEXTURE_ALPHASPLIT_ALLOWED
-
-				return color;
 			}
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				fixed4 c = SampleSpriteTexture (IN.texcoord) * IN.color;
-				c.rgb *= c.a;
-				return c;
+				fixed4 color = tex2D (_MainTex, IN.texcoord);
+				color.r  = 1;
+				color.g  = 1;
+				color.b  = 1;
+
+				color *= IN.color;
+				color.rgb *= color.a;
+				
+				return color;
 			}
-		ENDCG
+			ENDCG
 		}
 	}
 }

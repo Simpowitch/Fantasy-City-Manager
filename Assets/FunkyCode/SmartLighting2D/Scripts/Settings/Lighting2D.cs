@@ -4,8 +4,8 @@ using UnityEngine;
 using LightingSettings;
 
 public class Lighting2D {
-	public const int VERSION = 114;
-	public const string VERSION_STRING = "1.1.4";
+	public const int VERSION = 116;
+	public const string VERSION_STRING = "1.1.6";
 
 	static public Lighting2DMaterials materials = new Lighting2DMaterials();
 

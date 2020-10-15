@@ -7,6 +7,7 @@ using UnityEditorInternal;
 using System.Reflection;
 using System;
 
+
 public class GUIFoldout {
 	static Dictionary<object, bool> dictionary = new Dictionary<object, bool>();
 
@@ -33,8 +34,52 @@ public class GUIFoldout {
 
 	static public bool Draw(string name, object Object) {
 		bool value = EditorGUILayout.Foldout(GetValue(Object), name );
+		SetValue(Object, value);
+		return(value);
+	}
+}
+
+public class GUIFoldoutHeader {
+	static Dictionary<object, bool> dictionary = new Dictionary<object, bool>();
+
+	static public bool GetValue(object Object) {
+		bool value = false;
+		bool exist = dictionary.TryGetValue(Object, out value);
+
+		if (exist == false) {
+			dictionary.Add(Object, value);
+		}
+
+		return(value);
+	}
+
+	static public void SetValue(object Object, bool value) {
+		bool resultVal;
+		bool exist = dictionary.TryGetValue(Object, out resultVal);
+
+		if (exist) {
+			dictionary.Remove(Object);
+			dictionary.Add(Object, value);
+		}
+	}
+
+	static public bool Begin(string name, object Object) {
+
+		#if UNITY_2019_1_OR_NEWER
+			bool value = EditorGUILayout.BeginFoldoutHeaderGroup(GetValue(Object), name);
+		#else
+			bool value = EditorGUILayout.Foldout(GetValue(Object), name);
+		#endif
+
         SetValue(Object, value);
 		return(value);
+	}
+
+	static public void End() {
+		
+		#if UNITY_2019_1_OR_NEWER
+			EditorGUILayout.EndFoldoutHeaderGroup();
+		#endif
 	}
 }
 
@@ -74,17 +119,17 @@ public class GUISortingLayer {
                 }
 
             }
-
+			
 			sortingLayer.Order = EditorGUILayout.IntField("Order", sortingLayer.Order);
 
 		EditorGUI.indentLevel--;
 	 }
 }
 
-public class GUIAdditiveMode {
+public class GUIMeshMode {
 
-    public static void Draw(AdditiveMode additiveMode) {
-		bool value = GUIFoldout.Draw("Additive Mode", additiveMode);
+    public static void Draw(MeshMode meshMode) {
+		bool value = GUIFoldout.Draw("Mesh Mode", meshMode);
         
 		if (value == false) {
 			return;
@@ -92,11 +137,17 @@ public class GUIAdditiveMode {
 
 		EditorGUI.indentLevel++;
 
-		additiveMode.enable = EditorGUILayout.Toggle("Enable", additiveMode.enable);
+		meshMode.enable = EditorGUILayout.Toggle("Enable", meshMode.enable);
 
-		additiveMode.alpha = EditorGUILayout.Slider("Alpha", additiveMode.alpha, 0, 1);
+		meshMode.alpha = EditorGUILayout.Slider("Alpha", meshMode.alpha, 0, 1);
 
-		GUISortingLayer.Draw(additiveMode.sortingLayer);
+		meshMode.shader = (MeshMode.MeshModeShader)EditorGUILayout.EnumPopup("Shader", meshMode.shader);
+
+		if (meshMode.shader == MeshMode.MeshModeShader.Custom) {
+			meshMode.material = (Material)EditorGUILayout.ObjectField(meshMode.material, typeof(Material), true);
+		}
+
+		GUISortingLayer.Draw(meshMode.sortingLayer);
 
 		EditorGUI.indentLevel--;
     }
@@ -104,7 +155,7 @@ public class GUIAdditiveMode {
 
 public class GUIBumpMapMode {
 	static public void Draw (NormalMapMode bumpMapMode) {
-		bool value = GUIFoldout.Draw("Normal Map Mode", bumpMapMode);
+		bool value = GUIFoldout.Draw("Mask Normal Map", bumpMapMode);
         
 		if (value == false) {
 			return;
@@ -132,7 +183,7 @@ public class GUIBumpMapMode {
 	}
 
 	static public void DrawDay (DayNormalMapMode bumpMapMode) {
-		bool value = GUIFoldout.Draw("Normal Map Mode", bumpMapMode);
+		bool value = GUIFoldout.Draw("Mask Normal Map", bumpMapMode);
         
 		if (value == false) {
 			return;

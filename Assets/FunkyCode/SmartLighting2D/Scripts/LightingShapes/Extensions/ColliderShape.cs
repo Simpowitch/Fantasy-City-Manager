@@ -5,6 +5,7 @@ using UnityEngine;
 namespace LightingShape {
 		
 	public class ColliderShape : Base {
+		public bool edgeCollider2D = false;
 
 		public float GetRadius() {
 			if (meshesRadius < 0) {
@@ -51,14 +52,14 @@ namespace LightingShape {
 				return(polygons_local);
 			}
 			
-			polygons_local = Polygon2DList.CreateFromGameObject (gameObject);
+			polygons_local = Polygon2DList.CreateFromGameObject (transform.gameObject);
 
 			if (polygons_local.Count > 0) {
 
-				edgeCollider2D = (gameObject.GetComponent<EdgeCollider2D>() != null);
+				edgeCollider2D = (transform.GetComponent<EdgeCollider2D>() != null);
 
-			} else {
-				Debug.LogWarning("SmartLighting2D: LightingCollider2D object is missing Collider2D Component", gameObject);
+			//} else {
+				//Debug.LogWarning("SmartLighting2D: LightingCollider2D object is missing Collider2D Component", transform);
 			}
 		
 			return(polygons_local);

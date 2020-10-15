@@ -12,20 +12,5 @@ public class Mesh3D : MonoBehaviour {
 	public string sortingLayerName; 
 	public int sortingOrder;
 
-	void Start () {
-		// Generate Mesh from collider
-		Polygon2D polygon = Polygon2DList.CreateFromGameObject (gameObject)[0];
-		if (polygon != null) {
-			polygon.CreateMesh3D(gameObject, size, Vector2.zero, Vector2.zero, triangulation);
-
-			// Setting Mesh material
-			if (material != null) {
-				MeshRenderer meshRenderer = GetComponent<MeshRenderer> ();
-				meshRenderer.material = material;
-			
-				meshRenderer.sortingLayerName = sortingLayerName;
-				meshRenderer.sortingOrder = sortingOrder;
-			}
-		}
-	}
+	
 }

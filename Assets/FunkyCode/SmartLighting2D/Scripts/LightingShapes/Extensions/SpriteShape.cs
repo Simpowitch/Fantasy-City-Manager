@@ -24,12 +24,12 @@ namespace LightingShape {
 				return(spriteRenderer);
 			}
 			
-			if (gameObject == null) {
+			if (transform == null) {
 				return(spriteRenderer);
 			}
 
 			if (spriteRenderer == null) {
-				spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+				spriteRenderer = transform.GetComponent<SpriteRenderer>();
 			}
 			
 			return(spriteRenderer);

@@ -23,35 +23,34 @@ namespace SuperTilemapEditorSupport {
                         return;
                     }
 
-
-                    Vector2 posScale = GetPositionScale(id);
-                    Vector2 scale = GetScale(id);
+                    Vector2 posScale = Vector2.one;
+                    Vector2 scale = Vector2.one;
                     Vector2 tilemapOffset = GetTilemapOffsetSTE(id);
                     Vector2 offset = -buffer.lightSource.transform.position;
 
-                    Vector2 polyOffset;
+                    Vector2 tilePosition = new Vector2();
             
                     foreach(TilemapCollider2D.STETile STETile in id.superTilemapEditor.SuperTilemapEditorMap.mapTiles) {
                         LightingTile tile = STETile.tile;
                         int x = STETile.position.x;
                         int y = STETile.position.y; 
 
-                        polyOffset.x = x + tilemapOffset.x;
-                        polyOffset.y = y + tilemapOffset.y;
+                        tilePosition.x = x + tilemapOffset.x;
+                        tilePosition.y = y + tilemapOffset.y;
 
-                        polyOffset.x *= posScale.x;
-                        polyOffset.y *= posScale.y;
+                        tilePosition.x *= posScale.x;
+                        tilePosition.y *= posScale.y;
 
-                        if (tile.InRange(polyOffset, buffer.lightSource.transform.position, 2 + buffer.lightSource.size)) {
+                        tilePosition.x += offset.x;
+                        tilePosition.y += offset.y;
+
+                        if (tile.InRange(tilePosition, 2 + buffer.lightSource.size)) {
                             continue;
                         }
 
-                        polyOffset.x += offset.x;
-                        polyOffset.y += offset.y;
-
                         material.mainTexture = id.superTilemapEditor.tilemapSTE.Tileset.AtlasTexture;
                         
-                        Rendering.Universal.WithoutAtlas.Texture.Draw(material, polyOffset, scale / 2, STETile.uv, 0, z);
+                        Rendering.Universal.WithoutAtlas.Texture.Draw(material, tilePosition, scale / 2, STETile.uv, 0, z);
             
                         material.mainTexture = null;
                     }	
@@ -77,13 +76,13 @@ namespace SuperTilemapEditorSupport {
                     return;
                 }
 
-                Vector2 posScale = GetPositionScale(id);
-                Vector2 scale = GetScale(id);
+                Vector2 posScale = Vector2.one;
+                Vector2 scale = Vector2.one;
                 Vector2 tilemapOffset = GetTilemapOffsetSTE(id);
                 Vector2 offset = -buffer.lightSource.transform.position;
                 MeshObject tileMesh = LightingTile.GetStaticTileMesh(id);
 
-                Vector2 polyOffset;
+                Vector2 tilePosition = new Vector2();
     
                 if (tileMesh == null) {
                     return;
@@ -96,20 +95,20 @@ namespace SuperTilemapEditorSupport {
                     int x = STETile.position.x;
                     int y = STETile.position.y;
             
-                    polyOffset.x = x + tilemapOffset.x;
-                    polyOffset.y = y + tilemapOffset.y;
+                    tilePosition.x = x + tilemapOffset.x;
+                    tilePosition.y = y + tilemapOffset.y;
 
-                    polyOffset.x *= posScale.x;
-                    polyOffset.y *= posScale.y;
+                    tilePosition.x *= posScale.x;
+                    tilePosition.y *= posScale.y;
 
-                    if (tile.InRange(polyOffset, buffer.lightSource.transform.position, 2 + buffer.lightSource.size)) {
+                    tilePosition.x += offset.x;
+                    tilePosition.y += offset.y;
+                    
+                    if (tile.InRange(tilePosition, 2 + buffer.lightSource.size)) {
                         continue;
                     }
 
-                    polyOffset.x += offset.x;
-                    polyOffset.y += offset.y;
-
-                    GLExtended.DrawMeshPass(tileMesh, polyOffset, scale, 0);		
+                    GLExtended.DrawMeshPass(tileMesh, tilePosition, scale, 0);		
                 }
             }
 
@@ -133,12 +132,13 @@ namespace SuperTilemapEditorSupport {
                     return;
                 }
 
-                Vector2 posScale = GetPositionScale(id);
-                Vector2 scale = GetScale(id);
+                Vector2 posScale = Vector2.one;// id.transform.lossyScale;
+                Vector2 scale = Vector2.one; //id.transform.lossyScale;
                 Vector2 tilemapOffset = GetTilemapOffsetSTE(id);
                 Vector2 offset = -buffer.lightSource.transform.position;
 
-                Vector2 polyOffset;
+                List<Polygon2D> polygons;
+                Vector2 tilePosition = new Vector2();
 
                 foreach(TilemapCollider2D.STETile STETile in id.superTilemapEditor.SuperTilemapEditorMap.mapTiles) {
                     LightingTile tile = STETile.tile;
@@ -149,27 +149,27 @@ namespace SuperTilemapEditorSupport {
                         continue;
                     }
 
-                    polyOffset.x = (STETile.position.x + tilemapOffset.x) * posScale.x;
-                    polyOffset.y = (STETile.position.y + tilemapOffset.y) * posScale.y;
- 
-                    if (tile.InRange(polyOffset, buffer.lightSource.transform.position, 2 + buffer.lightSource.size)) {
+                    tilePosition.x = STETile.position.x * posScale.x + tilemapOffset.x;
+                    tilePosition.y = STETile.position.y * posScale.y + tilemapOffset.y;
+
+                    tilePosition.x += offset.x;
+                    tilePosition.y += offset.y;
+
+                    if (tile.InRange(tilePosition, 2 + buffer.lightSource.size)) {
                         continue;
                     }
 
-                    polyOffset.x += offset.x;
-                    polyOffset.y += offset.y;
-
-                    Rendering.Light.Shadow.Polygon.Draw(buffer, polygons, lightSizeSquared, z, polyOffset, scale);
+                    Rendering.Light.Shadow.Main.Draw(buffer, polygons, lightSizeSquared, z, tilePosition, scale);
                 }
             }
 
             static public Vector2 GetTilemapOffsetSTE(LightingTilemapCollider2D id) {
                 Vector2 tilemapOffset;
-                tilemapOffset.x = id.transform.position.x + id.properties.area.position.x + id.properties.cellAnchor.x;
-                tilemapOffset.y = id.transform.position.y + id.properties.area.position.y + id.properties.cellAnchor.y;
+                tilemapOffset.x = id.transform.position.x + id.superTilemapEditor.properties.area.position.x + id.superTilemapEditor.properties.cellAnchor.x;
+                tilemapOffset.y = id.transform.position.y + id.superTilemapEditor.properties.area.position.y + id.superTilemapEditor.properties.cellAnchor.y;
 
-                tilemapOffset.x -= id.properties.area.size.x / 2;
-                tilemapOffset.y -= id.properties.area.size.y / 2;
+                tilemapOffset.x -= id.superTilemapEditor.properties.area.size.x / 2;
+                tilemapOffset.y -= id.superTilemapEditor.properties.area.size.y / 2;
                 return(tilemapOffset);
             }
 

@@ -20,7 +20,7 @@ public class LightingSpriteRenderer2D : MonoBehaviour {
 
 	public TransformOffset transformOffset = new TransformOffset();
 
-	public AdditiveMode additiveMode = new AdditiveMode();
+	public MeshMode meshMode = new MeshMode();
 
 	public GlowMode glowMode = new GlowMode();
 
@@ -95,23 +95,32 @@ public class LightingSpriteRenderer2D : MonoBehaviour {
 	}
 
 	public void LateUpdate() {
-		spriteRenderer.flipX = flipX;
-		spriteRenderer.flipY = flipY;
+		if (spriteMode == SpriteMode.SpriteRenderer) {
+			SpriteRenderer sr = GetSpriteRenderer();
+			if (sr != null) {
+				spriteRenderer.flipX = sr.flipX;
+				spriteRenderer.flipY = sr.flipY;		
+			}
+		} else {
+			spriteRenderer.flipX = flipX;
+			spriteRenderer.flipY = flipY;	
+		}
+		
 
 		spriteRenderer.sprite = GetSprite();
 		spriteRenderer.color = color;
 
-		if (additiveMode.enable) {
+		if (meshMode.enable) {
 			DrawMesh();
 		}
 	}
 
 	public void DrawMesh() {
-		if (additiveMode.enable) {
+		if (meshMode.enable) {
 			LightingMeshRenderer lightingMesh = MeshRendererManager.Pull(this);
 
 			if (lightingMesh != null) {
-				lightingMesh.UpdateLightSprite(this);
+				lightingMesh.UpdateLightSprite(this, meshMode);
 			}
 		}
 	}

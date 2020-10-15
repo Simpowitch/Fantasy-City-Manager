@@ -10,9 +10,9 @@ public class LightingRoomShape {
     public ColliderShape colliderShape = new ColliderShape();
 	public SpriteShape spriteShape = new SpriteShape();
 
-    public void SetGameObject(GameObject g) {
-		colliderShape.SetGameObject(g);
-		spriteShape.SetGameObject(g);
+    public void SetTransform(Transform t) {
+		colliderShape.SetTransform(t);
+		spriteShape.SetTransform(t);
 	}
 
     public void ResetLocal() {

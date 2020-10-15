@@ -32,12 +32,12 @@ namespace LightingShape {
 		}
         
 		public SpriteRenderer GetSpriteRenderer() {
-			if (gameObject == null) {
+			if (transform == null) {
 				return(spriteRenderer);
 			}
 
 			if (spriteRenderer == null) {
-				spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+				spriteRenderer = transform.GetComponent<SpriteRenderer>();
 			}
 
 			return(spriteRenderer);
@@ -214,7 +214,6 @@ namespace LightingShape {
 				}
 
 				polygons_local = customPhysicsShape.Get();
-				edgeCollider2D = false;
 
 			#endif
 

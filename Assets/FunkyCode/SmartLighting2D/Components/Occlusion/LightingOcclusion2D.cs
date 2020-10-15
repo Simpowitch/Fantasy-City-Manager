@@ -21,6 +21,9 @@ public class LightingOcclusion2D : MonoBehaviour {
 
             occlusionGameObject = gameObject;
         }
+        if (occlusionGameObject) {
+            occlusionGameObject.transform.localPosition = new Vector3(0, 0, 0);
+        }
         return(occlusionGameObject);
     }
 
@@ -56,7 +59,7 @@ public class LightingOcclusion2D : MonoBehaviour {
 	}
 
     public void OnEnable() {
-        shape.SetGameObject(gameObject); 
+        shape.SetTransform(transform); 
 		Initialize();
 	}
 

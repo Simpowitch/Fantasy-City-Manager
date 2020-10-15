@@ -9,6 +9,16 @@ public class LightingMaterial {
 
     private Material material = null;
 
+    static public LightingMaterial Load(Material material) {
+        LightingMaterial lightingMaterial = new LightingMaterial();
+
+        //lightingMaterial.path = material.name;
+
+        lightingMaterial.material = material;;
+        
+        return(lightingMaterial);
+    }
+
     static public LightingMaterial Load(string path) {
         LightingMaterial lightingMaterial = new LightingMaterial();
 

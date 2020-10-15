@@ -24,8 +24,6 @@ MonoBehaviour:
       - Night Layer 1
       - Night Layer 2
       - Night Layer 3
-      - Night Layer 4
-      - Night Layer 5
     dayLayers:
       names:
       - Day Layer 1
@@ -38,8 +36,11 @@ MonoBehaviour:
     spriteAtlasPreloadFoldersCount: 0
     spriteAtlasPreloadFolders:
     - 
+  sceneView:
+    drawGizmos: 1
+    layer: 8
   lightingBufferSettings:
-    fixedLightTextureSize: 1
+    fixedLightTextureSize: 2
     lightingBufferPreloadCount: 0
   coreAxis: 0
   triangulation: 0

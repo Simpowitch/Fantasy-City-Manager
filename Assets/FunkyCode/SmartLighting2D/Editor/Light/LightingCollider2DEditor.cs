@@ -12,21 +12,33 @@ public class LightingCollider2DEditor : Editor {
 	override public void OnInspectorGUI() {
 		LightingCollider2D script = target as LightingCollider2D;
 
-		script.shape.colliderType = (LightingCollider2D.ColliderType)EditorGUILayout.EnumPopup("Shadow Type", script.shape.colliderType);
+		script.mainShape.colliderType = (LightingCollider2D.ColliderType)EditorGUILayout.EnumPopup("Shadow Type", script.mainShape.colliderType);
 		
 
-		EditorGUI.BeginDisabledGroup(script.shape.colliderType == LightingCollider2D.ColliderType.None);
+		EditorGUI.BeginDisabledGroup(script.mainShape.colliderType == LightingCollider2D.ColliderType.None);
 		
 		script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
 
+		string shadowDistanceName = "Shadow Distance";
+
+		if (script.mainShape.shadowDistance == 0) {
+			shadowDistanceName = "Shadow Distance (infinite)";
+		}
+
+		script.mainShape.shadowDistance = EditorGUILayout.FloatField(shadowDistanceName, script.mainShape.shadowDistance);
+
+		if (script.mainShape.shadowDistance < 0) {
+			script.mainShape.shadowDistance = 0;
+		}
+
 		EditorGUI.EndDisabledGroup();
 
+		EditorGUILayout.Space();
+
+		script.mainShape.maskType = (LightingCollider2D.MaskType)EditorGUILayout.EnumPopup("Mask Type", script.mainShape.maskType);
 
 
-		script.shape.maskType = (LightingCollider2D.MaskType)EditorGUILayout.EnumPopup("Mask Type", script.shape.maskType);
-
-
-		EditorGUI.BeginDisabledGroup(script.shape.maskType == LightingCollider2D.MaskType.None);
+		EditorGUI.BeginDisabledGroup(script.mainShape.maskType == LightingCollider2D.MaskType.None);
 
 		script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
 
@@ -34,9 +46,15 @@ public class LightingCollider2DEditor : Editor {
 
 		EditorGUI.EndDisabledGroup();
 		
-		if (script.shape.maskType == LightingCollider2D.MaskType.BumpedSprite) {
+		if (script.mainShape.maskType == LightingCollider2D.MaskType.BumpedSprite) {
 			GUIBumpMapMode.Draw(script.normalMapMode);
 		}
+
+		EditorGUILayout.Space();
+
+		script.applyToChildren = EditorGUILayout.Toggle("Apply To Children", script.applyToChildren);
+
+		EditorGUILayout.Space();
 
 		Update();
 
@@ -77,10 +95,10 @@ public class LightingCollider2DEditor : Editor {
 						continue;
 					}
 
-					copy.shape.colliderType = script.shape.colliderType;
+					copy.mainShape.colliderType = script.mainShape.colliderType;
 					copy.lightingCollisionLayer = script.lightingCollisionLayer;
 
-					copy.shape.maskType = script.shape.maskType;
+					copy.mainShape.maskType = script.mainShape.maskType;
 					copy.lightingMaskLayer = script.lightingMaskLayer;
 
 					copy.Initialize();

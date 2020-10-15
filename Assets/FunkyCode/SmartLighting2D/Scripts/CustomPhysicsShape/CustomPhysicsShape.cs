@@ -35,6 +35,8 @@ public class CustomPhysicsShape {
 					newPolygon.AddPoint(points[id]);
 				}
 
+				newPolygon.Normalize();
+
 				polygons.Add(newPolygon);
 			}
 		#endif

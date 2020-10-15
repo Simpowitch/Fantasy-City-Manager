@@ -8,35 +8,11 @@ namespace Rendering {
         static public void Render(LightingBuffer2D buffer) {
 			float size = buffer.lightSource.size;
 
-			Rendering.Light.FillWhite.Calculate();
-			Rendering.Light.Penumbra.Calculate();
-			Rendering.Light.ShadowSetup.Calculate(buffer);
-
 			GL.PushMatrix();
 
 			GL.LoadPixelMatrix( -size, size, -size, size );
 
-			LayerSetting[] layerSettings = buffer.lightSource.layerSetting;
-
-			if (layerSettings != null) {
-
-				for (int layerID = 0; layerID < layerSettings.Length; layerID++) {
-					LayerSetting layerSetting = layerSettings[layerID];
-
-					if (layerSetting == null) {
-						continue;
-					}
-
-					if (layerSetting.sorting == LightingLayerSorting.None) {
-						Light.NoSort.Draw(buffer, layerSetting);
-					} else {
-						Light.Sorted.Draw(buffer, layerSetting);
-					}
-				}
-
-			}
-			
-			Light.LightSource.Main.Draw(buffer);
+			Rendering.Light.Main.Draw(buffer);
 
 			GL.PopMatrix();
 		}
@@ -71,27 +47,9 @@ namespace Rendering {
                 format = RenderTextureFormat.DefaultHDR;
             }
             
-            buffer.renderTexture = new RenderTexture(textureSize, textureSize, 0, format);
+            buffer.renderTexture = new LightTexture(textureSize, textureSize, 0, format);
 
             UpdateName(buffer);
         }
-
-        static public void LateUpdate(LightingBuffer2D buffer) {
-            #if UNITY_EDITOR
-                // It does not seem to work!
-                LightingManager2D manager = LightingManager2D.Get();
-
-                if (manager != null) {
-                    buffer.gameObject.layer = manager.gameObject.layer;
-                } else {
-                    buffer.gameObject.layer = 0;
-                }
-            #endif
-        }
-
-        static public void Update(LightingBuffer2D buffer) {
-			buffer.transform.position = new Vector3(0, 0, 0);
-			buffer.transform.rotation = Quaternion.Euler(0, 0, 0);
-		}
     }
 }

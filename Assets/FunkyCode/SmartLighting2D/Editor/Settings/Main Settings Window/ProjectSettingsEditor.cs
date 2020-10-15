@@ -13,15 +13,29 @@ public class ProjectSettingsEditor {
 
         mainProfile.Profile = (LightingSettings.Profile)EditorGUILayout.ObjectField("Default Profile", mainProfile.Profile, typeof(LightingSettings.Profile), true);
 
+        EditorGUILayout.Space();
+
         mainProfile.renderingMode = (RenderingMode)EditorGUILayout.EnumPopup("Rendering Mode", mainProfile.renderingMode);   
 
         mainProfile.coreAxis = (CoreAxis)EditorGUILayout.EnumPopup("Core Axis", mainProfile.coreAxis);
 
+        EditorGUILayout.Space();
+
         Layers.Draw(mainProfile);
+
+        EditorGUILayout.Space();
         
         LightSettings.Draw(mainProfile);
 
+        EditorGUILayout.Space();
+
         Atlas.Draw(mainProfile);
+
+        EditorGUILayout.Space();
+
+        EditorView.Draw(mainProfile);
+
+        EditorGUILayout.Space();
         
         mainProfile.triangulation = (PolygonTriangulator2D.Triangulation)EditorGUILayout.EnumPopup("Triangulation", mainProfile.triangulation);
 
@@ -38,21 +52,30 @@ public class ProjectSettingsEditor {
     public class Layers {
 
         public static void Draw(LightingSettings.ProjectSettings mainProfile) {
-            bool foldout = GUIFoldout.Draw("Layers", mainProfile.layers);
+            bool foldout = GUIFoldoutHeader.Begin("Layers", mainProfile.layers);
     
             if (foldout == false) {
+                GUIFoldoutHeader.End();
                 return;
             }
 
             EditorGUI.indentLevel++;
 
+                EditorGUILayout.Space();
+
                 DrawList(mainProfile.layers.lightLayers, "Light Layers", "Light Layer");
 
+                EditorGUILayout.Space();
+
                 DrawList(mainProfile.layers.nightLayers, "Night Layers", "Night Layer");
+
+                EditorGUILayout.Space();
 
                 DrawList(mainProfile.layers.dayLayers, "Day Layers", "Day Layer");
 
             EditorGUI.indentLevel--;
+
+            GUIFoldoutHeader.End();
         }
 
         public static void  DrawList(LightingSettings.LayersList layerList, string name, string singular) {
@@ -87,13 +110,16 @@ public class ProjectSettingsEditor {
 
     public class LightSettings {
         public static void Draw(LightingSettings.ProjectSettings mainProfile) {
-            bool foldout = GUIFoldout.Draw("Light Settings", mainProfile.lightingBufferSettings);
+            bool foldout = GUIFoldoutHeader.Begin("Light Settings", mainProfile.lightingBufferSettings);
 
             if (foldout == false) {
+                GUIFoldoutHeader.End();
                 return;
             }
 
             EditorGUI.indentLevel++;
+
+            EditorGUILayout.Space();
 
             mainProfile.lightingBufferSettings.fixedLightTextureSize = (LightingSourceTextureSize)EditorGUILayout.Popup("Resolution", (int)mainProfile.lightingBufferSettings.fixedLightTextureSize, LightingSourceSettings.LightingSourceTextureSizeArray);
 
@@ -104,18 +130,46 @@ public class ProjectSettingsEditor {
             EditorGUI.EndDisabledGroup();
 
             EditorGUI.indentLevel--;
+
+            GUIFoldoutHeader.End();
+        }
+    }
+
+    public class EditorView {
+        public static void Draw(LightingSettings.ProjectSettings mainProfile) {
+            bool foldout = GUIFoldoutHeader.Begin("Scene View", mainProfile.sceneView);
+
+            if (foldout == false) {
+                GUIFoldoutHeader.End();
+                return;
+            }
+
+            EditorGUI.indentLevel++;   
+
+            EditorGUILayout.Space();
+  
+            mainProfile.sceneView.drawGizmos = EditorGUILayout.Toggle("Draw Gizmos", mainProfile.sceneView.drawGizmos);
+
+            mainProfile.sceneView.layer =  EditorGUILayout.LayerField("Editor Layer", mainProfile.sceneView.layer);
+
+            EditorGUI.indentLevel--;
+
+            GUIFoldoutHeader.End();
         }
     }
 
     public class Atlas {
         public static void Draw(LightingSettings.ProjectSettings mainProfile) {
-            bool foldout = GUIFoldout.Draw("Atlas", mainProfile.atlasSettings);
+            bool foldout = GUIFoldoutHeader.Begin("Atlas", mainProfile.atlasSettings);
 
             if (foldout == false) {
+                GUIFoldoutHeader.End();
                 return;
             }
 
             EditorGUI.indentLevel++;
+
+            EditorGUILayout.Space();
 
             mainProfile.atlasSettings.lightingSpriteAtlas = EditorGUILayout.Toggle("Enable", mainProfile.atlasSettings.lightingSpriteAtlas);
 
@@ -134,6 +188,8 @@ public class ProjectSettingsEditor {
             
             EditorGUI.indentLevel--;
             EditorGUI.indentLevel--;
+
+            GUIFoldoutHeader.End();
         }
     }
 }

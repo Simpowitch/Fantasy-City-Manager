@@ -12,10 +12,13 @@ public struct CameraSettings {
 
 	public enum RenderMode { Draw, Hidden, Disabled }
 	public enum CameraType {MainCamera, Custom, SceneView};
+	public enum RenderShader {Multiply, Additive, Custom};
 	
 	public CameraType cameraType;
 	public Camera customCamera;
 	public RenderMode renderMode;
+	public RenderShader renderShader;
+	public Material customMaterial;
 
 	public int bufferID;
 
@@ -25,6 +28,10 @@ public struct CameraSettings {
 		renderMode = RenderMode.Draw;
 
 		cameraType = CameraType.MainCamera;
+
+		renderShader = RenderShader.Multiply;
+
+		customMaterial = null;
 
 		bufferID = 0;
 

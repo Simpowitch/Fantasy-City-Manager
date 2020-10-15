@@ -8,8 +8,8 @@ public class Lighting2DMaterials {
 	private Sprite penumbraSprite;
 	private Sprite atlasPenumbraSprite;
 
-	private Sprite whiteMaskSprite;
-	private Sprite atlasWhiteMaskSprite;
+	private Sprite spriteMaskTexture;
+	private Sprite atlasSpriteMaskTexture;
 
 	private Sprite blackMaskSprite;
 	private Sprite atlasBlackMaskSprite;
@@ -21,7 +21,7 @@ public class Lighting2DMaterials {
 	private LightingMaterial multiply = null;
 	private LightingMaterial alphablend = null;
 
-	private LightingMaterial whiteSprite = null;
+	private LightingMaterial spriteMask = null;
 
 
 
@@ -57,17 +57,17 @@ public class Lighting2DMaterials {
 	}
 
 	public Sprite GetWhiteMaskSprite() {
-		if (whiteMaskSprite == null) {
-			whiteMaskSprite = Resources.Load<Sprite>("textures/white"); 
+		if (spriteMaskTexture == null) {
+			spriteMaskTexture = Resources.Load<Sprite>("textures/white"); 
 		}
-		return(whiteMaskSprite);
+		return(spriteMaskTexture);
 	}
 
 	public Sprite GetAtlasWhiteMaskSprite() {
-		if (atlasWhiteMaskSprite == null) {
-			atlasWhiteMaskSprite = AtlasSystem.Manager.RequestSprite(GetWhiteMaskSprite(), AtlasSystem.Request.Type.WhiteMask);
+		if (atlasSpriteMaskTexture == null) {
+			atlasSpriteMaskTexture = AtlasSystem.Manager.RequestSprite(GetWhiteMaskSprite(), AtlasSystem.Request.Type.WhiteMask);
 		}
-		return(atlasWhiteMaskSprite);
+		return(atlasSpriteMaskTexture);
 	}
 
 	public Sprite GetAtlasBlackMaskSprite() {
@@ -104,7 +104,7 @@ public class Lighting2DMaterials {
 		GetOcclusionEdge();
 		GetShadowBlur();
 
-		GetWhiteSprite();
+		GetSpriteMask();
 
 		GetNormalMapSpritePixelToLight();
 		
@@ -121,8 +121,8 @@ public class Lighting2DMaterials {
 		penumbraSprite = null;
 		atlasPenumbraSprite = null;
 
-		whiteMaskSprite = null;
-		atlasWhiteMaskSprite = null;
+		spriteMaskTexture = null;
+		atlasSpriteMaskTexture = null;
 
 		blackMaskSprite = null;
 		atlasBlackMaskSprite = null;
@@ -134,7 +134,7 @@ public class Lighting2DMaterials {
 		multiply = null;
 		alphablend = null;
 
-		whiteSprite = null;
+		spriteMask = null;
 
 		atlasMaterial = null;
 	}
@@ -161,7 +161,7 @@ public class Lighting2DMaterials {
 			if (hdr == true) {
 				multiply = LightingMaterial.Load("SmartLighting2D/Multiply HDR");
 			} else {
-				multiply = LightingMaterial.Load(Max2D.shaderPath + "Particles/Multiply");
+				multiply = LightingMaterial.Load("SmartLighting2D/Multiply");
 			}
 		}
 		return(multiply.Get());
@@ -181,7 +181,7 @@ public class Lighting2DMaterials {
 			if (hdr == true) {
 				occlusionEdge = LightingMaterial.Load("SmartLighting2D/Multiply HDR");
 			} else {
-				occlusionEdge = LightingMaterial.Load(Max2D.shaderPath + "Particles/Multiply");
+				occlusionEdge = LightingMaterial.Load("SmartLighting2D/Multiply");
 			}
 			
 			occlusionEdge.SetTexture("textures/occlusionedge");
@@ -194,7 +194,7 @@ public class Lighting2DMaterials {
 			if (hdr == true) {
 				shadowBlur = LightingMaterial.Load("SmartLighting2D/Multiply HDR");
 			} else {
-				shadowBlur = LightingMaterial.Load(Max2D.shaderPath + "Particles/Multiply");
+				shadowBlur = LightingMaterial.Load("SmartLighting2D/Multiply");
 			}
 			
 			shadowBlur.SetTexture("textures/shadowblur");
@@ -207,7 +207,7 @@ public class Lighting2DMaterials {
 			if (hdr == true) {
 				occlusionBlur = LightingMaterial.Load("SmartLighting2D/Multiply HDR");
 			} else {
-				occlusionBlur = LightingMaterial.Load(Max2D.shaderPath + "Particles/Multiply");
+				occlusionBlur = LightingMaterial.Load("SmartLighting2D/Multiply");
 			}
 			
 			occlusionBlur.SetTexture("textures/occlussionblur");
@@ -215,11 +215,11 @@ public class Lighting2DMaterials {
 		return(occlusionBlur.Get());
 	}
 
-	public Material GetWhiteSprite() {
-		if (whiteSprite == null || whiteSprite.Get() == null) {
-			whiteSprite = LightingMaterial.Load("SmartLighting2D/SpriteWhite");
+	public Material GetSpriteMask() {
+		if (spriteMask == null || spriteMask.Get() == null) {
+			spriteMask = LightingMaterial.Load("SmartLighting2D/SpriteMask");
 		}
-		return(whiteSprite.Get());
+		return(spriteMask.Get());
 	}
 
 

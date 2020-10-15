@@ -8,9 +8,11 @@ public class LightBuffers : LightingMonoBehaviour {
     static private LightBuffers instance;
 
     public void Awake() {
-        foreach(LightingBuffer2D buffer in Object.FindObjectsOfType(typeof(LightingBuffer2D))) {
-			buffer.DestroySelf();
-		}
+        //foreach(LightingBuffer2D buffer in Object.FindObjectsOfType(typeof(LightingBuffer2D))) {
+		//	buffer.DestroySelf();
+		//}
+
+		LightingBuffer2D.Clear();
 
 		if (Lighting2D.lightingBufferSettings.fixedLightTextureSize != LightingSettings.LightingSourceTextureSize.Custom) {
 			if (Lighting2D.lightingBufferSettings.lightingBufferPreloadCount > 0) {
@@ -50,11 +52,8 @@ public class LightBuffers : LightingMonoBehaviour {
         }
 
 		LightBuffers lightBuffers = LightBuffers.Get();
-
-		GameObject gameObject = new GameObject ("Buffer " + GetCount());
-		gameObject.transform.parent = lightBuffers.transform;
-
-		LightingBuffer2D lightingBuffer2D = gameObject.AddComponent<LightingBuffer2D> ();
+		
+		LightingBuffer2D lightingBuffer2D = new LightingBuffer2D ();
 		lightingBuffer2D.Initiate (textureSize);
 		lightingBuffer2D.lightSource = light; // Unnecessary?
         

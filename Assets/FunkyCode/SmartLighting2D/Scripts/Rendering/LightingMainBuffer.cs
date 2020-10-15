@@ -9,14 +9,33 @@ namespace Rendering {
 
         public class Check {
                     
-            static public void RenderTexture(LightingMainBuffer2D buffer, Camera camera, BufferPreset bufferPreset) {
-                float resolution = bufferPreset.lightingResolution;
+            static public void RenderTexture(LightingMainBuffer2D buffer) {
+                Vector2Int screen = GetScreenResolution(buffer);
 
-                int width = (int)(camera.pixelRect.width * resolution);
-                int height = (int)(camera.pixelRect.height * resolution);
+                if (screen.x > 0 && screen.y > 0) {
+                    Camera camera = buffer.cameraSettings.GetCamera();
 
-                if (buffer.renderTexture == null || width != buffer.renderTexture.width || height != buffer.renderTexture.height) {
-                    Rendering.LightingMainBuffer.InitializeRenderTexture(buffer);
+                    if (buffer.renderTexture == null || screen.x != buffer.renderTexture.width || screen.y != buffer.renderTexture.height) {
+
+                        switch(camera.cameraType) {
+                            case CameraType.Game:
+                                Rendering.LightingMainBuffer.InitializeRenderTexture(buffer);
+                            
+                            break;
+
+                            case CameraType.SceneView:
+                                // Scene view pixel rect is constantly changing (Unity Bug?)
+                                int differenceX = Mathf.Abs(screen.x - buffer.renderTexture.width);
+                                int differenceY = Mathf.Abs(screen.y - buffer.renderTexture.height);
+                                
+                                if (differenceX > 5 || differenceY > 5) {
+                                    Rendering.LightingMainBuffer.InitializeRenderTexture(buffer);
+                                }
+                            
+                            break;
+
+                        }
+                    }
                 }
             }
 
@@ -41,7 +60,7 @@ namespace Rendering {
 
         }
 
-        public static void LateUpdate(LightingMainBuffer2D buffer) {
+        public static void Update(LightingMainBuffer2D buffer) {
             BufferPreset bufferPreset = buffer.GetBufferPreset();
 
             if (bufferPreset == null) {
@@ -53,14 +72,14 @@ namespace Rendering {
                 buffer.DestroySelf();
                 return;
             }
-
+            
             Camera camera = buffer.cameraSettings.GetCamera();
 
             if (camera == null) {
                 return;
             }
 
-            Rendering.LightingMainBuffer.Check.RenderTexture(buffer, camera, bufferPreset);
+            Rendering.LightingMainBuffer.Check.RenderTexture(buffer);
         }
 
         public static void DrawPost(LightingMainBuffer2D buffer) {
@@ -120,25 +139,31 @@ namespace Rendering {
             GL.PopMatrix();
         }
 
-        static public void InitializeRenderTexture(LightingMainBuffer2D buffer) {
+        static public Vector2Int GetScreenResolution(LightingMainBuffer2D buffer) {
             BufferPreset bufferPreset = buffer.GetBufferPreset();
 
             if (bufferPreset == null) {
-                return;
+                return(Vector2Int.zero);
             }
 
             Camera camera = buffer.cameraSettings.GetCamera();
 
             if (camera == null) {
-                return;
+                return(Vector2Int.zero);
             }
-            
+
             float resolution = bufferPreset.lightingResolution;
-            
+
             int screenWidth = (int)(camera.pixelRect.width * resolution);
             int screenHeight = (int)(camera.pixelRect.height * resolution);
 
-            if (screenWidth > 0 && screenHeight > 0) {
+            return(new Vector2Int(screenWidth, screenHeight));
+        }
+
+        static public void InitializeRenderTexture(LightingMainBuffer2D buffer) {
+            Vector2Int screen = GetScreenResolution(buffer);
+            
+            if (screen.x > 0 && screen.y > 0) {
                 string idName = "";
 
                 int bufferID = buffer.cameraSettings.bufferID;
@@ -146,7 +171,9 @@ namespace Rendering {
                 if (bufferID < Lighting2D.bufferPresets.Length) {
                     idName = Lighting2D.bufferPresets[bufferID].name + ", ";
                 }
-                
+
+                Camera camera = buffer.cameraSettings.GetCamera();
+
                 RenderTextureFormat format = RenderTextureFormat.Default;
                 if (Lighting2D.commonSettings.HDR == false) {
                     buffer.name = "Camera Buffer (" + idName +"Id: " + (bufferID  + 1) + ", Camera: " + camera.name + " )";
@@ -157,7 +184,9 @@ namespace Rendering {
                     format = RenderTextureFormat.DefaultHDR;
                 }
 
-                buffer.renderTexture = new RenderTexture (screenWidth, screenHeight, 0, format);
+            //    Debug.Log("Screen Set " + screen.x + " " + screen.y);
+
+                buffer.renderTexture = new LightTexture (screen.x, screen.y, 0, format);
                 buffer.renderTexture.Create ();
             }
         }

@@ -6,6 +6,37 @@ using LightingSettings;
 namespace Rendering {
 
 	public class FogOfWarBuffer {
+		public class Check {
+			static public void RenderTexture(FogOfWarBuffer2D buffer) {
+                Vector2Int screen = buffer.GetScreen();
+
+                if (screen.x > 0 && screen.y > 0) {
+                    Camera camera = buffer.cameraSettings.GetCamera();
+
+                    if (buffer.renderTexture == null || screen.x != buffer.renderTexture.width || screen.y != buffer.renderTexture.height) {
+
+                        switch(camera.cameraType) {
+                            case CameraType.Game:
+                                buffer.SetUpRenderTexture();
+                            
+                            break;
+
+                            case CameraType.SceneView:
+                                // Scene view pixel rect is constantly changing (Unity Bug?)
+                                int differenceX = Mathf.Abs(screen.x - buffer.renderTexture.width);
+                                int differenceY = Mathf.Abs(screen.y - buffer.renderTexture.height);
+                                
+                                if (differenceX > 5 || differenceY > 5) {
+                                    buffer.SetUpRenderTexture();
+                                }
+                            
+                            break;
+
+                        }
+                    }
+                }
+            }
+		}
 		public static void LateUpdate(FogOfWarBuffer2D buffer) {
 
 			if (buffer.CameraSettingsCheck() == false) {

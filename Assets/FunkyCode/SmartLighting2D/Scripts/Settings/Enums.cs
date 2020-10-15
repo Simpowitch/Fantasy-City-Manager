@@ -1,12 +1,6 @@
 ﻿
 namespace LightingSettings {
 
-	public enum RenderingPipeline {
-		Standard = 0,
-		Scriptable = 1
-	}
-
-	// Settings Enumerators
 	public enum RenderingMode {
 		OnRender = 2,
 		OnPostRender = 1,
@@ -33,5 +27,4 @@ namespace LightingSettings {
 		px256, 
 		px128
 	}
-
 }

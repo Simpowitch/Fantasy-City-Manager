@@ -9,7 +9,7 @@ public class FogOfWarBuffer2D : LightingMonoBehaviour {
     public static List<FogOfWarBuffer2D> list = new List<FogOfWarBuffer2D>();
 
     public CameraSettings cameraSettings;
-    public RenderTexture renderTexture;
+    public LightTexture renderTexture;
 
 	public bool updateNeeded = false;
 
@@ -20,6 +20,16 @@ public class FogOfWarBuffer2D : LightingMonoBehaviour {
 	}
 
 	public void OnDisable() {
+		if (renderTexture != null) {
+			if (renderTexture.renderTexture != null) {
+				if (Application.isPlaying) {
+					UnityEngine.Object.Destroy (renderTexture.renderTexture);
+				} else {
+					UnityEngine.Object.DestroyImmediate (renderTexture.renderTexture);
+				}
+			}
+		}
+		
 		list.Remove(this);
 	}
 
@@ -29,17 +39,23 @@ public class FogOfWarBuffer2D : LightingMonoBehaviour {
 		}
 
 		LightingManager2D manager = LightingManager2D.Get();
+		CameraSettings[] cameraSettings = manager.cameraSettings;
 
-		if (Lighting2D.fogOfWar.bufferID < manager.cameraSettings.Length) {
-			CameraSettings cameraSettings = manager.cameraSettings[Lighting2D.fogOfWar.bufferID];
+		if (Lighting2D.fogOfWar.bufferID < cameraSettings.Length) {
+			CameraSettings cameraSetting = cameraSettings[Lighting2D.fogOfWar.bufferID];
 
-			LightingMainBuffer2D buffer = LightingMainBuffer2D.Get(cameraSettings);
+			LightingMainBuffer2D buffer = LightingMainBuffer2D.Get(cameraSetting);
 
 			if (buffer != null) {
-				Texture textureAlpha = buffer.renderTexture;
+				Texture textureAlpha = buffer.renderTexture.renderTexture;
 
-				material.Get().mainTexture = renderTexture;       
-				material.Get().SetTexture("_Mask", textureAlpha);
+				Material mat = material.Get();
+
+				if (renderTexture != null) {
+					mat.mainTexture = renderTexture.renderTexture;  
+				}
+
+				mat.SetTexture("_Mask", textureAlpha);
 			}
 		}
 
@@ -59,32 +75,35 @@ public class FogOfWarBuffer2D : LightingMonoBehaviour {
 
         FogOfWarBuffer2D buffer = gameObject.AddComponent<FogOfWarBuffer2D> ();
         buffer.cameraSettings = cameraSettings;
-        buffer.Initialize();
+        buffer.SetUpRenderTexture ();
         
         return(buffer);
     }
 
-    public void Initialize() {
-		SetUpRenderTexture ();
+	public void SetUpRenderTexture() {
+		Vector2Int screen = GetScreen();
+
+		if (screen.x > 0 && screen.y > 0) {
+            name = "Fog of War Buffer";
+
+			renderTexture = new LightTexture (screen.x, screen.y, 32); // depth 24
+			renderTexture.Create ();
+		}
 	}
 
-	void SetUpRenderTexture() {
+	public Vector2Int GetScreen() {
 		Camera camera = cameraSettings.GetCamera();
 
 		if (camera == null) {
-			return;
+			return(Vector2Int.zero);
 		}
 
 		int screenWidth = (int)(camera.pixelRect.width * Lighting2D.fogOfWar.resolution);
 		int screenHeight = (int)(camera.pixelRect.height * Lighting2D.fogOfWar.resolution);
 
-		if (screenWidth > 0 && screenHeight > 0) {
-            name = "Fog of War Buffer";
+		Vector2Int screen = new Vector2Int(screenWidth, screenHeight);
 
-			renderTexture = new RenderTexture (screenWidth, screenHeight, 32);
-            renderTexture.depth = 24;
-			renderTexture.Create ();
-		}
+		return(screen);
 	}
 
 	public bool CameraSettingsCheck () {
@@ -113,24 +132,28 @@ public class FogOfWarBuffer2D : LightingMonoBehaviour {
 	}
 
     public void Update() {
+		Rendering.FogOfWarBuffer.Check.RenderTexture(this);
+
 		Rendering.FogOfWarBuffer.LateUpdate(this);
 
 		Rendering.FogOfWarBuffer.DrawOn(this);
     }
 
 	public void Render() {
-
 		if (updateNeeded) {
-			RenderTexture previous = RenderTexture.active;
+	
+			if (renderTexture != null) {
+				RenderTexture previous = RenderTexture.active;
 
-			RenderTexture.active = renderTexture;
-			GL.Clear( false, true, new Color(0, 0, 0, 0));
+				RenderTexture.active = renderTexture.renderTexture;
+				GL.Clear( false, true, new Color(0, 0, 0, 0));
 
-			Rendering.FogOfWarBuffer.Render(this);
+				Rendering.FogOfWarBuffer.Render(this);
 
-			RenderTexture.active = previous;
+				RenderTexture.active = previous;
+			}
+			
 		}
-		
 	}
 
 	// Apply Render to Specified Camera (Post Render Mode)

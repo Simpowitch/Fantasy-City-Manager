@@ -15,6 +15,8 @@ public class ProfileEditor {
 		EditorGUILayout.ObjectField("Current Profile", profile, typeof(LightingSettings.Profile), true);
 		EditorGUI.EndDisabledGroup();
 
+		EditorGUILayout.Space();
+
 		if (profile == null) {
 			EditorGUILayout.HelpBox("Lighting2D Settings Profile Not Found!", MessageType.Error);
 
@@ -23,15 +25,31 @@ public class ProfileEditor {
 
 		CommonSettings(profile.bufferPresets.list[0]);
 
+		EditorGUILayout.Space();
+
 		SortingLayer(profile.bufferPresets.list[0].sortingLayer);
+
+		EditorGUILayout.Space();
 
 		QualitySettings.Draw(profile);
 
-		BufferPresets.Draw(profile.bufferPresets);
+		EditorGUILayout.Space();
 
 		DayLighting.Draw(profile);
 		
+		EditorGUILayout.Space();
+		
 		FogOfWar.Draw(profile);
+
+		EditorGUILayout.Space();
+
+		BufferPresets.Draw(profile.bufferPresets);
+
+		EditorGUILayout.Space();
+
+		LightPresets.Draw(profile.lightPresets);
+
+		EditorGUILayout.Space();
 
 		profile.disable = EditorGUILayout.Toggle("Disable", profile.disable);
 
@@ -39,18 +57,131 @@ public class ProfileEditor {
 
 		if (GUI.changed) {
 			if (EditorApplication.isPlaying == false) {
+				LightingSource2D.ForceUpdateAll();
+				
 				LightingManager2D.ForceUpdate();
+
+				foreach(OnRenderMode onRender in OnRenderMode.list) {
+					BufferPreset bufferPreset = onRender.mainBuffer.GetBufferPreset();
+					bufferPreset.sortingLayer.ApplyToMeshRenderer(onRender.meshRenderer);
+				}
 
 				EditorUtility.SetDirty(profile);
 			}
 		}
 	}
 
-	public class BufferPresets {
-		public static void Draw(BufferPresetList bufferList) {
-			bool foldout = GUIFoldout.Draw( "Buffer Presets", bufferList);
+	public class LightPresets {
+		public static void Draw(LightPresetList lightPresetList) {
+			bool foldout = GUIFoldoutHeader.Begin( "Light Presets (" + lightPresetList.list.Length + ")", lightPresetList);
 
 			if (foldout == false) {
+				GUIFoldoutHeader.End();
+				return;
+			}
+
+			EditorGUI.indentLevel++;
+
+			int bufferCount = EditorGUILayout.IntSlider ("Count", lightPresetList.list.Length, 1, 4);
+
+			if (bufferCount !=lightPresetList.list.Length) {
+				int oldCount = lightPresetList.list.Length;
+
+				System.Array.Resize(ref lightPresetList.list, bufferCount);
+
+				for(int i = oldCount; i < bufferCount; i++) {
+					lightPresetList.list[i] = new LightPreset(i);
+				}
+			}
+
+			for(int i = 0; i < lightPresetList.list.Length; i++) {
+				bool fold = GUIFoldout.Draw( "Preset (Id: " + (i + 1) + ")" , lightPresetList.list[i]);
+
+				if (fold == false) {
+					continue;
+				}
+
+				EditorGUI.indentLevel++;
+
+				lightPresetList.list[i].name = EditorGUILayout.TextField ("Name", lightPresetList.list[i].name);
+
+				EditorGUILayout.Space();
+				
+				DrawLightLayers(lightPresetList.list[i].layerSetting);
+
+				EditorGUI.indentLevel--;
+			}
+
+			EditorGUI.indentLevel--;
+
+			GUIFoldoutHeader.End();
+		}
+	}
+
+	static public void DrawLightLayers(LightPresetLayers presetLayers) {
+		LayerSetting[] layerSetting = presetLayers.Get();
+
+		int layerCount = layerSetting.Length;
+
+		layerCount = EditorGUILayout.IntSlider("Layer Count", layerCount, 1, 4);
+
+		EditorGUILayout.Space();
+
+		if (layerCount != layerSetting.Length) {
+			int oldCount = layerSetting.Length;
+
+			System.Array.Resize(ref layerSetting, layerCount);
+
+			for(int i = oldCount; i < layerCount; i++) {
+				
+				if (layerSetting[i] == null) {
+					layerSetting[i] = new LayerSetting();
+					layerSetting[i].layerID = (LightingLayer)i;
+				}
+				
+			}
+
+			presetLayers.SetArray(layerSetting);
+		}
+
+		for(int i = 0; i < layerSetting.Length; i++) {
+			LayerSetting layer = layerSetting[i];
+
+			layer.layerID = (LightingLayer)EditorGUILayout.Popup("Layer (Id: " + (i + 1) +")", (int)layer.layerID, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+			
+			layer.type = (LightingLayerType)EditorGUILayout.EnumPopup("Type", layer.type);
+			
+			
+
+
+			layer.sorting = (LightingLayerSorting)EditorGUILayout.EnumPopup("Sorting", layer.sorting);
+			
+			EditorGUI.BeginDisabledGroup(layer.sorting == LightingLayerSorting.None);
+			
+			layer.sortingIgnore = (LightingLayerSortingIgnore)EditorGUILayout.EnumPopup("Sorting Ignore", layer.sortingIgnore);
+			
+			EditorGUI.EndDisabledGroup();
+
+
+			layer.effect = (LightingLayerEffect)EditorGUILayout.EnumPopup("Mask Effect", layer.effect);
+	
+			EditorGUI.BeginDisabledGroup(layer.effect != LightingLayerEffect.AboveLit);
+		
+			layer.maskEffectDistance = EditorGUILayout.FloatField("Mask Effect Distance", layer.maskEffectDistance);
+	
+			EditorGUI.EndDisabledGroup();
+
+			EditorGUILayout.Space();
+		}
+
+	}
+
+	public class BufferPresets {
+		public static void Draw(BufferPresetList bufferList) {
+			bool foldout = GUIFoldoutHeader.Begin( "Buffer Presets (" + bufferList.list.Length + ")", bufferList);
+
+			if (foldout == false) {
+				GUIFoldoutHeader.End();
 				return;
 			}
 
@@ -79,32 +210,48 @@ public class ProfileEditor {
 
 				bufferList.list[i].name = EditorGUILayout.TextField ("Name", bufferList.list[i].name);
 
+				EditorGUILayout.Space();
+
+				CommonSettings(bufferList.list[i]);
+
+				EditorGUILayout.Space();
+
 				if (Lighting2D.ProjectSettings.renderingMode == RenderingMode.OnRender) {
 					SortingLayer(bufferList.list[i].sortingLayer);	
 				}
-
-				CommonSettings(bufferList.list[i]);
 				
-				LayerSettings.DrawList(bufferList.list[i].dayLayers, "Day Layers", Lighting2D.ProjectSettings.layers.dayLayers);
-				LayerSettings.DrawList(bufferList.list[i].nightLayers, "Night Layers", Lighting2D.ProjectSettings.layers.nightLayers);
+				EditorGUILayout.Space();
+
+				LayerSettings.DrawList(bufferList.list[i].dayLayers, "Day Layers (" + bufferList.list[i].dayLayers.list.Length + ")", Lighting2D.ProjectSettings.layers.dayLayers, true);
+
+				EditorGUILayout.Space();
+				
+				LayerSettings.DrawList(bufferList.list[i].nightLayers, "Night Layers (" + bufferList.list[i].nightLayers.list.Length  + ")", Lighting2D.ProjectSettings.layers.nightLayers, false);
+
+				EditorGUILayout.Space();
 
 				EditorGUI.indentLevel--;
 			}
 		
 			EditorGUI.indentLevel--;
+
+			GUIFoldoutHeader.End();
 		}
 	}
 
 	public class QualitySettings {
 
 		public static void Draw(LightingSettings.Profile profile) {
-			bool foldout = GUIFoldout.Draw( "Quality", profile.qualitySettings);
+			bool foldout = GUIFoldoutHeader.Begin( "Quality", profile.qualitySettings);
 
 			if (foldout == false) {
+				GUIFoldoutHeader.End();
 				return;
 			}
 	
 			EditorGUI.indentLevel++;
+
+				EditorGUILayout.Space();
 
 				profile.qualitySettings.HDR = EditorGUILayout.Toggle("HDR", profile.qualitySettings.HDR);
 
@@ -113,18 +260,24 @@ public class ProfileEditor {
 				profile.qualitySettings.updateMethod = (LightingSettings.QualitySettings.UpdateMethod)EditorGUILayout.EnumPopup("Update Method", profile.qualitySettings.updateMethod);
 
 			EditorGUI.indentLevel--;
+
+			GUIFoldoutHeader.End();
 		}
 	}
 
 	public class FogOfWar {
+		// Fog Of War Preset????
 		public static void Draw(LightingSettings.Profile profile) {
-			bool foldout = GUIFoldout.Draw( "Fog of War", profile.fogOfWar);
+			bool foldout = GUIFoldoutHeader.Begin( "Fog of War", profile.fogOfWar); 
 
 			if (foldout == false) {
+				GUIFoldoutHeader.End();
 				return;
 			}
 
 			EditorGUI.indentLevel++;
+
+				EditorGUILayout.Space();
 
 				profile.fogOfWar.enabled = EditorGUILayout.Toggle("Enable", profile.fogOfWar.enabled);
 
@@ -133,18 +286,23 @@ public class ProfileEditor {
 				SortingLayer(profile.fogOfWar.sortingLayer);			
 
 			EditorGUI.indentLevel--;
+
+			GUIFoldoutHeader.End();
 		}
 	}
 
 	public class DayLighting {
 		public static void Draw(LightingSettings.Profile profile) {
-			bool foldout = GUIFoldout.Draw( "Day Lighting", profile.dayLightingSettings);
+			bool foldout = GUIFoldoutHeader.Begin( "Day Lighting", profile.dayLightingSettings);
 
 			if (foldout == false) {
+				GUIFoldoutHeader.End();
 				return;
 			}
 
-			EditorGUI.indentLevel++;	
+			EditorGUI.indentLevel++;
+
+				EditorGUILayout.Space();
 
 				profile.dayLightingSettings.enable = EditorGUILayout.Toggle("Enable", profile.dayLightingSettings.enable);
 
@@ -159,6 +317,8 @@ public class ProfileEditor {
 				NormalMap.Draw(profile);
 		
 			EditorGUI.indentLevel--;
+
+			GUIFoldoutHeader.End();
 		}
 
 		public class NormalMap {
@@ -213,7 +373,7 @@ public class ProfileEditor {
 
 	public class LayerSettings {
 
-		public static void DrawList(PresetLayers bufferLayers, string name, LayersList layerList) {
+		public static void DrawList(PresetLayers bufferLayers, string name, LayersList layerList, bool drawType) {
 			bool foldout = GUIFoldout.Draw(name, bufferLayers);
 
 			if (foldout == false) {
@@ -221,21 +381,41 @@ public class ProfileEditor {
 			}
 
 			EditorGUI.indentLevel++;
-		
-			int layerCount = EditorGUILayout.IntSlider ("Count", bufferLayers.list.Length, 1, 10);
-			
-			if (layerCount != bufferLayers.list.Length && layerCount > 0) {
-				int oldCount = bufferLayers.list.Length;
 
-				System.Array.Resize(ref bufferLayers.list, layerCount);
+			LightingLayerSetting[] layerSettings = bufferLayers.Get();
+		
+			int layerCount = EditorGUILayout.IntSlider ("Count", layerSettings.Length, 0, 10);
+
+			EditorGUILayout.Space();
+			
+			if (layerCount != layerSettings.Length) {
+				int oldCount = layerSettings.Length;
+
+				System.Array.Resize(ref layerSettings, layerCount);
 
 				for(int i = oldCount; i < layerCount; i++) {
-					bufferLayers.list[i] = (LightingLayer)i;
+					
+					if (layerSettings[i] == null) {
+						layerSettings[i] = new LightingLayerSetting();
+						layerSettings[i].layer = (LightingLayer)i;
+					}
+					
 				}
+
+				bufferLayers.SetArray(layerSettings);
 			}
 
-			for(int i = 0; i < bufferLayers.list.Length; i++) {
-				bufferLayers.list[i] = (LightingLayer)EditorGUILayout.Popup(" ", (int)bufferLayers.list[i], layerList.GetNames());
+			for(int i = 0; i < layerSettings.Length; i++) {
+				layerSettings[i].layer = (LightingLayer)EditorGUILayout.Popup("Layer", (int)layerSettings[i].layer, layerList.GetNames());
+
+				if (drawType) {
+					layerSettings[i].type = (LightingLayerSettingType)EditorGUILayout.EnumPopup("Type", layerSettings[i].type);
+				}
+				
+				layerSettings[i].sorting = (LightingLayerSettingSorting)EditorGUILayout.EnumPopup("Sorting", layerSettings[i].sorting);
+				
+
+				EditorGUILayout.Space();
 			}
 
 			EditorGUI.indentLevel--;

@@ -24,7 +24,7 @@ public class LightingRoom2D : MonoBehaviour {
 
 		LightingManager2D.Get();
 
-		shape.SetGameObject(gameObject);
+		shape.SetTransform(transform);
 	}
 
 	public void OnDisable() {

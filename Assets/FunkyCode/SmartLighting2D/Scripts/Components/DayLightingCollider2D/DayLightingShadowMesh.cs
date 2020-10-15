@@ -6,8 +6,8 @@ namespace DayLighting {
     
     public class ShadowMesh {
         public List<List<DoublePair2D>> polygonsPairs = new List<List<DoublePair2D>>();
-        public List<Mesh> meshes = new List<Mesh>();
-        public List<Mesh> softMeshes = new List<Mesh>();
+        public List<MeshObject> meshes = new List<MeshObject>();
+        public List<MeshObject> softMeshes = new List<MeshObject>();
 
         const float pi2 = Mathf.PI / 2;
 
@@ -18,26 +18,28 @@ namespace DayLighting {
 
         MeshBrush meshBrush;
 
-        public void Generate(Transform transform, DayLightingColliderShape shape, float height) {
+        public void Generate(DayLightingColliderShape shape) {
+            float height = shape.height;
+
             if (shape.colliderType == DayLightingCollider2D.ColliderType.Sprite) {
                 return;
 			}
 
             Clear();
 
-            if (meshBrush == null) {
-                meshBrush = new MeshBrush();
-            }
-
-            List<Polygon2D> polys = shape.GetPolygons();
+            List<Polygon2D> polys = shape.GetPolygonsLocal();
 
             if (polys == null) {
                 return;
             }
 
+            if (meshBrush == null) {
+                meshBrush = new MeshBrush();
+            }
+
             float sunHeight = Lighting2D.dayLightingSettings.height;
 
-            GenerateFill(transform, shape, height * sunHeight);
+            GenerateFill(shape.transform, shape, height * sunHeight);
             
             bool softness = Lighting2D.dayLightingSettings.softness.enable;
 
@@ -47,8 +49,8 @@ namespace DayLighting {
         }
 
         public void Clear() {
-            foreach(Mesh mesh in meshes) {
-                UnityEngine.Object.DestroyImmediate(mesh);
+            foreach(MeshObject mesh in meshes) {
+                UnityEngine.Object.DestroyImmediate(mesh.mesh);
             }
             
             softMeshes.Clear();
@@ -61,7 +63,7 @@ namespace DayLighting {
         }
 
         public void GenerateFill(Transform transform, DayLightingColliderShape shape, float height) {
-            List<Polygon2D> polys = shape.GetPolygons();
+            List<Polygon2D> polys = shape.GetPolygonsLocal();
             float direction = Lighting2D.dayLightingSettings.direction * Mathf.Deg2Rad;
 
             foreach(Polygon2D polygon in polys) {
@@ -95,8 +97,10 @@ namespace DayLighting {
                 }
 
                 polygonsPairs.Add(polygonPairs);
+
+                Mesh mesh = polygonShadowFill.CreateMesh(Vector2.zero, Vector2.zero);
     
-                meshes.Add(polygonShadowFill.CreateMesh(Vector2.zero, Vector2.zero));
+                meshes.Add(new MeshObject(mesh));
             }
         }
 
@@ -192,13 +196,16 @@ namespace DayLighting {
             }
 
             if (trianglesCount > 0) {
-                softMeshes.Add(meshBrush.Export());
+                Mesh mesh = meshBrush.Export();
+                softMeshes.Add(new MeshObject(mesh));
             }
         }
 
         static public Polygon2D GenerateShadow(Polygon2D poly, float sunDirection, float height) {
             Polygon2D convexHull = new Polygon2D ();
             Vector2D vA;
+
+            sunDirection = -sunDirection;
             
             foreach (Vector2D p in poly.pointsList) {
                 vA = p.Copy();

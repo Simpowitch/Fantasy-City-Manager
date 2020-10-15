@@ -4834,7 +4834,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -567436445
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -4870,6 +4870,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2016455476920970684}
+  - component: {fileID: 8849436933939013456}
+  - component: {fileID: 2400231521962732072}
   m_Layer: 0
   m_Name: Grown
   m_TagString: Untagged
@@ -4890,10 +4892,62 @@ Transform:
   m_Children:
   - {fileID: 8165718655437847784}
   - {fileID: 1621568649218290061}
+  - {fileID: 4096116590194488712}
   - {fileID: 9031371124586364888}
   m_Father: {fileID: 8165718655220682607}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8849436933939013456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1665956064162715995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionDayLayer: 0
+  maskDayLayer: 0
+  mainShape:
+    maskType: 0
+    colliderType: 2
+    transform: {fileID: 2016455476920970684}
+    height: 1.25
+  shapes:
+  - maskType: 0
+    colliderType: 2
+    transform: {fileID: 2016455476920970684}
+    height: 1.25
+  normalMapMode:
+    textureType: 0
+    texture: {fileID: 0}
+    sprite: {fileID: 0}
+  applyToChildren: 0
+--- !u!68 &2400231521962732072
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1665956064162715995}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.17474687, y: -0.25813034}
+  - {x: 0.15419626, y: -0.2670561}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &2226025227906683238
 GameObject:
   m_ObjectHideFlags: 0
@@ -4904,7 +4958,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1275141386484086533}
   - component: {fileID: 9142487583213940255}
-  - component: {fileID: 1588222628039417181}
+  - component: {fileID: 8635957616666928123}
+  - component: {fileID: 8977354215018566894}
   m_Layer: 0
   m_Name: Sapling
   m_TagString: Untagged
@@ -4964,7 +5019,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -567436445
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0e8f0ca791acb1c4c91e679dbe09417b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4977,7 +5032,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1588222628039417181
+--- !u!114 &8635957616666928123
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4991,15 +5046,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionDayLayer: 0
   maskDayLayer: 0
-  shape:
-    maskType: 1
-    colliderType: 1
-    height: 1
+  mainShape:
+    maskType: 0
+    colliderType: 2
     transform: {fileID: 1275141386484086533}
+    height: 0.5
+  shapes:
+  - maskType: 0
+    colliderType: 2
+    transform: {fileID: 1275141386484086533}
+    height: 0.5
   normalMapMode:
     textureType: 0
     texture: {fileID: 0}
     sprite: {fileID: 0}
+  applyToChildren: 0
+--- !u!68 &8977354215018566894
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2226025227906683238}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.058322817, y: -0.24850568}
+  - {x: 0.14707473, y: -0.24629603}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &2801750103096360605
 GameObject:
   m_ObjectHideFlags: 0
@@ -5010,7 +5093,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8734403952255595946}
   - component: {fileID: 772716993964844511}
-  - component: {fileID: 59881627238692877}
   m_Layer: 0
   m_Name: Crown
   m_TagString: Untagged
@@ -5070,7 +5152,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -567436445
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: fd26b3ed2fca24348ad4062425c6f20d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5083,29 +5165,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &59881627238692877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2801750103096360605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collisionDayLayer: 0
-  maskDayLayer: 0
-  shape:
-    maskType: 1
-    colliderType: 1
-    height: 1
-    transform: {fileID: 8734403952255595946}
-  normalMapMode:
-    textureType: 0
-    texture: {fileID: 0}
-    sprite: {fileID: 0}
 --- !u!1 &2904798994162249705
 GameObject:
   m_ObjectHideFlags: 0
@@ -5116,7 +5175,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4126432427127268066}
   - component: {fileID: 6327632280671839676}
-  - component: {fileID: 1831102024401501139}
   m_Layer: 0
   m_Name: Trunk
   m_TagString: Untagged
@@ -5176,7 +5234,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -567436445
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4b05ee5d49e5ea045aa6203548ac53e0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5189,29 +5247,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1831102024401501139
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2904798994162249705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collisionDayLayer: 0
-  maskDayLayer: 0
-  shape:
-    maskType: 1
-    colliderType: 1
-    height: 1
-    transform: {fileID: 4126432427127268066}
-  normalMapMode:
-    textureType: 0
-    texture: {fileID: 0}
-    sprite: {fileID: 0}
 --- !u!1 &3046353624999827794
 GameObject:
   m_ObjectHideFlags: 0
@@ -5242,7 +5277,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2016455476920970684}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 89.916, y: 0, z: 0}
 --- !u!198 &1462146171274987203
 ParticleSystem:
@@ -10083,6 +10118,118 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!1 &3123633782342492462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4096116590194488712}
+  - component: {fileID: 5591863442858435808}
+  - component: {fileID: 6445668216897016609}
+  m_Layer: 0
+  m_Name: Tree Crown Shadow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4096116590194488712
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3123633782342492462}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2016455476920970684}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &5591863442858435808
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3123633782342492462}
+  m_Enabled: 0
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: bcaaae7bb9754174e81a669cd86ff90e, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 2.64, y: 2.64}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &6445668216897016609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3123633782342492462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionDayLayer: 0
+  maskDayLayer: 0
+  mainShape:
+    maskType: 0
+    colliderType: 3
+    transform: {fileID: 4096116590194488712}
+    height: 1
+  shapes:
+  - maskType: 0
+    colliderType: 3
+    transform: {fileID: 4096116590194488712}
+    height: 1
+  normalMapMode:
+    textureType: 0
+    texture: {fileID: 0}
+    sprite: {fileID: 0}
+  applyToChildren: 0
 --- !u!1 &5086304250416565767
 GameObject:
   m_ObjectHideFlags: 0
@@ -10133,7 +10280,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15217,7 +15364,7 @@ SortingGroup:
   m_GameObject: {fileID: 8165718655220682593}
   m_Enabled: 1
   m_SortingLayerID: -567436445
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
 --- !u!61 &-353395554743534195
 BoxCollider2D:
@@ -15256,7 +15403,6 @@ GameObject:
   - component: {fileID: 8165718655437847784}
   - component: {fileID: 8165718655437847785}
   - component: {fileID: 1656733261085762768}
-  - component: {fileID: 3696206767942889714}
   m_Layer: 0
   m_Name: Stump
   m_TagString: Untagged
@@ -15316,7 +15462,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -567436445
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 72eae213de1296749b900c4bfa45fe5e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -15355,26 +15501,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.3934103, y: 0.117020845}
   m_EdgeRadius: 0
---- !u!114 &3696206767942889714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8165718655437847787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collisionDayLayer: 0
-  maskDayLayer: 0
-  shape:
-    maskType: 1
-    colliderType: 1
-    height: 1
-    transform: {fileID: 8165718655437847784}
-  normalMapMode:
-    textureType: 0
-    texture: {fileID: 0}
-    sprite: {fileID: 0}

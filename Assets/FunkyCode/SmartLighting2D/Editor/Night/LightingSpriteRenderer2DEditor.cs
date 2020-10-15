@@ -18,17 +18,28 @@ public class LightingSpriteRenderer2DEditor : Editor {
 
         script.spriteMode = (LightingSpriteRenderer2D.SpriteMode)EditorGUILayout.EnumPopup("Sprite Mode", script.spriteMode);
 
+ 
         if (script.spriteMode == LightingSpriteRenderer2D.SpriteMode.Custom) {
-            script.sprite = (Sprite)EditorGUILayout.ObjectField("Sprite", script.sprite, typeof(Sprite), true);
-        }
+            bool foldout0 = GUIFoldout.Draw("Virual Sprite Renderer", script);
 
-        script.color = EditorGUILayout.ColorField("Color", script.color);
+            if (foldout0) {
+                EditorGUI.indentLevel++;
 
-        script.color.a = EditorGUILayout.Slider("Alpha", script.color.a, 0, 1);
+                script.sprite = (Sprite)EditorGUILayout.ObjectField("Sprite", script.sprite, typeof(Sprite), true);    
 
-        if (script.spriteMode == LightingSpriteRenderer2D.SpriteMode.Custom) {
-            script.flipX = EditorGUILayout.Toggle("Flip X", script.flipX);
-            script.flipY = EditorGUILayout.Toggle("Flip Y", script.flipY);
+                script.color = EditorGUILayout.ColorField("Color", script.color);
+
+                script.color.a = EditorGUILayout.Slider("Alpha", script.color.a, 0, 1);
+
+                script.flipX = EditorGUILayout.Toggle("Flip X", script.flipX);
+                script.flipY = EditorGUILayout.Toggle("Flip Y", script.flipY);
+
+                EditorGUI.indentLevel--;
+            }
+        } else {
+            script.color = EditorGUILayout.ColorField("Color", script.color);
+
+            script.color.a = EditorGUILayout.Slider("Alpha", script.color.a, 0, 1);
         }
 
         bool foldout = GUIFoldout.Draw("Transform Offset", script.transformOffset);
@@ -45,7 +56,7 @@ public class LightingSpriteRenderer2DEditor : Editor {
             EditorGUI.indentLevel--;
         }
        
-        GUIAdditiveMode.Draw(script.additiveMode);
+        GUIMeshMode.Draw(script.meshMode);
 
         GUIGlowMode.Draw(script.glowMode);
 	

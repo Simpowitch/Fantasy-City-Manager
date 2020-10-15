@@ -1,4 +1,40 @@
-﻿### Beta 1.1.4 - 5.10.2020
+﻿### Beta 1.1.7 - 14.10.2020
+ [ADDED] Lighting Collider: Shadow Distance
+ [ADDED] Lighting Manager: Custom material mode
+ [ADDED] Mesh Mode: Custom material option
+ [ADDED] Day Lighting: Y Sorting
+ [CHANGED] Additive Mode -> Mesh Mode
+
+
+### Beta 1.1.6 - 14.10.2020
+ [ADDED] Light Cycle: New component
+ [ADDED] Light Source: Light Presets
+ [ADDED] Lighting Source: Event Handling include spot angle
+ [ADDED] Lighting Source: Event Handling options
+ [ADDED] Lighting Source: Sorting Ignore field
+ [ADDED] Project Settings: Scene View options
+ [ADDED] Lighting Profile: Day Layers Sorting
+ [ADDED] Lighting Profile: Night Layers Sorting
+ [ADDED] Lighting Manager: active scene profile field
+ [CHANGED] Lighting Manager: now auto updates from latest version
+
+ [REMOVED] LightingSettings2D
+
+
+### Beta 1.1.5 - 12.10.2020
+ [ADDED] Lighting Source: Mask Lit Mode 
+ [ADDED] Lighting Source: Z Axis Sorting 
+ [ADDED] LightingCollider: Composite Collider shadow & mask type
+ [ADDED] LightingCollider: Apply To Children
+ [ADDED] Lighting Tilemap Collider: Hexagon tilemap support
+ [ADDED] Lighting Tilemap Collider: Composite Collider shadow type
+ [ADDED] Lighitng Tilemap Collider: Automatically updated when editing in editor mode
+ [ADDED] DayLightingCollider: Apply To Children
+ [ADDED] Gizmos for the lighting components
+ [CHANGED] GUI Gaps between lighting component fields
+
+
+### Beta 1.1.4 - 05.10.2020
  [ADDED] Project Settings: Update Method setting
  [ADDED] LighingCollider2D: Multiple colliders
  [ADDED] LighingCollider2D: Mask Effect (Lit/Unlit)

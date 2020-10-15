@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using LightingSettings;
 
 #if UNITY_EDITOR
     using UnityEditor;
@@ -18,9 +19,27 @@ public class LightingMeshRenderer : LightingMonoBehaviour {
 
 	private LightingMaterial material = null;
 
+	public MeshMode.MeshModeShader meshModeShader = MeshMode.MeshModeShader.Additive;
+	public Material meshModeMaterial = null;
+
 	public Material GetMaterial() {
 		if (material == null) {
-			material = LightingMaterial.Load(Max2D.shaderPath + "Particles/Additive");
+			switch(meshModeShader) {
+				case MeshMode.MeshModeShader.Additive:
+					material = LightingMaterial.Load(Max2D.shaderPath + "Particles/Additive");
+				break;
+
+				case MeshMode.MeshModeShader.Alpha:
+					material = LightingMaterial.Load("SmartLighting2D/MeshModeAlpha");
+				break;
+
+				case MeshMode.MeshModeShader.Custom:
+					material = LightingMaterial.Load(new Material(meshModeMaterial));
+
+				break;
+			}
+			
+			
 		}
 		return(material.Get());
 	}
@@ -72,10 +91,28 @@ public class LightingMeshRenderer : LightingMonoBehaviour {
 
 		LightingManager2D manager = LightingManager2D.Get();
 
-
 		#if UNITY_EDITOR
 
-			gameObject.layer = manager.gameObject.layer;
+		
+			#if UNITY_2019_1_OR_NEWER
+			
+				if (SceneView.lastActiveSceneView.sceneLighting == false) {
+					gameObject.layer = Lighting2D.ProjectSettings.sceneView.layer;
+				} else {
+					gameObject.layer = 0;
+				}
+
+			#else
+			
+				if (SceneView.lastActiveSceneView.m_SceneLighting == false) {
+					gameObject.layer = Lighting2D.ProjectSettings.sceneView.layer;
+				} else {
+					gameObject.layer = 0;
+				}
+
+			#endif
+
+			
 			
 		#endif
 
@@ -83,13 +120,13 @@ public class LightingMeshRenderer : LightingMonoBehaviour {
 
 		switch(type) {
 			case "LightingSource2D":
-				LightingSource2D source = (LightingSource2D)owner;
-				if (source) {
-					if (source.additiveMode.enable == false) {
+				LightingSource2D light = (LightingSource2D)owner;
+				if (light) {
+					if (light.meshMode.enable == false) {
 						Free();
 						return;
 					}
-					if (source.isActiveAndEnabled == false) {
+					if (light.isActiveAndEnabled == false) {
 						Free();
 					} else {
 						meshRenderer.enabled = true;
@@ -98,13 +135,13 @@ public class LightingMeshRenderer : LightingMonoBehaviour {
 			break;
 
 			case "LightingSpriteRenderer2D":
-				LightingSpriteRenderer2D source2 = (LightingSpriteRenderer2D)owner;
-				if (source2) {
-					if (source2.additiveMode.enable == false) {
+				LightingSpriteRenderer2D sprite = (LightingSpriteRenderer2D)owner;
+				if (sprite) {
+					if (sprite.meshMode.enable == false) {
 						Free();
 						return;
 					}
-					if (source2.isActiveAndEnabled == false) {
+					if (sprite.isActiveAndEnabled == false) {
 						Free();
 					} else {
 						meshRenderer.enabled = true;
@@ -115,20 +152,44 @@ public class LightingMeshRenderer : LightingMonoBehaviour {
 		}
 	}
 
-	public void UpdateLightSource(LightingSource2D id) {
+	public void ClearMaterial() {
+		material = null;
+	}
+
+	public void UpdateLightSource(LightingSource2D id, MeshMode meshMode) {
+		if (meshModeMaterial != meshMode.material) {
+			meshModeMaterial = meshMode.material;
+
+			ClearMaterial();
+		}
+
+		if (meshModeShader != meshMode.shader) {
+			meshModeShader = meshMode.shader;
+
+			ClearMaterial();
+		}
+
+		Material material = GetMaterial();
+
+		if (material == null) {
+			return;
+		}
+
 		transform.position = id.transform.position;
 		transform.localScale = new Vector3(id.size, id.size, 1);
 		transform.rotation = Quaternion.Euler(0, 0, 0);
 		// transform.rotation = id.transform.rotation; // only if rotation enabled
-	
+
 		if (id.Buffer != null && meshRenderer != null) {
 			Color lightColor = id.color;
-			lightColor.a = id.additiveMode.alpha;
+			lightColor.a = id.meshMode.alpha;
 
-			GetMaterial().SetColor ("_TintColor", lightColor);
-			GetMaterial().mainTexture = id.Buffer.renderTexture;
+			material.SetColor ("_TintColor", lightColor);
+			material.color = lightColor;
 
-			id.additiveMode.sortingLayer.ApplyToMeshRenderer(meshRenderer);
+			material.mainTexture = id.Buffer.renderTexture.renderTexture;
+
+			id.meshMode.sortingLayer.ApplyToMeshRenderer(meshRenderer);
 
 			meshRenderer.sharedMaterial = GetMaterial();
 
@@ -138,9 +199,28 @@ public class LightingMeshRenderer : LightingMonoBehaviour {
 		}
 	}
 
-	public void UpdateLightSprite(LightingSpriteRenderer2D id) {
+	public void UpdateLightSprite(LightingSpriteRenderer2D id, MeshMode meshMode) {
 		if (id.GetSprite() == null) {
 			Free();
+			return;
+		}
+
+		if (meshModeMaterial != meshMode.material) {
+			meshModeMaterial = meshMode.material;
+
+			ClearMaterial();
+		}
+
+		if (meshModeShader != meshMode.shader) {
+			meshModeShader = meshMode.shader;
+
+			ClearMaterial();
+		}
+
+
+		Material material = GetMaterial();
+
+		if (material == null) {
 			return;
 		}
 
@@ -241,15 +321,16 @@ public class LightingMeshRenderer : LightingMonoBehaviour {
 	
 		if (meshRenderer != null) {
 			Color lightColor = id.color;
-			lightColor.a = id.additiveMode.alpha;
+			lightColor.a = id.meshMode.alpha;
 
-			GetMaterial().mainTexture = id.GetSprite().texture;
+			material.mainTexture = id.GetSprite().texture;
 
-			GetMaterial().SetColor ("_TintColor", lightColor);
+			material.SetColor ("_TintColor", lightColor);
 
-			id.additiveMode.sortingLayer.ApplyToMeshRenderer(meshRenderer);
+			material.color = lightColor;
 
-			Material material = GetMaterial();
+			id.meshMode.sortingLayer.ApplyToMeshRenderer(meshRenderer);
+
 			//material.mainTexture = id.sprite.texture;
 
 			meshRenderer.sharedMaterial = material;
@@ -284,7 +365,7 @@ public class LightingMeshRenderer : LightingMonoBehaviour {
 			Mesh mesh = new Mesh();
 
 			mesh.vertices = new Vector3[]{new Vector3(-1, -1), new Vector3(1, -1), new Vector3(1, 1), new Vector3(-1, 1)};
-			mesh.triangles = new int[]{0, 1, 2, 2, 3, 0};
+			mesh.triangles = new int[]{2, 1, 0, 0, 3, 2};
 			mesh.uv = new Vector2[]{new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1)};
 
 			preRenderMesh = mesh;
@@ -299,7 +380,7 @@ public class LightingMeshRenderer : LightingMonoBehaviour {
 			Mesh mesh = new Mesh();
 
 			mesh.vertices = new Vector3[]{new Vector3(-1, -1), new Vector3(1, -1), new Vector3(1, 1), new Vector3(-1, 1)};
-			mesh.triangles = new int[]{0, 1, 2, 2, 3, 0};
+			mesh.triangles = new int[]{2, 1, 0, 0, 3, 2};
 			mesh.uv = new Vector2[]{new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1)};
 
 			preRenderMesh2 = mesh;

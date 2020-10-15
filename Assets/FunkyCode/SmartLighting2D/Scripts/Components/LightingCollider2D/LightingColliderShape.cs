@@ -7,36 +7,41 @@ using LightingShape;
 public class LightingColliderShape {
 	public LightingCollider2D.ColliderType colliderType = LightingCollider2D.ColliderType.SpriteCustomPhysicsShape;
 	public LightingCollider2D.MaskType maskType = LightingCollider2D.MaskType.Sprite;
+	public float shadowDistance = 0;
 
 	public ColliderShape colliderShape = new ColliderShape();
-	
+	public CompositeShape compositeShape = new CompositeShape();
+
 	public SpriteShape spriteShape = new SpriteShape();
 	public SpriteCustomPhysicsShape spriteCustomPhysicsShape = new SpriteCustomPhysicsShape();
 	
 	public MeshShape meshShape = new MeshShape();
 	public SkinnedMeshShape skinnedMeshShape = new SkinnedMeshShape();
-
-	public GameObject gameObject;
+	
+	public LightingColliderTransform transform2D = new LightingColliderTransform();
 	public Transform transform;
 	
-	public void SetGameObject(GameObject g) {
-		gameObject = g;
-		transform = g.transform;
+	public void SetTransform(Transform setTransform) {
+		transform = setTransform;
 
-		colliderShape.SetGameObject(g);
+		transform2D.SetShape(this);
 
-		spriteShape.SetGameObject(g);
-		spriteCustomPhysicsShape.SetGameObject(g);
+		spriteShape.SetTransform(transform);
+		spriteCustomPhysicsShape.SetTransform(transform);
 
-		meshShape.SetGameObject(g);
-		skinnedMeshShape.SetGameObject(g);
+		colliderShape.SetTransform(transform);
+		compositeShape.SetTransform(transform);
+
+		meshShape.SetTransform(transform);
+		skinnedMeshShape.SetTransform(transform);
 	}
 
 	public void ResetLocal() {
-		colliderShape.ResetLocal();
-
 		spriteShape.ResetLocal();
 		spriteCustomPhysicsShape.ResetLocal();
+
+		colliderShape.ResetLocal();
+		compositeShape.ResetLocal();
 
 		meshShape.ResetLocal(); 
 		skinnedMeshShape.ResetLocal(); 
@@ -45,10 +50,11 @@ public class LightingColliderShape {
 	}
 
 	public void ResetWorld() {
-		colliderShape.ResetWorld();
-
 		spriteShape.ResetWorld();
 		spriteCustomPhysicsShape.ResetWorld();
+
+		colliderShape.ResetWorld();
+		compositeShape.ResetWorld();
 
 		meshShape.ResetWorld();
 		skinnedMeshShape.ResetWorld();
@@ -56,7 +62,7 @@ public class LightingColliderShape {
 
 	public bool IsEdgeCollider() {
 		switch(colliderType) {
-			case LightingCollider2D.ColliderType.Collider:
+			case LightingCollider2D.ColliderType.Collider2D:
 				return(colliderShape.edgeCollider2D);
 		}
 		
@@ -72,8 +78,12 @@ public class LightingColliderShape {
 		switch(colliderType) {
 			case LightingCollider2D.ColliderType.SpriteCustomPhysicsShape:
 				return(spriteCustomPhysicsShape.GetRadius() * multiplier);
-			case LightingCollider2D.ColliderType.Collider:
+				
+			case LightingCollider2D.ColliderType.Collider2D:
 				return(colliderShape.GetRadius() * multiplier);
+
+			case LightingCollider2D.ColliderType.CompositeCollider2D:
+				return(compositeShape.GetRadius() * multiplier);
 
 			// case LightingCollider2D.ColliderType.Mesh:
             // case LightingCollider2D.ColliderType.SkinnedMesh:
@@ -95,8 +105,11 @@ public class LightingColliderShape {
 			case LightingCollider2D.MaskType.SpriteCustomPhysicsShape:
                 return (spriteCustomPhysicsShape.GetRadius() * multiplier);
 
-			case LightingCollider2D.MaskType.Collider:
+			case LightingCollider2D.MaskType.Collider2D:
 				return(colliderShape.GetRadius() * multiplier);
+
+			//case LightingCollider2D.MaskType.CompositeCollider:
+			//	return(compositeShape.GetRadius() * multiplier);
         }
 
 		return(1000f);
@@ -104,17 +117,21 @@ public class LightingColliderShape {
 	
 	public List<MeshObject> GetMeshes() {
 		switch(maskType) {
-			case LightingCollider2D.MaskType.Collider:
-				return(colliderShape.GetMeshes());
-
-			case LightingCollider2D.MaskType.Mesh:
-				return(meshShape.GetMeshes());
-
-			case LightingCollider2D.MaskType.SkinnedMesh:
-				return(skinnedMeshShape.GetMeshes());
-
 			case LightingCollider2D.MaskType.SpriteCustomPhysicsShape:
 				return(spriteCustomPhysicsShape.GetMeshes());
+
+			case LightingCollider2D.MaskType.Collider2D:
+				return(colliderShape.GetMeshes());
+		
+			case LightingCollider2D.MaskType.CompositeCollider2D:
+				return(compositeShape.GetMeshes());
+				
+			case LightingCollider2D.MaskType.MeshRenderer:
+				return(meshShape.GetMeshes());
+
+			case LightingCollider2D.MaskType.SkinnedMeshRenderer:
+				return(skinnedMeshShape.GetMeshes());
+
 		}
 	
 		return(null);
@@ -122,16 +139,19 @@ public class LightingColliderShape {
 
 	public List<Polygon2D> GetPolygonsLocal() {
 		switch(colliderType) {
-			case LightingCollider2D.ColliderType.Collider:
-				return(colliderShape.GetPolygonsLocal());
-
 			case LightingCollider2D.ColliderType.SpriteCustomPhysicsShape:
 				return(spriteCustomPhysicsShape.GetPolygonsLocal());
 
-			case LightingCollider2D.ColliderType.Mesh:
+			case LightingCollider2D.ColliderType.Collider2D:
+				return(colliderShape.GetPolygonsLocal());
+
+			case LightingCollider2D.ColliderType.CompositeCollider2D:
+				return(compositeShape.GetPolygonsLocal());
+
+			case LightingCollider2D.ColliderType.MeshRenderer:
 				return(null);
 
-			case LightingCollider2D.ColliderType.SkinnedMesh:
+			case LightingCollider2D.ColliderType.SkinnedMeshRenderer:
 				return(null);
 		}
 
@@ -140,16 +160,19 @@ public class LightingColliderShape {
 
 	public List<Polygon2D> GetPolygonsWorld() {
 		switch(colliderType) {
-			case LightingCollider2D.ColliderType.Collider:
-				return(colliderShape.GetPolygonsWorld());
-
 			case LightingCollider2D.ColliderType.SpriteCustomPhysicsShape:
 				return(spriteCustomPhysicsShape.GetPolygonsWorld());
 
-			case LightingCollider2D.ColliderType.Mesh:
+			case LightingCollider2D.ColliderType.Collider2D:
+				return(colliderShape.GetPolygonsWorld());
+
+			case LightingCollider2D.ColliderType.CompositeCollider2D:
+				return(compositeShape.GetPolygonsWorld());
+
+			case LightingCollider2D.ColliderType.MeshRenderer:
 				return(meshShape.GetPolygonsWorld());
 				
-			case LightingCollider2D.ColliderType.SkinnedMesh:
+			case LightingCollider2D.ColliderType.SkinnedMeshRenderer:
 				return(skinnedMeshShape.GetPolygonsWorld());
 		}
 

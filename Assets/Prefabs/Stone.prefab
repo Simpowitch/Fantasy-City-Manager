@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 4817760357077662986}
   - component: {fileID: 8087356332231223454}
   - component: {fileID: 1718922722777156607}
-  - component: {fileID: -1917913653600958901}
-  - component: {fileID: 1333763123294108211}
+  - component: {fileID: 1076459412556359051}
+  - component: {fileID: 3296054725036540880}
   m_Layer: 0
   m_Name: Stone
   m_TagString: Untagged
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -567436445
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: -939189766869041865, guid: 359fe5a2bcc31724bbb884e9c6915d85,
     type: 3}
@@ -106,8 +106,37 @@ MonoBehaviour:
   workOccupiedBy: {fileID: 0}
   harvestMode: 1
   objectName: 
---- !u!61 &-1917913653600958901
-BoxCollider2D:
+--- !u!114 &1076459412556359051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5132961994826326783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionDayLayer: 0
+  maskDayLayer: 0
+  mainShape:
+    maskType: 1
+    colliderType: 2
+    transform: {fileID: 4817760357077662986}
+    height: 0.5
+  shapes:
+  - maskType: 1
+    colliderType: 2
+    transform: {fileID: 4817760357077662986}
+    height: 0.5
+  normalMapMode:
+    textureType: 0
+    texture: {fileID: 0}
+    sprite: {fileID: 0}
+  applyToChildren: 0
+--- !u!60 &3296054725036540880
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -129,32 +158,14 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
---- !u!114 &1333763123294108211
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5132961994826326783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1a95337dad358f4fbeafc6742a068bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collisionDayLayer: 0
-  maskDayLayer: 0
-  shape:
-    maskType: 1
-    colliderType: 1
-    height: 0.5
-    transform: {fileID: 4817760357077662986}
-  normalMapMode:
-    textureType: 0
-    texture: {fileID: 0}
-    sprite: {fileID: 0}
+  m_Points:
+    m_Paths:
+    - - {x: 0.28328013, y: -0.12765695}
+      - {x: 0.1698761, y: -0.07609309}
+      - {x: -0.1623685, y: -0.091324}
+      - {x: -0.3295288, y: -0.2892838}
+      - {x: -0.02724707, y: -0.41040292}
+      - {x: 0.24940382, y: -0.27945995}
 --- !u!1 &8706725727731644760
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,7 +235,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -567436445
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: cf35446f90e85f0429fb4be7651fd0b0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

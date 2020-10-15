@@ -18,20 +18,30 @@ public class DayLightingColliderTransform {
 	private float sunSoftness = 1;
 	private float sunHeight = 1;
 
+	private DayLightingColliderShape shape;
+
 	public void Reset() {
 		position = Vector2.zero;
 		rotation = 0;
 		scale = Vector3.zero;
 	}
 
-	public void Update(DayLightingColliderShape shape) {
+	public void SetShape(DayLightingColliderShape shape) {
+		this.shape = shape;
+	}
+
+	public void Update() {
+		if (shape.transform == null) {
+			return;
+		}
+		
 		Transform transform = shape.transform;
 
 		Vector2 scale2D = transform.lossyScale;
 		Vector2 position2D = transform.position;
 		float rotation2D = transform.rotation.eulerAngles.z;
 
-		SpriteRenderer spriteRenderer = shape.GetSpriteRenderer();
+		SpriteRenderer spriteRenderer = shape.spriteShape.GetSpriteRenderer();
 
 		moved = false;
 
@@ -91,7 +101,7 @@ public class DayLightingColliderTransform {
 
 					moved = true;
 					
-					shape.Reset(); // World
+					shape.ResetLocal(); // World
 				}
 				
 				/* Sprite frame change

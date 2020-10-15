@@ -90,10 +90,19 @@ public class Polygon2D  {
 		return(null);
 	}
 
+	private static Pair2D id = new Pair2D(new Vector2D(0, 0), new Vector2D(0, 0));
 	public bool IsClockwise() {
 		double sum = 0;
-		foreach (Pair2D id in Pair2D.GetList(pointsList)) {
+
+		id.A = pointsList[pointsList.Count - 1];
+		id.B = null;
+
+		for(int i = 0; i < pointsList.Count; i++) {
+			id.B = pointsList[i];
+
 			sum += (id.B.x - id.A.x) * (id.B.y + id.A.y);
+
+			id.A = id.B;
 		}
 
 		return(sum > 0);
@@ -184,6 +193,7 @@ public class Polygon2D  {
 		polygon.pointsList.Add(new Vector2D(size.x, -size.y));
 		polygon.pointsList.Add(new Vector2D(size.x, size.y));
 		polygon.pointsList.Add(new Vector2D(-size.x, size.y));
+		polygon.Normalize();
 		return(polygon);
 	}
 
@@ -193,8 +203,24 @@ public class Polygon2D  {
 		polygon.pointsList.Add(new Vector2D(0, 0));
 		polygon.pointsList.Add(new Vector2D(size.x,  size.y));
 		polygon.pointsList.Add(new Vector2D(0, size.y * 2));
+		polygon.Normalize();
 		return(polygon);
 	}
+
+	static public Polygon2D CreateHexagon(Vector2 size) {
+		Polygon2D polygon = new Polygon2D();
+		polygon.pointsList.Add(new Vector2D(-size.x, size.y));
+
+		polygon.pointsList.Add(new Vector2D(-size.x, -size.y));
+		polygon.pointsList.Add(new Vector2D(0, -size.y * 2));
+		polygon.pointsList.Add(new Vector2D(size.x, -size.y));
+
+		polygon.pointsList.Add(new Vector2D(size.x,  size.y));
+		polygon.pointsList.Add(new Vector2D(0, size.y * 2));
+		polygon.Normalize();
+		return(polygon);
+	}
+
 
 	///// Mesh Creating
 
@@ -219,24 +245,6 @@ public class Polygon2D  {
 	public Mesh CreateMesh(Vector2 UVScale, Vector2 UVOffset, PolygonTriangulator2D.Triangulation triangulation = PolygonTriangulator2D.Triangulation.Advanced) {        
         return(PolygonTriangulator2D.Triangulate (this, UVScale, UVOffset, triangulation));
     }
-
-	public Mesh CreateMesh3D(GameObject gameObject, float z, Vector2 UVScale, Vector2 UVOffset, PolygonTriangulator2D.Triangulation triangulation) {		
-		if (gameObject.GetComponent<MeshRenderer>() == null) {
-			gameObject.AddComponent<MeshRenderer>();
-		}
-
-		MeshFilter filter = gameObject.GetComponent<MeshFilter> ();
-		if (filter == null) {
-			filter = gameObject.AddComponent<MeshFilter>() as MeshFilter;
-		}
-		
-		filter.sharedMesh = PolygonTriangulator2D.Triangulate3D (this, z, UVScale, UVOffset, triangulation);
-		if (filter.sharedMesh == null) {
-			UnityEngine.Object.Destroy(gameObject);
-		}
-
-		return(filter.sharedMesh);
-	}
 
 	///// Collider Creating /////
 
@@ -451,11 +459,11 @@ public class Polygon2D  {
 	}
 
 	///// Fast Operators /////
-
-	// Does not include holes???
+	static Vector2D zero = Vector2D.Zero();
+	
 	public void ToScaleItself(Vector2 scale, Vector2D center = null) {
 		if (center == null) {
-			center = Vector2D.Zero();
+			center = zero;
 		}
 
 		float dist, rot;
@@ -472,7 +480,7 @@ public class Polygon2D  {
 
 	public void ToRotationItself(float rotation, Vector2D center = null) {
 		if (center == null) {
-			center = new Vector2D(Vector2.zero);
+			center = zero;
 		}
 
 		float dist, rot;

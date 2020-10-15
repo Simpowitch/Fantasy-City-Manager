@@ -14,8 +14,10 @@ public class LightingManager2D : LightingMonoBehaviour {
 	public CameraSettings[] cameraSettings = new CameraSettings[1];
 
 	public bool debug = false;
+	public int version = 0;
 
-	public int version;
+	public LightingSettings.Profile setProfile;
+    public LightingSettings.Profile profile;
 
 	// Sets Lighting Main Profile Settings for Lighting2D at the start of the scene
 	private static bool initialized = false; 
@@ -37,12 +39,12 @@ public class LightingManager2D : LightingMonoBehaviour {
 	}
 
 	public static void ForceUpdate() {
-		LightingManager2D manager = Get();
+		// LightingManager2D manager = Get();
 
-		if (manager != null) {
+		// if (manager != null) {
 			// manager.gameObject.SetActive(false);
 			// manager.gameObject.SetActive(true);
-		}
+		// }
 	}
 	
 	static public LightingManager2D Get() {
@@ -76,14 +78,14 @@ public class LightingManager2D : LightingMonoBehaviour {
 			cameraSettings = new CameraSettings[1];
 			cameraSettings[0] = new CameraSettings();
 		}
-
-		// Reset Materials
-		// Lighting2D.materials = new Lighting2DMaterials();
 	}
 
 	public void Awake() {
 		LightingManager2D.initialized = false;
 		SetupProfile();
+
+		CameraBuffers.Get();
+		LightBuffers.Get();
 
 		if (instance != null && instance != this) {
 			instance = this;
@@ -91,7 +93,7 @@ public class LightingManager2D : LightingMonoBehaviour {
 
 			foreach(LightingManager2D manager in Object.FindObjectsOfType(typeof(LightingManager2D))) {
 				if (manager != instance) {
-					Destroy(manager.gameObject); // Fix Destroy Self
+					manager.DestroySelf();
 				}
 			}
 		}
@@ -103,30 +105,38 @@ public class LightingManager2D : LightingMonoBehaviour {
 		if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.L)) {
 			debug = !debug;
 		}
+
+		if (profile != null) {
+			if (Lighting2D.Profile != profile) {
+				Lighting2D.UpdateByProfile(profile);
+			}
+        }
 	}
 
 	void LateUpdate() {
-	
-		LightingCamera camera = LightingCamera.Get();
+		Camera camera = CameraBuffers.Get().GetCamera();
 		
 		if (Lighting2D.Profile.qualitySettings.updateMethod == LightingSettings.QualitySettings.UpdateMethod.LateUpadte) {
 			UpdateLoop();
 			
-			camera.lightingCamera.enabled = false;
+			camera.enabled = false;
 		} else {
-			camera.lightingCamera.enabled = true;
+			camera.enabled = true;
 		}
 	}
 
 	public void SetupProfile() {
-		if (LightingManager2D.initialized == false) {
-			LightingSettings.Profile profile = Lighting2D.Profile;
-			Lighting2D.UpdateByProfile(profile);
-			LightingManager2D.initialized = true;
-
-			AtlasSystem.Manager.Initialize();
-			Lighting2D.materials.Reset();
+		if (LightingManager2D.initialized) {
+			return;
 		}
+
+		LightingManager2D.initialized = true;
+
+		LightingSettings.Profile profile = Lighting2D.Profile;
+		Lighting2D.UpdateByProfile(profile);
+		
+		AtlasSystem.Manager.Initialize();
+		Lighting2D.materials.Reset();
 	}
 
 	public void UpdateLoop() {
@@ -144,18 +154,14 @@ public class LightingManager2D : LightingMonoBehaviour {
 		foreach(DayLightingCollider2D collider in DayLightingCollider2D.GetList()) {
 			collider.UpdateLoop();
 		}
-
 		
 		foreach(LightingCollider2D collider in LightingCollider2D.GetList()) {
 			collider.UpdateLoop();
 		}
 
-
 		foreach(LightingSource2D source in LightingSource2D.GetList()) {
 			source.UpdateLoop();
 		}
-
-		//LightingCamera.instance.bufferCamera.Render();
 
 		foreach(LightingBuffer2D buffer in LightingBuffer2D.GetList()) {
 			buffer.Render();
@@ -192,52 +198,50 @@ public class LightingManager2D : LightingMonoBehaviour {
 
 	public void UpdateBuffers() {
 		for(int i = 0; i < cameraSettings.Length; i++) {
-			LightingMainBuffer2D buffer = LightingMainBuffer2D.Get(cameraSettings[i]);
-			if (buffer != null) {
-				buffer.cameraSettings.renderMode = cameraSettings[i].renderMode;
-			}
+			CameraSettings cameraSetting = cameraSettings[i];
+			LightingMainBuffer2D buffer = LightingMainBuffer2D.Get(cameraSetting);
 
-			if (Lighting2D.fogOfWar.enabled && cameraSettings[i].bufferID == Lighting2D.fogOfWar.bufferID) {
-				if (cameraSettings[i].cameraType != CameraSettings.CameraType.SceneView) {
-					FogOfWarBuffer2D.Get(cameraSettings[i]);
+			if (buffer != null) {
+				buffer.cameraSettings.renderMode = cameraSetting.renderMode;
+
+				if (buffer.cameraSettings.customMaterial != cameraSetting.customMaterial) {
+					buffer.cameraSettings.customMaterial = cameraSetting.customMaterial;
+
+					buffer.ClearMaterial();
+				}
+
+				if (buffer.cameraSettings.renderShader != cameraSetting.renderShader) {
+					buffer.cameraSettings.renderShader = cameraSetting.renderShader;
+
+					buffer.ClearMaterial();
 				}
 			}
+
+			if (Lighting2D.fogOfWar.enabled && cameraSetting.bufferID == Lighting2D.fogOfWar.bufferID) {
+				if (cameraSetting.cameraType != CameraSettings.CameraType.SceneView) {
+					FogOfWarBuffer2D.Get(cameraSetting);
+				}
+			}
+		}
+
+
+		for(int i = 0; i < LightingMainBuffer2D.list.Count; i++) {
+			LightingMainBuffer2D buffer = LightingMainBuffer2D.list[i];
+
+			if (buffer != null) {
+				buffer.Update();
+			}
+			
 		}
 	}
 	
 	public void UpdateMaterials() {
 		if (Lighting2D.materials.Initialize(Lighting2D.commonSettings.HDR)) {
+			LightingMainBuffer2D.Clear();
+			LightingBuffer2D.Clear();
 
-			foreach(LightingMainBuffer2D buffer in new List<LightingMainBuffer2D>(LightingMainBuffer2D.list)) {
-				buffer.DestroySelf();
-			}
-
-			foreach(LightingBuffer2D buffer in new List<LightingBuffer2D>(LightingBuffer2D.list)) {
-				buffer.DestroySelf();
-			}
-
-			foreach(LightingSource2D buffer in LightingSource2D.GetList()) {
-				buffer.ForceUpdate();
-			}
+			LightingSource2D.ForceUpdateAll();
 		}
-	}
-
-	public bool IsSceneView()
-	{
-		for (int i = 0; i < cameraSettings.Length; i++)
-		{
-			CameraSettings cameraSetting = cameraSettings[i];
-
-			if (cameraSetting.cameraType == CameraSettings.CameraType.SceneView)
-			{
-				if (cameraSetting.renderMode == CameraSettings.RenderMode.Draw)
-				{
-					return (true);
-				}
-			}
-		}
-
-		return (false);
 	}
 
 	void OnGUI() {
@@ -246,56 +250,79 @@ public class LightingManager2D : LightingMonoBehaviour {
 		}
 	}
 
-	#if UNITY_EDITOR
-		private void OnEnable() {
+	public bool IsSceneView() {
+		for(int i = 0; i < cameraSettings.Length; i++) {
+			CameraSettings cameraSetting = cameraSettings[i];
+			
+			if (cameraSetting.cameraType == CameraSettings.CameraType.SceneView) {
+				if (cameraSetting.renderMode == CameraSettings.RenderMode.Draw) {
+					return(true);
+				}
+			}
+		}
+		
+		return(false);
+	}
+
+	private void OnDisable() {
+		if (profile != null) {
+			if (Application.isPlaying) {
+				if (setProfile != profile) {
+					if (Lighting2D.Profile == profile) {
+						Lighting2D.RemoveProfile();
+					}
+				}
+			}
+		}
+
+		#if UNITY_EDITOR
+			#if UNITY_2019_1_OR_NEWER
+				SceneView.beforeSceneGui -= OnSceneView;
+			#else
+				SceneView.onSceneGUIDelegate -= OnSceneView;
+			#endif
+		#endif
+	}
+
+	private void OnEnable() {
+		if (setProfile == null) {
+            setProfile = Lighting2D.ProjectSettings.Profile;
+        } 
+
+		if (Application.isPlaying == true) {
+			profile = Object.Instantiate(setProfile);
+		} else {
+			profile = setProfile;
+		}
+	
+		#if UNITY_EDITOR
 			#if UNITY_2019_1_OR_NEWER
 				SceneView.beforeSceneGui += OnSceneView;
 			#else
 				SceneView.onSceneGUIDelegate += OnSceneView;
 			#endif	
-		}
-
-		private void OnDisable() {
-			#if UNITY_2019_1_OR_NEWER
-				SceneView.beforeSceneGui -= OnSceneView;
-			#else
-				SceneView.onSceneGUIDelegate -= OnSceneView;
-			#endif	
-		}
-
-	static public void OnSceneView(SceneView sceneView)
-	{
-		LightingManager2D manager = LightingManager2D.Get();
-
-		if (manager.IsSceneView())
-		{
-			ForceUpdate();
-
-			LightingManager2D.Get().UpdateLoop();
-
-			LightingCamera lightingCamera = LightingCamera.Get();
-
-			if (lightingCamera != null)
-			{
-				//lightingCamera.gameObject.SetActive(false);
-				//lightingCamera.gameObject.SetActive(true);
-			}
-		}
-
+		#endif	
 	}
 
 
-	//static public void OnSceneView(SceneView sceneView) {
-	//		ForceUpdate();
+	#if UNITY_EDITOR
+		static public void OnSceneView(SceneView sceneView) {
+			LightingManager2D manager = LightingManager2D.Get();
 
-	//		LightingManager2D.Get().UpdateLoop();
+			if (manager.IsSceneView() == false) {
+				return;
+			}
+			
+			ForceUpdate();
 
-	//		LightingCamera lightingCamera = LightingCamera.Get();
+			manager.UpdateLoop();
 
-	//		if (lightingCamera != null) {
-	//			//lightingCamera.gameObject.SetActive(false);
-	//			//lightingCamera.gameObject.SetActive(true);
-	//		}
-	//	}
+			//LightingCamera lightingCamera = LightingCamera.Get();
+
+			//if (lightingCamera != null) {
+				//lightingCamera.gameObject.SetActive(false);
+				//lightingCamera.gameObject.SetActive(true);
+			//}
+		}
 	#endif
 }

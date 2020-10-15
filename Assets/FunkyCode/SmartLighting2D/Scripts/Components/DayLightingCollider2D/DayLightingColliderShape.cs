@@ -1,99 +1,71 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DayLighting;
+using LightingShape;
 
 [System.Serializable]
 public class DayLightingColliderShape {
 	public DayLightingCollider2D.MaskType maskType = DayLightingCollider2D.MaskType.Sprite;
     public DayLightingCollider2D.ColliderType colliderType = DayLightingCollider2D.ColliderType.SpriteCustomPhysicsShape;
+    
+	public Transform transform;
+   
+    public DayLightingColliderTransform transform2D = new DayLightingColliderTransform();
+
+    public SpriteShape spriteShape = new SpriteShape();
+    public SpriteCustomPhysicsShape spriteCustomPhysicsShape = new SpriteCustomPhysicsShape();
+	public ColliderShape colliderShape = new ColliderShape();
 
     public float height = 1;
+    public ShadowMesh shadowMesh = new ShadowMesh();
 
-	///// Shape in Polygons /////
-	public List<Polygon2D> shapePolygons = null;
+    public void SetTransform(Transform t) {
+        transform = t;
 
-	private CustomPhysicsShape customPhysicsShape = null;
+        transform2D.SetShape(this);
 
-    private SpriteRenderer spriteRenderer;
-
-	public Transform transform;
-
-    private Sprite sprite;
-
-    public void Reset() {
-        shapePolygons = null;
-
-        sprite = null;
-
-        spriteRenderer = null;
-
-        customPhysicsShape = null;
+        spriteShape.SetTransform(t);
+        spriteCustomPhysicsShape.SetTransform(t);
+		
+		colliderShape.SetTransform(t);
     }
 
-	public List<Polygon2D> GetPolygons() {
-		if (shapePolygons == null) {
-			switch(colliderType) {
-				case DayLightingCollider2D.ColliderType.SpriteCustomPhysicsShape:
-                    SpriteRenderer spriteRenderer = GetSpriteRenderer();
+    public void ResetLocal() {
+		spriteShape.ResetLocal();
+		spriteCustomPhysicsShape.ResetLocal();
 
-                    if (spriteRenderer != null) {
-                        CustomPhysicsShape shape = GetPhysicsShape();
-                        shapePolygons = new List<Polygon2D>();
-
-                        if (shape != null) {
-                            foreach(Polygon2D poly in shape.Get()) {
-                                Polygon2D p = poly.Copy();
-
-                                if (spriteRenderer.flipX) {
-                                    p.ToScaleItself(new Vector2(-1, 1));
-                                }
-
-                                if (spriteRenderer.flipY) {
-                                    p.ToScaleItself(new Vector2(1, -1));
-                                }
-
-                                shapePolygons.Add(p);
-                            }
-                        }
-
-        
-                    }
-
-					
-				break;
-
-				case DayLightingCollider2D.ColliderType.Collider:
-					shapePolygons = Polygon2DList.CreateFromGameObject(transform.gameObject);
-				break;
-			}
-		}
-
-		return(shapePolygons);
+		colliderShape.ResetLocal();
 	}
 
-    public Sprite GetSprite() {
-        if (sprite == null) {
-            sprite = GetSpriteRenderer().sprite;
-        }
-        return(sprite);
-    }
+    public void ResetWorld() {
+		spriteCustomPhysicsShape.ResetWorld();
 
-    public SpriteRenderer GetSpriteRenderer() {
-        if (spriteRenderer == null) {
-            spriteRenderer = transform.GetComponent<SpriteRenderer>();
-        }
+		colliderShape.ResetWorld();
+	}
 
-        return(spriteRenderer);
-    }
-	
-	public CustomPhysicsShape GetPhysicsShape() {
-		if (customPhysicsShape == null) {
-			SpriteRenderer spriteRenderer = GetSpriteRenderer();
+	public List<Polygon2D> GetPolygonsLocal() {
+		switch(colliderType) {
+			case DayLightingCollider2D.ColliderType.SpriteCustomPhysicsShape:
+				return(spriteCustomPhysicsShape.GetPolygonsLocal());
 
-            if (spriteRenderer != null) {
-                customPhysicsShape = CustomPhysicsShapeManager.RequesCustomShape(spriteRenderer.sprite);
-            }
+			case DayLightingCollider2D.ColliderType.Collider:
+				return(colliderShape.GetPolygonsLocal());
+
 		}
-		return(customPhysicsShape);
+
+		return(null);
+	}
+
+    public List<Polygon2D> GetPolygonsWorld() {
+		switch(colliderType) {
+			case DayLightingCollider2D.ColliderType.SpriteCustomPhysicsShape:
+				return(spriteCustomPhysicsShape.GetPolygonsWorld());
+
+			case DayLightingCollider2D.ColliderType.Collider:
+				return(colliderShape.GetPolygonsWorld());
+		}
+
+		return(null);
 	}
 }

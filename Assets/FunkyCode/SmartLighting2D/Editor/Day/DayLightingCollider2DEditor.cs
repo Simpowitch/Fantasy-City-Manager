@@ -15,36 +15,43 @@ public class DayLightingCollider2DEditor : Editor {
 	override public void OnInspectorGUI() {
 		DayLightingCollider2D script = target as DayLightingCollider2D;
 
-		script.shape.colliderType = (DayLightingCollider2D.ColliderType)EditorGUILayout.EnumPopup("Shadow Type", script.shape.colliderType);
+		script.mainShape.colliderType = (DayLightingCollider2D.ColliderType)EditorGUILayout.EnumPopup("Shadow Type", script.mainShape.colliderType);
 
 
-		EditorGUI.BeginDisabledGroup(script.shape.colliderType == DayLightingCollider2D.ColliderType.None);
+		EditorGUI.BeginDisabledGroup(script.mainShape.colliderType == DayLightingCollider2D.ColliderType.None);
 		
 		script.collisionDayLayer =  (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Day)", (int)script.collisionDayLayer, Lighting2D.ProjectSettings.layers.dayLayers.GetNames());
 		
+		script.mainShape.height = EditorGUILayout.FloatField("Shadow Height", script.mainShape.height);
+
 		EditorGUI.EndDisabledGroup();
 
+		EditorGUILayout.Space();
 
-		script.shape.maskType = (DayLightingCollider2D.MaskType)EditorGUILayout.EnumPopup("Mask Type", script.shape.maskType);
+		script.mainShape.maskType = (DayLightingCollider2D.MaskType)EditorGUILayout.EnumPopup("Mask Type", script.mainShape.maskType);
 		
 		
-		EditorGUI.BeginDisabledGroup(script.shape.maskType == DayLightingCollider2D.MaskType.None);
+		EditorGUI.BeginDisabledGroup(script.mainShape.maskType == DayLightingCollider2D.MaskType.None);
 
 		script.maskDayLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Day)", (int)script.maskDayLayer, Lighting2D.ProjectSettings.layers.dayLayers.GetNames());
 		
-		EditorGUI.EndDisabledGroup();
-
-	
-		EditorGUI.BeginDisabledGroup(script.shape.colliderType == DayLightingCollider2D.ColliderType.None);
-
-		script.shape.height = EditorGUILayout.FloatField("Height", script.shape.height);
-
-		EditorGUI.EndDisabledGroup();
-	
-
-		if (script.shape.maskType == DayLightingCollider2D.MaskType.BumpedSprite) {
+		if (script.mainShape.maskType == DayLightingCollider2D.MaskType.BumpedSprite) {
 			GUIBumpMapMode.DrawDay(script.normalMapMode);
 		}
+
+		EditorGUI.EndDisabledGroup();
+
+	
+		EditorGUI.BeginDisabledGroup(script.mainShape.colliderType == DayLightingCollider2D.ColliderType.None);
+
+		EditorGUI.EndDisabledGroup();
+
+		EditorGUILayout.Space();
+
+		script.applyToChildren = EditorGUILayout.Toggle("Apply To Children", script.applyToChildren);
+
+		EditorGUILayout.Space();
+
 		
 		Update();
 
@@ -63,7 +70,7 @@ public class DayLightingCollider2DEditor : Editor {
 		if (GUILayout.Button("Update")) {
 			CustomPhysicsShapeManager.Clear();
 
-			script.shape.Reset();
+			script.mainShape.ResetLocal();
 
 			script.Initialize();
 		}

@@ -36,11 +36,13 @@ public class Mesh2D : MonoBehaviour {
 		}
 	}
 
-	void Start () {
-		Initialize();
+	void OnEnable() {
+		
 	}
 
 	void Update() {
+		Initialize();
+		
 		if (meshRenderer != null && material != meshRenderer.sharedMaterial) {
 			meshRenderer.sharedMaterial = material;
 		}

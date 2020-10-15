@@ -48,8 +48,8 @@ public class DemoCollisionEvents : MonoBehaviour {
 
         if (collision2DInfo.lightingEventState != LightingEventState.None) {
             if (collision2DInfo.pointsColliding != null) {
-                Polygon2D localPoly = Collider.shape.GetPolygonsLocal()[0];
-                percentage = (int)(((float)collision2DInfo.pointsColliding.Count / localPoly.pointsList.Count) * 100);
+                //Polygon2D localPoly = Collider.shape.GetPolygonsLocal()[0];
+                //percentage = (int)(((float)collision2DInfo.pointsColliding.Count / localPoly.pointsList.Count) * 100);
             }
         }
 

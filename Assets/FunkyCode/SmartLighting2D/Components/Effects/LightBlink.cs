@@ -21,6 +21,6 @@ public class LightBlink : MonoBehaviour {
 
         lightingSource.color = color;
 
-        lightingSource.additiveMode.alpha = color.a * 0.5f;
+        lightingSource.meshMode.alpha = color.a * 0.5f;
     }
 }

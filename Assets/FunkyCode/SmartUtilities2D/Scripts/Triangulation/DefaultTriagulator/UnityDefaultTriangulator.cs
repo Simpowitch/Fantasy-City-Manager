@@ -16,16 +16,21 @@ public class UnityDefaultTriangulator
  
         // Create the Vector3 vertices
         Vector3[] vertices = new Vector3[vertices2D.Length];
+        Vector2[] uv = new Vector2[vertices2D.Length];
         for (int i = 0; i < vertices.Length; i++) {
             vertices[i] = new Vector3(vertices2D[i].x, vertices2D[i].y, 0);
+            uv[i] = Vector2.zero;
         }
  
         // Create the mesh
         Mesh msh = new Mesh();
         msh.vertices = vertices;
         msh.triangles = indices;
+        msh.uv = uv;
         msh.RecalculateNormals();
         msh.RecalculateBounds();
+
+        
 		return(msh);
 	}
  

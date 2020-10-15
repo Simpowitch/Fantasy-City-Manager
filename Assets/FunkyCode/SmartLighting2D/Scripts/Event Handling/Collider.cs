@@ -9,8 +9,8 @@ namespace EventHandling {
         static public void GetCollisions(List<LightCollision2D> collisions, LightingSource2D lightingSource) {
             List<LightingCollider2D> colliderList = LightingCollider2D.GetList();
 
-            foreach (LightingCollider2D id in colliderList) {
-                if (id.shape.colliderType == LightingCollider2D.ColliderType.None) {
+            foreach (LightingCollider2D id in colliderList) { // Why all and not selected?
+                if (id.mainShape.colliderType == LightingCollider2D.ColliderType.None) {
                     continue;
                 }
 
@@ -22,20 +22,18 @@ namespace EventHandling {
                     continue;
                 }
 
-                if (Vector2.Distance(id.transform.position, lightingSource.transform.position) > id.shape.GetRadiusWorld() + lightingSource.size) {
+                if (Vector2.Distance(id.transform.position, lightingSource.transform.position) > id.mainShape.GetRadiusWorld() + lightingSource.size) {
                     continue;
                 }
 
-                List<Polygon2D> localPolys = id.shape.GetPolygonsLocal();
+                List<Polygon2D> localPolys = id.mainShape.GetPolygonsLocal();
                 
                 if (localPolys.Count < 1) {
                     continue;
                 }
 
                 Polygon2 polygon = new Polygon2(localPolys[0]);
-
                 polygon.ToWorldSpaceSelf(id.transform);
-            
                 polygon.ToOffsetItself(-lightingSource.transform.position);
 
                 LightCollision2D collision = new LightCollision2D();
@@ -48,7 +46,14 @@ namespace EventHandling {
                 
                 foreach(Vector2 point in polygon.points) {
                     if (point.magnitude < lightingSource.size) {
-                        collision.pointsColliding.Add(point);
+                   
+                        float direction = point.Atan2(Vector2.zero) * Mathf.Rad2Deg;
+
+                        direction = (direction + 1080 - 90 - lightingSource.transform2D.rotation) % 360;
+
+                        if (direction <= lightingSource.angle / 2|| direction >= 360 - lightingSource.angle / 2) {
+                            collision.pointsColliding.Add(point);
+                        }
                     }
                 }
 
@@ -69,19 +74,19 @@ namespace EventHandling {
             
             Polygon2D triPoly = GetPolygon();
 
-            Vector2 scale = lightingSource.transform.lossyScale;
+            Vector2 scale = Vector2.one;
             Vector2 offset = Vector2.zero;
 
             foreach (LightingCollider2D id in colliderList) {
-                if (Vector2.Distance(id.transform.position, lightingSource.transform.position) > id.shape.GetRadiusWorld() + lightingSource.size) {
+                if (Vector2.Distance(id.transform.position, lightingSource.transform.position) > id.mainShape.GetRadiusWorld() + lightingSource.size) {
                     continue;
                 }
 
-                if (id.shape.colliderType == LightingCollider2D.ColliderType.None) {
+                if (id.mainShape.colliderType == LightingCollider2D.ColliderType.None) {
                     continue;
                 }
 
-                List<Polygon2D> polygons = id.shape.GetPolygonsWorld();
+                List<Polygon2D> polygons = id.mainShape.GetPolygonsWorld();
 
                 if (polygons.Count < 1) {
                     continue;

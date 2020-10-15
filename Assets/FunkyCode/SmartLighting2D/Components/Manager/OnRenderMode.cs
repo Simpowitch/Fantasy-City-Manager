@@ -37,11 +37,13 @@ public class OnRenderMode : LightingMonoBehaviour {
         onRenderMode.Initialize(buffer);
         onRenderMode.UpdateLayer();
 
+        onRenderMode.name = "On Render: " + buffer.name;
+
         return(onRenderMode);
     }
 
     public void Initialize(LightingMainBuffer2D mainBuffer) {         
-        transform.parent = mainBuffer.transform;
+        transform.parent = CameraBuffers.Get().transform;
         
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshRenderer.sharedMaterial = mainBuffer.GetMaterial();
@@ -64,11 +66,16 @@ public class OnRenderMode : LightingMonoBehaviour {
     }
 
     void UpdateLayer() {
+        if (mainBuffer == null || mainBuffer.IsActive() == false) {
+            DestroySelf();
+            return;
+        }
+
         #if UNITY_EDITOR
             LightingManager2D manager = LightingManager2D.Get();
 
             if (manager != null && mainBuffer.cameraSettings.cameraType != CameraSettings.CameraType.SceneView) {
-                gameObject.layer = manager.gameObject.layer;
+                gameObject.layer = Lighting2D.ProjectSettings.sceneView.layer;
             } else {
                 gameObject.layer = 0;
             }
@@ -80,7 +87,7 @@ public class OnRenderMode : LightingMonoBehaviour {
 
         UpdateLayer();
 
-        if (mainBuffer == null) {
+        if (mainBuffer == null || mainBuffer.IsActive() == false) {
             DestroySelf();
             return;
         }

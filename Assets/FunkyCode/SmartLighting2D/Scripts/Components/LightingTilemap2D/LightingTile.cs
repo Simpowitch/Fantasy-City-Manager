@@ -7,12 +7,14 @@ using UnityEngine.Tilemaps;
 
 	[System.Serializable]
 	public class LightingTile {
-		private Sprite originalSprite;
-		private Sprite atlasSprite;
+		public Vector3Int position;
 		
 		public Tile.ColliderType colliderType;
 
 		public CustomPhysicsShape customPhysicsShape = null;
+
+		private Sprite originalSprite;
+		private Sprite atlasSprite;
 
 		private List<Polygon2D> shapePolygons = null;
 		private MeshObject shapeMesh = null;
@@ -40,13 +42,15 @@ using UnityEngine.Tilemaps;
 			atlasSprite = sprite;
 		}
 
-		public bool InRange(Vector2 pos, Vector2 sourcePos, float sourceSize) {
-			return(Vector2.Distance(pos, sourcePos) > 2 + sourceSize);
+		public bool InRange(Vector2 pos, float sourceSize) {
+			return(Vector2.Distance(pos, Vector2.zero) > 2 + sourceSize);
 		}
 
 		public List<Polygon2D> GetPolygons(LightingTilemapCollider2D tilemap) {
 			if (world_polygon == null) {
-				if (tilemap.colliderType == LightingTilemapCollider2D.ColliderType.SpriteCustomPhysicsShape) {
+
+				if (tilemap.IsCustomPhysicsShape()) {
+				
 					if (GetShapePolygons().Count < 1) {
 						return(null);
 					}
@@ -54,23 +58,33 @@ using UnityEngine.Tilemaps;
 					world_polygon = GetShapePolygons(); //poly.ToScaleItself(defaultSize); // scale?
 					
 				} else {
-					// Rectangle
-					Vector2 size = tilemap.properties.cellSize * 0.5f;
-
 					world_polygon = new List<Polygon2D>();
+					Polygon2D p;
 
 					switch(tilemap.mapType) {
 						case LightingTilemapCollider2D.MapType.UnityEngineTilemapRectangle:
 						case LightingTilemapCollider2D.MapType.SuperTilemapEditor:
 
-							Polygon2D p = Polygon2D.CreateRect(size);
+							p = Polygon2D.CreateRect(Vector2.one * 0.5f);
 							p.Normalize();
 
 							world_polygon.Add(p);
 						break;
 
 						case LightingTilemapCollider2D.MapType.UnityEngineTilemapIsometric:
-							world_polygon.Add(Polygon2D.CreateIsometric(size));
+
+							p = Polygon2D.CreateIsometric(new Vector2(0.5f, 0.25f));
+							p.Normalize();
+
+							world_polygon.Add(p);
+						break;
+
+						case LightingTilemapCollider2D.MapType.UnityEngineTilemapHexagon:
+
+							p = Polygon2D.CreateHexagon(new Vector2(0.5f, 0.25f));
+							p.Normalize();
+
+							world_polygon.Add(p);
 						break;
 
 					}
@@ -120,19 +134,33 @@ using UnityEngine.Tilemaps;
 				switch(tilemap.mapType) {
 					case LightingTilemapCollider2D.MapType.UnityEngineTilemapRectangle:
 						mesh.vertices = new Vector3[]{new Vector2(-x, -y), new Vector2(x, -y), new Vector2(x, y), new Vector2(-x, y)};
+						mesh.triangles = new int[]{0, 1, 2, 2, 3, 0};
+						mesh.uv = new Vector2[]{new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1)};
+				
 					break;
 						
 					case LightingTilemapCollider2D.MapType.SuperTilemapEditor:
 						mesh.vertices = new Vector3[]{new Vector2(-x, -y), new Vector2(x, -y), new Vector2(x, y), new Vector2(-x, y)};
+						mesh.triangles = new int[]{0, 1, 2, 2, 3, 0};
+						mesh.uv = new Vector2[]{new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1)};
+				
 					break;
 
 					case LightingTilemapCollider2D.MapType.UnityEngineTilemapIsometric:
 						mesh.vertices = new Vector3[]{new Vector2(0, y), new Vector2(x, y / 2), new Vector2(0, 0), new Vector2(-x, y / 2)};
+						mesh.triangles = new int[]{0, 1, 2, 2, 3, 0};
+						mesh.uv = new Vector2[]{new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1)};
+				
+					break;
+
+					case LightingTilemapCollider2D.MapType.UnityEngineTilemapHexagon:
+						float yOffset = - 0.25f;
+						mesh.vertices = new Vector3[]{new Vector2(0, y * 1.5f + yOffset), new Vector2(x, y + yOffset), new Vector2(0, -y * 0.5f + yOffset), new Vector2(-x, y + yOffset), new Vector2(-x, 0 + yOffset), new Vector2(x, 0 + yOffset)};
+						mesh.triangles = new int[]{0, 1, 5, 4, 3, 0, 0, 5, 2, 0, 2, 4};
+						mesh.uv = new Vector2[]{new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1), new Vector2(0, 1),  new Vector2(0, 1) };
+				
 					break;
 				}
-
-				mesh.triangles = new int[]{0, 1, 2, 2, 3, 0};
-				mesh.uv = new Vector2[]{new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1)};
 				
 				staticTileMesh = new MeshObject(mesh);	
 			}

@@ -11,18 +11,20 @@ using LightingSettings;
 [CustomEditor(typeof(LightingSource2D))]
 public class LightingSource2DEditor : Editor {
 
-	private bool foldoutLayers = false;
 	private bool foldoutSprite = false;
 	private bool foldoutBumpMap = false;
+	private bool foldoutEventHandling = false;
 
 	override public void OnInspectorGUI() {
 		LightingSource2D script = target as LightingSource2D;
 
 		EditorGUI.BeginChangeCheck ();
 
+		script.lightPresetId = EditorGUILayout.Popup("Light Preset", (int)script.lightPresetId, Lighting2D.Profile.lightPresets.GetBufferLayers());
+
 		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Layer (Night)", (int)script.nightLayer, Lighting2D.ProjectSettings.layers.nightLayers.GetNames());
 
-		DrawLayers(script);
+		EditorGUILayout.Space();
 
 		#if UNITY_2018_1_OR_NEWER
 			if (Lighting2D.commonSettings.HDR) {
@@ -36,14 +38,26 @@ public class LightingSource2DEditor : Editor {
 
 		script.color.a = EditorGUILayout.Slider("Alpha", script.color.a, 0, 1);
 
+		EditorGUILayout.Space();
+
 		script.size = EditorGUILayout.FloatField("Size", script.size);
-		
-		script.coreSize = EditorGUILayout.FloatField("Core Size", script.coreSize);
+
+		if (script.size < 0.1f) {
+			script.size = 0.1f;
+		}
 	
-		script.angle = EditorGUILayout.Slider("Angle", script.angle, 0, 360);
+		script.angle = EditorGUILayout.Slider("Spot Angle", script.angle, 0, 360);
+
+		//script.coreSize = EditorGUILayout.FloatField("Core Size", script.coreSize);
 
 		script.outerAngle = EditorGUILayout.Slider("Outer Angle", script.outerAngle, 0, 60);
+
+		EditorGUILayout.Space();
+
+		script.litMode = (LightingSource2D.LitMode)EditorGUILayout.EnumPopup("Lit Mode", script.litMode);
 		
+		EditorGUILayout.Space();
+
 		if (Lighting2D.lightingBufferSettings.fixedLightTextureSize != LightingSettings.LightingSourceTextureSize.Custom) {
 			EditorGUI.BeginDisabledGroup(true);
 				EditorGUILayout.Popup("Buffer Size", (int)Lighting2D.lightingBufferSettings.fixedLightTextureSize, LightingSourceSettings.LightingSourceTextureSizeArray);
@@ -51,6 +65,8 @@ public class LightingSource2DEditor : Editor {
 		} else {
 			script.textureSize = (LightingSourceTextureSize)EditorGUILayout.Popup("Buffer Size", (int)Lighting2D.lightingBufferSettings.fixedLightTextureSize, LightingSourceSettings.LightingSourceTextureSizeArray);
 		}
+
+		EditorGUILayout.Space();
 
 		foldoutSprite = EditorGUILayout.Foldout(foldoutSprite, "Light Sprite" );
 
@@ -71,7 +87,11 @@ public class LightingSource2DEditor : Editor {
 			EditorGUI.indentLevel--;
 		}
 
-		GUIAdditiveMode.Draw(script.additiveMode);
+		EditorGUILayout.Space();
+
+		GUIMeshMode.Draw(script.meshMode);
+
+		EditorGUILayout.Space();
 
 		foldoutBumpMap = EditorGUILayout.Foldout(foldoutBumpMap, "Normal Map" );
 		if (foldoutBumpMap) {
@@ -83,13 +103,30 @@ public class LightingSource2DEditor : Editor {
 			EditorGUI.indentLevel--;
 		}
 
-		script.applyRotation = EditorGUILayout.Toggle("Apply Rotation", script.applyRotation);
-	
-		script.applyEventHandling = EditorGUILayout.Toggle("Apply Event Handling" , script.applyEventHandling);
+		EditorGUILayout.Space();
 
+		foldoutEventHandling = EditorGUILayout.Foldout(foldoutEventHandling, "Event Handling");
+
+		if (foldoutEventHandling) {
+			EditorGUI.indentLevel++;
+
+			script.eventHandling.enable = EditorGUILayout.Toggle("Enable" , script.eventHandling.enable);
+
+			script.eventHandling.useColliders = EditorGUILayout.Toggle("Use Colliders" , script.eventHandling.useColliders);
+
+			script.eventHandling.useTilemapColliders = EditorGUILayout.Toggle("Use Tilemap Colliders" , script.eventHandling.useTilemapColliders);
+			
+			EditorGUI.indentLevel--;
+		}
+
+		EditorGUILayout.Space();
+		
+		script.applyRotation = EditorGUILayout.Toggle("Apply Rotation", script.applyRotation);
+
+		EditorGUILayout.Space();
+	
 		script.whenInsideCollider = (LightingSource2D.WhenInsideCollider)EditorGUILayout.EnumPopup("When Inside Collider", script.whenInsideCollider);
 		
-
 		ApplyToAll();
 
 		EditorGUI.EndChangeCheck();
@@ -115,18 +152,19 @@ public class LightingSource2DEditor : Editor {
 						continue;
 					}
 
-					copy.layerSetting[0].sorting = script.layerSetting[0].sorting;
-					copy.layerSetting[1].sorting = script.layerSetting[1].sorting;
+					//copy.layerSetting[0].sorting = script.layerSetting[0].sorting;
+					//copy.layerSetting[1].sorting = script.layerSetting[1].sorting;
 					
 					copy.color = script.color;
 			
 					copy.size = script.size;
 					copy.textureSize = script.textureSize;
 
-					copy.additiveMode.enable = script.additiveMode.enable;
-					copy.additiveMode.alpha = script.additiveMode.alpha;
+					//copy.mesh.enable = script.additiveMode.enable;
+					//copy.mesh.alpha = script.mesh.alpha;
 
-					copy.applyEventHandling = script.applyEventHandling;
+					//copy.applyEventHandling = script.applyEventHandling;
+
 					copy.whenInsideCollider = script.whenInsideCollider;
 
 					copy.lightSprite = script.lightSprite;
@@ -134,56 +172,5 @@ public class LightingSource2DEditor : Editor {
 				}
 			}
 		}
-	}
-
-	void DrawLayers(LightingSource2D source) {
-		foldoutLayers = EditorGUILayout.Foldout(foldoutLayers, "Layers (Light)" );
-
-		if (foldoutLayers == false) {
-			return;
-		}
-		
-		EditorGUI.indentLevel++;
-
-		int layerCount = source.layerSetting.Length;
-
-		layerCount = EditorGUILayout.IntField("Count", layerCount);
-
-		if (layerCount != source.layerSetting.Length) {
-			System.Array.Resize(ref source.layerSetting, layerCount );
-		}
-
-		EditorGUI.indentLevel++;
-
-		for(int i = 0; i < source.layerSetting.Length; i++) {
-			if (source.layerSetting[i] == null) {
-				source.layerSetting[i] = new LayerSetting();
-				if (i < 8) {
-					source.layerSetting[i].layerID = (LightingLayer)i;
-				}
-			}
-			
-			source.layerSetting[i].layerID = (LightingLayer)EditorGUILayout.Popup("Layer (Id: " + (i + 1) +")", (int)source.layerSetting[i].layerID, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
-			
-			EditorGUI.indentLevel++;
-
-			source.layerSetting[i].type = (LightingLayerType)EditorGUILayout.EnumPopup("Type", source.layerSetting[i].type);
-			source.layerSetting[i].sorting = (LightingLayerSorting)EditorGUILayout.EnumPopup("Sorting", source.layerSetting[i].sorting);
-			source.layerSetting[i].effect = (LightingLayerEffect)EditorGUILayout.EnumPopup("Effect", source.layerSetting[i].effect);
-	
-	
-			EditorGUI.BeginDisabledGroup(source.layerSetting[i].effect != LightingLayerEffect.AboveLit);
-		
-			source.layerSetting[i].maskEffectDistance = EditorGUILayout.FloatField("Effect Distance", source.layerSetting[i].maskEffectDistance);
-	
-			EditorGUI.EndDisabledGroup();
-	
-
-			EditorGUI.indentLevel--;
-
-		}
-		EditorGUI.indentLevel--;
-
-		EditorGUI.indentLevel--;
 	}
 }

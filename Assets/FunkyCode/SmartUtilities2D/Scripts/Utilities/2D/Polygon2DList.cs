@@ -36,7 +36,35 @@ public class Polygon2DHelper  {
 		return(ColliderType.None);
 	}
 
-		static public Polygon2D CreateFromEdgeCollider(EdgeCollider2D edgeCollider) {
+	public static List<Polygon2D> CreateFromCompositeCollider(CompositeCollider2D compositeCollider) {
+		List<Polygon2D> list = new List<Polygon2D>();
+
+		if (compositeCollider != null) {
+			int pathCount = compositeCollider.pathCount;
+			
+
+			for (int i = 0; i < pathCount; i++) {
+				int pointCount = compositeCollider.GetPathPointCount(i);
+
+				Vector2[] pointsInPath = new Vector2[pointCount];
+
+				compositeCollider.GetPath(i, pointsInPath);
+
+				Polygon2D polygon = new Polygon2D();
+				for (int j = 0; j < pointsInPath.Length; j++) {
+					polygon.AddPoint(pointsInPath[j]);
+				}
+				
+				polygon.Normalize();
+				
+				list.Add(polygon);
+			}
+		}
+		
+		return(list);
+	}
+
+	static public Polygon2D CreateFromEdgeCollider(EdgeCollider2D edgeCollider) {
 		Polygon2D newPolygon = new Polygon2D ();
 		if (edgeCollider != null) {
 			foreach (Vector2 p in edgeCollider.points) {

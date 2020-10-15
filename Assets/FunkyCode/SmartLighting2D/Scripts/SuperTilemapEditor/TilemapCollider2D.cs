@@ -15,6 +15,7 @@ namespace SuperTilemapEditorSupport {
 
         public List<Polygon2D> edgeColliders = new List<Polygon2D>();
 		public List<Polygon2D> polygonColliders = new List<Polygon2D>();
+        public TilemapProperties properties = new TilemapProperties();
 
         public LightingTilemapCollider2D tilemapCollider2D;
 
@@ -24,7 +25,9 @@ namespace SuperTilemapEditorSupport {
         #endif
     
         #if (SUPER_TILEMAP_EDITOR)
-            public void Initialize() {
+            public void Initialize(LightingTilemapCollider2D tilemap2D) {
+                tilemapCollider2D = tilemap2D;
+
                 tilemapSTE = tilemapCollider2D.GetComponent<CreativeSpore.SuperTilemapEditor.STETilemap>();
 
                 if (tilemapSTE == null) {
@@ -35,13 +38,13 @@ namespace SuperTilemapEditorSupport {
                 SuperTilemapEditorMap.width = tilemapSTE.GridWidth;
                 SuperTilemapEditorMap.height = tilemapSTE.GridHeight;
             
-                tilemapCollider2D.properties.cellSize = tilemapSTE.CellSize;
+                tilemapCollider2D.superTilemapEditor.properties.cellSize = tilemapSTE.CellSize;
 
                 SuperTilemapEditorMap.map = new LightingTile[tilemapSTE.GridWidth + 2, tilemapSTE.GridHeight + 2];
 
-                tilemapCollider2D.properties.area.position = new Vector3Int((int)tilemapSTE.MapBounds.center.x, (int)tilemapSTE.MapBounds.center.y, 0);
+                tilemapCollider2D.superTilemapEditor.properties.area.position = new Vector3Int((int)tilemapSTE.MapBounds.center.x, (int)tilemapSTE.MapBounds.center.y, 0);
 
-                tilemapCollider2D.properties.area.size = new Vector3Int((int)(tilemapSTE.MapBounds.extents.x + 1) * 2, (int)(tilemapSTE.MapBounds.extents.y + 1) * 2, 0);
+                tilemapCollider2D.superTilemapEditor.properties.area.size = new Vector3Int((int)(tilemapSTE.MapBounds.extents.x + 1) * 2, (int)(tilemapSTE.MapBounds.extents.y + 1) * 2, 0);
 
                 for(int x = 0; x <= tilemapSTE.GridWidth; x++) {
                     for(int y = 0; y <= tilemapSTE.GridHeight; y++) {
@@ -51,8 +54,8 @@ namespace SuperTilemapEditorSupport {
 
                 for(int x = 0; x <= tilemapSTE.GridWidth; x++) {
                     for(int y = 0; y <= tilemapSTE.GridHeight; y++) {
-                        int tileX = x + tilemapCollider2D.properties.area.position.x - tilemapCollider2D.properties.area.size.x / 2;
-                        int tileY = y + tilemapCollider2D.properties.area.position.y - tilemapCollider2D.properties.area.size.y / 2;
+                        int tileX = x + tilemapCollider2D.superTilemapEditor.properties.area.position.x - tilemapCollider2D.superTilemapEditor.properties.area.size.x / 2;
+                        int tileY = y + tilemapCollider2D.superTilemapEditor.properties.area.position.y - tilemapCollider2D.superTilemapEditor.properties.area.size.y / 2;
 
                         CreativeSpore.SuperTilemapEditor.Tile tileSTE = tilemapSTE.GetTile(tileX, tileY);
 
@@ -91,7 +94,7 @@ namespace SuperTilemapEditorSupport {
                 }
             }
         #else
-            public void Initialize() {}
+            public void Initialize(LightingTilemapCollider2D tilemap2D) {}
 
         #endif
 

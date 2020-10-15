@@ -8,7 +8,10 @@ public class LightingMonoBehaviour : MonoBehaviour
 		if (Application.isPlaying) {
 			Destroy(this.gameObject);
 		} else {
-			DestroyImmediate(this.gameObject);
+			if (this != null && this.gameObject != null) {
+				DestroyImmediate(this.gameObject);
+			}
+			
 		}
 	}
 }

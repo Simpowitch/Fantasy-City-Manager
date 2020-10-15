@@ -17,6 +17,8 @@ namespace LightingSettings {
 
 		public AtlasSettings atlasSettings;
 
+		public EditorView sceneView;
+
 		public LightingSourceSettings lightingBufferSettings;
 
 		public CoreAxis coreAxis = CoreAxis.XY;

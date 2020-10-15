@@ -9,8 +9,8 @@ namespace LightingShape {
 
 		public SkinnedMeshRenderer GetSkinnedMeshRenderer() {
 			if (skinnedMeshRenderer == null) {
-				if (gameObject != null) {
-					skinnedMeshRenderer = gameObject.GetComponent<SkinnedMeshRenderer>();
+				if (transform != null) {
+					skinnedMeshRenderer = transform.GetComponent<SkinnedMeshRenderer>();
 				}
 			}
 			return(skinnedMeshRenderer);

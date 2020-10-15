@@ -10,26 +10,19 @@ namespace Rendering.Night {
 		public static void Draw(Camera camera, Vector2 offset, float z, BufferPreset bufferPreset) {
 			DarknessColor(camera, z, bufferPreset);
 
-			for(int i = 0; i < bufferPreset.nightLayers.list.Length; i++) {
-				int nightLayer = (int)bufferPreset.nightLayers.list[i];
+			LightingLayerSetting[] layerSettings = bufferPreset.nightLayers.Get();
 
-				if (Lighting2D.atlasSettings.lightingSpriteAtlas) {
-					WithAtlas.SpriteRenderer.Draw(camera, offset, z, nightLayer);
-					
+			for(int i = 0; i < layerSettings.Length; i++) {
+				LightingLayerSetting nightLayer = layerSettings[i];
+
+				LightingLayerSettingSorting sorting = nightLayer.sorting;
+
+				if (sorting == LightingLayerSettingSorting.None) {
+					NoSort.Draw(camera, offset, z, nightLayer);
 				} else {
-					WithoutAtlas.Room.Draw(camera, offset, z, nightLayer);
-
-					#if UNITY_2017_4_OR_NEWER
-						WithoutAtlas.TilemapRoom.Draw(camera, offset, z, nightLayer);
-					#endif
-			
-					WithoutAtlas.SpriteRenderer2D.Draw(camera, offset, z, nightLayer);
-					WithoutAtlas.TextureRenderer.Draw(camera, offset, z, nightLayer);
-					WithoutAtlas.ParticleRenderer.Draw(camera, offset, z, nightLayer);
+					Sorted.Draw(camera, offset, z, nightLayer);
 				}
 			}
-
-			LightBuffers.Draw(camera, offset, z, bufferPreset);
 		}
 
 		public static void DarknessColor(Camera camera, float z, BufferPreset bufferPreset) {
@@ -42,6 +35,6 @@ namespace Rendering.Night {
 
 				Rendering.Universal.WithoutAtlas.Texture.Draw(material, Vector2.zero, LightingRender2D.GetSize(camera), camera.transform.eulerAngles.z,z);
 			}
-		}
+		}		
 	}
 }

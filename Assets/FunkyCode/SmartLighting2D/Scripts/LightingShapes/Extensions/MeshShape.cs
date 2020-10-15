@@ -10,8 +10,8 @@ namespace LightingShape {
 
 		public MeshFilter GetMeshFilter() {
 			if (meshFilter == null) {
-				if (gameObject != null) {
-					meshFilter = gameObject.GetComponent<MeshFilter>();
+				if (transform != null) {
+					meshFilter = transform.GetComponent<MeshFilter>();
 				}
 			}
 			return(meshFilter);
@@ -19,8 +19,8 @@ namespace LightingShape {
 
 		public MeshRenderer GetMeshRenderer() {
 			if (meshRenderer == null) {
-				if (gameObject != null) {
-					meshRenderer = gameObject.GetComponent<MeshRenderer>();
+				if (transform != null) {
+					meshRenderer = transform.GetComponent<MeshRenderer>();
 				}
 			}
 			return(meshRenderer);

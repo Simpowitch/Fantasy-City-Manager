@@ -16,26 +16,43 @@ MonoBehaviour:
     list:
     - name: Main
       sortingLayer:
-        Name: Lighting
-        Order: 0
-      darknessColor: {r: 0, g: 0, b: 0, a: 0}
+        name: Day Shadows
+        Order: 28
+      darknessColor: {r: 1, g: 1, b: 1, a: 1}
       lightingResolution: 1
       dayLayers:
-        list: 00000000
+        list:
+        - layer: 0
+          type: 1
+          sorting: 0
       nightLayers:
-        list: 00000000
+        list:
+        - layer: 0
+          type: 0
+          sorting: 0
+  lightPresets:
+    list:
+    - name: 
+      layerSetting:
+        list:
+        - layerID: 0
+          type: 1
+          sorting: 0
+          sortingIgnore: 0
+          effect: 0
+          maskEffectDistance: 1
   qualitySettings:
     HDR: 1
-    highQualityShadows: 0
+    highQualityShadows: 1
     updateMethod: 0
   dayLightingSettings:
     enable: 1
-    alpha: 0.5
-    direction: 255
-    height: 1.75
+    alpha: 0.25
+    direction: 0
+    height: 0.01
     softness:
       enable: 1
-      intensity: 0.2
+      intensity: 0.1
     bumpMap:
       height: 1
       strength: 1
@@ -44,6 +61,6 @@ MonoBehaviour:
     bufferID: 0
     resolution: 1
     sortingLayer:
-      Name: 2
+      name: Default
       Order: 0
   disable: 0

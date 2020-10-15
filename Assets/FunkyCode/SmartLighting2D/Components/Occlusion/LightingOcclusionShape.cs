@@ -10,17 +10,14 @@ public class LightingOcclusionShape {
 	public ColliderShape colliderShape = new ColliderShape();
     public SpriteCustomPhysicsShape spriteCustomPhysicsShape = new SpriteCustomPhysicsShape();
 
-	public GameObject gameObject;
 	public Transform transform;
 	
-	public void SetGameObject(GameObject g) {
-		gameObject = g;
+	public void SetTransform(Transform t) {
+		transform = t.transform;
 
-		transform = g.transform;
+		colliderShape.SetTransform(t);
 
-		colliderShape.SetGameObject(g);
-
-        spriteCustomPhysicsShape.SetGameObject(g);
+        spriteCustomPhysicsShape.SetTransform(t);
 	}
 
 	public void ResetLocal() {

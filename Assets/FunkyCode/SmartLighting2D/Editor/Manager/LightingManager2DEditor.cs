@@ -12,11 +12,17 @@ public class LightingManager2DEditor : Editor {
 	override public void OnInspectorGUI() {
 		LightingManager2D script = target as LightingManager2D;
 
+		script.setProfile = (LightingSettings.Profile)EditorGUILayout.ObjectField("Profile", script.setProfile, typeof(LightingSettings.Profile), true);
+		
+		EditorGUILayout.Space();
+
 		int count = script.cameraSettings.Length;
-		count = EditorGUILayout.IntField("Camera Count", count);
+		count = EditorGUILayout.IntSlider("Camera Count", count, 0, 10);
 		if (count != script.cameraSettings.Length) {
 			System.Array.Resize(ref script.cameraSettings, count);
 		}
+
+		EditorGUILayout.Space();
 
 		for(int id = 0; id < script.cameraSettings.Length; id++) {
 			CameraSettings cameraSetting = script.cameraSettings[id];
@@ -35,6 +41,16 @@ public class LightingManager2DEditor : Editor {
 
 			cameraSetting.renderMode = (CameraSettings.RenderMode)EditorGUILayout.EnumPopup("Render Mode", cameraSetting.renderMode);
 
+			if (cameraSetting.renderMode == CameraSettings.RenderMode.Draw) {
+				cameraSetting.renderShader = (CameraSettings.RenderShader)EditorGUILayout.EnumPopup("Render Shader", cameraSetting.renderShader);
+			
+				if (cameraSetting.renderShader == CameraSettings.RenderShader.Custom) {
+				cameraSetting.customMaterial = (Material)EditorGUILayout.ObjectField(cameraSetting.customMaterial, typeof(Material), true);
+			}
+			}
+
+			
+
 			cameraSetting.id = id;
 
 			script.cameraSettings[id] = cameraSetting;
@@ -42,31 +58,29 @@ public class LightingManager2DEditor : Editor {
 			EditorGUI.indentLevel--;
 		}
 
+		EditorGUILayout.Space();
+
 		EditorGUILayout.LabelField("version " + Lighting2D.VERSION_STRING);
 
-		string buttonName = "Re-Initialize";
+		string buttonName = "";
 		if (script.version < Lighting2D.VERSION) {
-			buttonName += " (Outdated)";
+			buttonName += "Re-Initialize (Outdated)";
 			GUI.backgroundColor = Color.red;
+
+			Reinitialize(script);
+
+			return;
+		} else {
+			buttonName += "Re-Initialize";
 		}
 		
 		if (GUILayout.Button(buttonName)) {
-			foreach(Transform transform in script.transform) {
-				DestroyImmediate(transform.gameObject);
-			}
-			
-			script.Initialize();
-
-			foreach(LightingSource2D buffer in LightingSource2D.GetList()) {
-				buffer.ForceUpdate();
-			}
-		
-			LightingManager2D.Get();
-			
-			LightingManager2D.ForceUpdate();
+			Reinitialize(script);
 		}
 
 		if (GUI.changed) {
+			LightingSource2D.ForceUpdateAll();
+
 			LightingManager2D.ForceUpdate();
 
 			if (EditorApplication.isPlaying == false) {
@@ -75,6 +89,31 @@ public class LightingManager2DEditor : Editor {
 				EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 				
 			}
+		}
+	}
+
+	public void Reinitialize(LightingManager2D manager) {
+		Debug.Log("Lighting Manager 2D: reinitialized");
+
+		if (manager.version < Lighting2D.VERSION) {
+			Debug.Log("Lighting Manager 2D: version update from " + manager.version + " to " + Lighting2D.VERSION);
+		}
+
+		foreach(Transform transform in manager.transform) {
+			DestroyImmediate(transform.gameObject);
+		}
+			
+		manager.Initialize();
+
+		LightingSource2D.ForceUpdateAll();
+
+		LightingManager2D.ForceUpdate();
+
+		if (EditorApplication.isPlaying == false) {
+			
+			EditorUtility.SetDirty(target);
+			EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+			
 		}
 	}
 }

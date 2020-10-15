@@ -8,7 +8,7 @@ namespace EventHandling {
         public List<LightingCollider2D> lightignEventCache = new List<LightingCollider2D>();
 		public List<LightCollision2D> collisions = new List<LightCollision2D>();
 
-		public void Update(LightingSource2D lightingSource) {
+		public void Update(LightingSource2D lightingSource, bool useColliders, bool useTilemapColliders) {
 			if (lightingSource == null) {
 				return;
 			}
@@ -16,7 +16,16 @@ namespace EventHandling {
 			collisions.Clear();
 
 			EventHandling.Collider.GetCollisions(collisions, lightingSource);
-			EventHandling.Collider.RemoveHiddenCollisions(collisions, lightingSource);
+			
+			if (useColliders) {
+				EventHandling.Collider.RemoveHiddenCollisions(collisions, lightingSource);
+			}
+
+			if (useTilemapColliders) {
+				EventHandling.Tilemap2D.RemoveHiddenCollisions(collisions, lightingSource);
+			}
+			
+			
 
 			if (collisions.Count < 1) {
 				for(int i = 0; i < lightignEventCache.Count; i++) {

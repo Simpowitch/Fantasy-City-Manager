@@ -12,14 +12,14 @@ namespace SuperTilemapEditorSupport {
             public CreativeSpore.SuperTilemapEditor.STETilemap tilemapSTE;
             public STEMap SuperTilemapEditorMap;
 
-            private Mesh STEMesh = null;
+            private MeshObject STEMesh = null;
         #endif
 
         #if (SUPER_TILEMAP_EDITOR)
 
-            public Mesh GetSTEMesh() {
+            public MeshObject GetSTEMesh() {
                 if (STEMesh == null) {
-                    STEMesh = new Mesh();
+                    Mesh mesh = new Mesh();
                     List<Vector3> vertices = new List<Vector3>();
                     List<Vector2> uv = new List<Vector2>();
                     List<int> triangles = new List<int>();
@@ -67,9 +67,11 @@ namespace SuperTilemapEditorSupport {
 
                     #endif
 
-                    STEMesh.vertices = vertices.ToArray();
-                    STEMesh.uv = uv.ToArray();
-                    STEMesh.triangles = triangles.ToArray();
+                    mesh.vertices = vertices.ToArray();
+                    mesh.uv = uv.ToArray();
+                    mesh.triangles = triangles.ToArray();
+
+                    STEMesh = new MeshObject(mesh);
                 }
 
                 return(STEMesh);

@@ -51,8 +51,8 @@ public class EditorGameObjects : MonoBehaviour
 
 		newGameObject.AddComponent<PolygonCollider2D>();
 		LightingCollider2D collider = newGameObject.AddComponent<LightingCollider2D>();
-        collider.shape.maskType = LightingCollider2D.MaskType.Collider;
-        collider.shape.colliderType = LightingCollider2D.ColliderType.Collider;
+        collider.mainShape.maskType = LightingCollider2D.MaskType.Collider2D;
+        collider.mainShape.colliderType = LightingCollider2D.ColliderType.Collider2D;
 
 		newGameObject.transform.position = GetCameraPoint();
     }
@@ -100,8 +100,8 @@ public class EditorGameObjects : MonoBehaviour
 		newGameObject.AddComponent<PolygonCollider2D>();
 
 		DayLightingCollider2D c = newGameObject.AddComponent<DayLightingCollider2D>();
-		c.shape.colliderType = DayLightingCollider2D.ColliderType.Collider;
-		c.shape.maskType = DayLightingCollider2D.MaskType.None;
+		c.mainShape.colliderType = DayLightingCollider2D.ColliderType.Collider;
+		c.mainShape.maskType = DayLightingCollider2D.MaskType.None;
 
 		newGameObject.transform.position = GetCameraPoint();
     }
@@ -174,13 +174,6 @@ public class EditorGameObjects : MonoBehaviour
     }
 
 	#endif
-
-	[MenuItem("GameObject/2D Light/Light Settings", false, 4)]
-    static void CreateLightSettings() {
-		GameObject newGameObject = new GameObject("2D Light Settings");
-
-		newGameObject.AddComponent<LightingSettings2D>();
-    }
 
 	[MenuItem("GameObject/2D Light/Light Manager", false, 4)]
     static void CreateLightManager(){

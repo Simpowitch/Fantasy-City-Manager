@@ -8,6 +8,7 @@ using LightingSettings;
 public class LightingSource2D : LightingMonoBehaviour{
 	public enum LightSprite {Default, Custom};
 	public enum WhenInsideCollider {DrawAbove, DrawInside}; // Draw Bellow / Do Not Draw
+	public enum LitMode {Everything, MaskOnly}
 
 	// Settings
 	public LightingLayer nightLayer = LightingLayer.Layer1;
@@ -17,17 +18,18 @@ public class LightingSource2D : LightingMonoBehaviour{
 	public float coreSize = 0.5f;
 	public float angle = 360;
 	public float outerAngle = 15;
+	public LitMode litMode = LitMode.Everything;
 	
 	public bool applyRotation = false;
-	public bool applyEventHandling = false;
+
+	public int lightPresetId = 0;
 
 	// public float lightCoreSize = 0.5f;
 
 	public LightingSourceTextureSize textureSize = LightingSourceTextureSize.px2048;
 
-	public AdditiveMode additiveMode = new AdditiveMode();
+	public MeshMode meshMode = new MeshMode();
 	public BumpMap bumpMap = new BumpMap();
-	public LayerSetting[] layerSetting = new LayerSetting[1];
 
 	public WhenInsideCollider whenInsideCollider = WhenInsideCollider.DrawInside;
 
@@ -46,13 +48,37 @@ public class LightingSource2D : LightingMonoBehaviour{
 
 	public LightingSourceTransform transform2D = new LightingSourceTransform();
 	private static List<LightingSource2D> list = new List<LightingSource2D>();
-	private EventHandling.Object eventHandlingObject = new EventHandling.Object();
+	
 	private bool inScreen = false;
+
+	public LightEventHandling eventHandling = new LightEventHandling();
+
+	[System.Serializable]
+	public class LightEventHandling {
+		public bool enable = false;
+
+		public bool useColliders = true;
+		public bool useTilemapColliders = false;
+
+		public EventHandling.Object eventHandlingObject = new EventHandling.Object();
+	}
 
 	[System.Serializable]
 	public class BumpMap {
 		public float intensity = 1;
 		public float depth = 1;
+	}
+
+	public LayerSetting[] GetLayerSettings() {
+		LightPresetList presetList = Lighting2D.Profile.lightPresets;
+		
+		if (lightPresetId >= presetList.list.Length) {
+			return(null);
+		}
+
+		LightPreset lightPreset = presetList.Get()[lightPresetId];
+
+		return(lightPreset.layerSetting.Get());
 	}
 
 	static public Sprite GetDefaultSprite() {
@@ -134,18 +160,6 @@ public class LightingSource2D : LightingMonoBehaviour{
 		return(false);
 	}
 
-	void Start () {
-		// ?
-		for(int i = 0; i < layerSetting.Length; i++) {
-			if (layerSetting[i] == null) {
-				layerSetting[i] = new LayerSetting();
-				layerSetting[i].layerID = LightingLayer.Layer1;
-				layerSetting[i].type = LightingLayerType.ShadowAndMask;
-				layerSetting[i].sorting = LightingLayerSorting.None;
-			}
-		}
-	}
-
 	public LightingBuffer2D GetBuffer() {
 		if (buffer == null) { //?
 			int textureSizeInt = LightingRender2D.GetTextureSize(textureSize);
@@ -160,7 +174,7 @@ public class LightingSource2D : LightingMonoBehaviour{
 
 		UpdateBuffer();
 
-		DrawAdditiveMode();
+		DrawMeshMode();
 	}
 
 	void BufferUpdate() {
@@ -198,13 +212,13 @@ public class LightingSource2D : LightingMonoBehaviour{
 			inScreen = false;
 		}
 		
-		if (applyEventHandling) {
-			eventHandlingObject.Update(this);
+		if (eventHandling.enable) {
+			eventHandling.eventHandlingObject.Update(this, eventHandling.useColliders, eventHandling.useTilemapColliders);
 		}
 	}
 
-	public void DrawAdditiveMode() {
-		if (additiveMode.enable == false) {
+	public void DrawMeshMode() {
+		if (meshMode.enable == false) {
 			return;
 		}
 
@@ -223,7 +237,55 @@ public class LightingSource2D : LightingMonoBehaviour{
 		LightingMeshRenderer lightingMesh = MeshRendererManager.Pull(this);
 		
 		if (lightingMesh != null) {
-			lightingMesh.UpdateLightSource(this);
+			lightingMesh.UpdateLightSource(this, meshMode);
 		}	
+	}
+
+	void OnDrawGizmosSelected() {
+		if (Lighting2D.ProjectSettings.sceneView.drawGizmos == false) {
+			return;
+		}
+		
+		Gizmos.color = new Color(1f, 0.5f, 0.25f);
+		Vector3 center = transform.position;
+		int step = 10;
+
+		int start = -(int)(angle / 2);
+		int end = (int)(angle / 2);
+
+		for(int i = start; i < end; i += step) {
+			float rot = i + 90 + transform2D.rotation;
+
+			Vector3 pointA = center;
+			float rotA = rot * Mathf.Deg2Rad;
+			pointA.x += Mathf.Cos(rotA) * size;
+			pointA.y += Mathf.Sin(rotA) * size;
+
+
+			Vector3 pointB = center;
+			float rotB = (rot + step) * Mathf.Deg2Rad;
+			pointB.x += Mathf.Cos(rotB) * size;
+			pointB.y += Mathf.Sin(rotB) * size;
+
+			Gizmos.DrawLine(pointA, pointB);
+
+			if (angle < 360 && angle > 0) {
+				if (i == start) {
+					Gizmos.DrawLine(pointA, center);
+				}
+
+				if (i + step > end) {
+					Gizmos.DrawLine(pointB, center);
+				}
+			}
+		}
+    }
+
+	private void OnDrawGizmos() {
+		if (Lighting2D.ProjectSettings.sceneView.drawGizmos == false) {
+			return;
+		}
+		
+		Gizmos.DrawIcon(transform.position, "light", true);
 	}
 }

@@ -13,14 +13,11 @@ namespace LightingShape {
 		public List<MeshObject> meshes = null;
 		public float meshesRadius = -1f;
 
-		public bool edgeCollider2D = false;
 
-		public GameObject gameObject;
 		public Transform transform;
 
-		public void SetGameObject(GameObject g) {
-			gameObject = g;
-			transform = g.transform;
+		public void SetTransform(Transform t) {
+			transform = t;
 		}
 
 		virtual public void ResetLocal() {
