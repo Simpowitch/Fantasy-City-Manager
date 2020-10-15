@@ -9,9 +9,11 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] ConstructionSystem constructionSystem = null;
     [SerializeField] MouseTooltip mouseTooltip = null;
     City city;
+    Grid<ObjectTile> ObjectGrid { get => city.ObjectGrid; }
     [SerializeField] ObjectViewer objectViewer = null;
     [SerializeField] InGameCamera playerCamera = null;
     [SerializeField] PlayerCharacter playerCharacter = null;
+    [SerializeField] GameObject UI = null;
 
     [Header("Selection")]
     [SerializeField] GameObject selectionObject = null;
@@ -22,7 +24,6 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] Sprite build = null;
     [SerializeField] Sprite remove = null;
 
-    Grid<ObjectTile> ObjectGrid { get => city.ObjectGrid; }
 
     Vector3 mouseDownPosition;
 
@@ -103,6 +104,9 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
+    bool gamePaused = false;
+
+
     private void Awake()
     {
         player.OnActiveCityChanged += SetCity;
@@ -141,11 +145,16 @@ public class PlayerInput : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             constructionSystem.ChangeFacingRotationDirection();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             playerCamera.ToggleTracking();
             playerCharacter.CanMove = playerCamera.IsTracking;
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+            PauseGame(!gamePaused);
+        if (Input.GetKeyDown(KeyCode.U))
+            ToggleUIState();
     }
 
     void Hoover()
@@ -368,4 +377,12 @@ public class PlayerInput : MonoBehaviour
         lowerLeft = ObjectGrid.GetWorldPosition(lowerLeft, false);
         upperRight = ObjectGrid.GetTopRightCornerWorldPosition(upperRight);
     }
+
+    private void PauseGame(bool state)
+    {
+        gamePaused = state;
+        Time.timeScale = state ? 0 : 1;
+    }
+
+    private void ToggleUIState() => UI.SetActive(!UI.activeSelf);
 }

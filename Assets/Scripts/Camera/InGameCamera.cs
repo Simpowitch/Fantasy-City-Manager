@@ -64,9 +64,9 @@ public class InGameCamera : MonoBehaviour
     void InputHandler()
     {
         //Zoom
-        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        if (Input.GetAxisRaw("Mouse ScrollWheel") != 0)
         {
-            newCameraTransform.cameraSize -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+            newCameraTransform.cameraSize -= Input.GetAxisRaw("Mouse ScrollWheel") * zoomSpeed;
         }
         if (!IsTracking)
         {
@@ -80,13 +80,13 @@ public class InGameCamera : MonoBehaviour
                 mouseUpPos = activeCamera.ScreenToWorldPoint(Input.mousePosition);
                 newCameraTransform.cameraPosition = transform.localPosition + mouseDownPos - mouseUpPos;
             }
-            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
             {
                 //Key movement
-                MoveDirection(Directions.Right, Input.GetAxis("Horizontal") > 0);
-                MoveDirection(Directions.Left, Input.GetAxis("Horizontal") < 0);
-                MoveDirection(Directions.Down, Input.GetAxis("Vertical") < 0);
-                MoveDirection(Directions.Up, Input.GetAxis("Vertical") > 0);
+                MoveDirection(Directions.Right, Input.GetAxisRaw("Horizontal") > 0);
+                MoveDirection(Directions.Left, Input.GetAxisRaw("Horizontal") < 0);
+                MoveDirection(Directions.Down, Input.GetAxisRaw("Vertical") < 0);
+                MoveDirection(Directions.Up, Input.GetAxisRaw("Vertical") > 0);
             }
             else if (edgeMovement)
             {
@@ -127,7 +127,7 @@ public class InGameCamera : MonoBehaviour
     {
         //Apply zoom
         newCameraTransform.cameraSize = Mathf.Clamp(newCameraTransform.cameraSize, zoomMin, zoomMax);
-        activeCamera.orthographicSize = Mathf.Lerp(activeCamera.orthographicSize, newCameraTransform.cameraSize, zoomRigidness * Time.deltaTime);
+        activeCamera.orthographicSize = Mathf.Lerp(activeCamera.orthographicSize, newCameraTransform.cameraSize, zoomRigidness * Time.unscaledDeltaTime);
 
         //Apply movement
         float halfScreenWidth = activeCamera.ScreenToWorldPoint(new Vector3(activeCamera.scaledPixelWidth, 0, 0)).x - transform.localPosition.x;
@@ -136,7 +136,7 @@ public class InGameCamera : MonoBehaviour
         newCameraTransform.cameraPosition.y = Mathf.Clamp(newCameraTransform.cameraPosition.y, minPos.y + halfScreenHeight, maxPos.y - halfScreenHeight);
         newCameraTransform.cameraPosition.z = -5;
 
-        Vector3 lerpVector = Vector3.Lerp(transform.localPosition, newCameraTransform.cameraPosition, moveRigidness * Time.deltaTime);
+        Vector3 lerpVector = Vector3.Lerp(transform.localPosition, newCameraTransform.cameraPosition, moveRigidness * Time.unscaledDeltaTime);
         transform.position = lerpVector;
     }
 
