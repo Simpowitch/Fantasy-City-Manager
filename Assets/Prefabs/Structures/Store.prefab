@@ -421,8 +421,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1775479749
-  m_SortingLayer: -4
+  m_SortingLayerID: -712667465
+  m_SortingLayer: -5
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -707,8 +707,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1775479749
-  m_SortingLayer: -4
+  m_SortingLayerID: -712667465
+  m_SortingLayer: -5
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -781,6 +781,8 @@ MonoBehaviour:
   constructionProgressBar: {fileID: 2768277874218916509}
   xSize: 4
   ySize: 4
+  blockerObjectParent: {fileID: 0}
+  finalPathPositionParent: {fileID: 0}
   facingDirection: 0
   startShiftHour: 8
   endShiftHour: 18
@@ -791,19 +793,17 @@ MonoBehaviour:
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Vendor
+  taskAnimation: 0
   workTaskThoughtHeader: 
   workTaskDescription: 
-  workTaskTiles:
-  - {fileID: 3306108646756000936}
-  - {fileID: 1884122394881256843}
+  workTaskTileParent: {fileID: 0}
   consumedOfPatreon:
     type: 0
     value: 0
   providedNeeds: 
   patreonTaskThoughtHeader: 
   patreonTaskDescription: 
-  patreonTaskTiles:
-  - {fileID: 3446690566497693600}
+  patreonTaskTileParent: {fileID: 0}
 --- !u!61 &8323408921792378293
 BoxCollider2D:
   m_ObjectHideFlags: 0

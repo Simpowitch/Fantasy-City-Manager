@@ -15,6 +15,7 @@ public class Clock : MonoBehaviour
 
     public const int HOURSPERDAY = 24;
     public const int MINUTESPERHOUR = 60;
+    public const int MINUTESPERDAY = MINUTESPERHOUR * HOURSPERDAY;
 
     [Header("Settings")]
     [SerializeField] float realworldSecondsPerGameMinute = 0.5f;
@@ -95,6 +96,8 @@ public class Clock : MonoBehaviour
             Minute++;
         }
     }
+
+    public float GetDayPercentage() => (float)(Hour * 60 + Minute) / MINUTESPERDAY;
 
     private string GetClockStatus() => string.Format("{0:00}:{1:00}", hour, minute);
 

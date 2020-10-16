@@ -165,8 +165,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1775479749
-  m_SortingLayer: -4
+  m_SortingLayerID: -712667465
+  m_SortingLayer: -5
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -434,6 +434,8 @@ MonoBehaviour:
   constructionProgressBar: {fileID: 2140327980629007123}
   xSize: 3
   ySize: 3
+  blockerObjectParent: {fileID: 0}
+  finalPathPositionParent: {fileID: 0}
   facingDirection: 0
   startShiftHour: 8
   endShiftHour: 18
@@ -447,6 +449,7 @@ MonoBehaviour:
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: City Guard
+  taskAnimation: 0
   workTaskThoughtHeader: 
   workTaskDescription: 
   workTaskTileParent: {fileID: 5479857108664079737}
@@ -746,8 +749,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1775479749
-  m_SortingLayer: -4
+  m_SortingLayerID: -712667465
+  m_SortingLayer: -5
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
