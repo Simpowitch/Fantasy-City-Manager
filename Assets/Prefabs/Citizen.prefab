@@ -55,6 +55,58 @@ MonoBehaviour:
   seeker: {fileID: 3704443307884447362}
   unitDetector: {fileID: 8033300393647027598}
   canvasController: {fileID: 9132122262453919227}
+  body:
+    head:
+      up: {fileID: 0}
+      right: {fileID: 0}
+      down: {fileID: 0}
+    body:
+      up: {fileID: 0}
+      right: {fileID: 0}
+      down: {fileID: 0}
+    leftHand:
+      up: {fileID: -3489040920934059214, guid: 781f8c33e8ae3514ab8279eba9cff355, type: 3}
+      right: {fileID: 2385992095446641729, guid: 781f8c33e8ae3514ab8279eba9cff355,
+        type: 3}
+      down: {fileID: 652027419111990925, guid: 781f8c33e8ae3514ab8279eba9cff355, type: 3}
+    rightHand:
+      up: {fileID: -1613822235836179186, guid: 781f8c33e8ae3514ab8279eba9cff355, type: 3}
+      right: {fileID: 746492490782018233, guid: 781f8c33e8ae3514ab8279eba9cff355,
+        type: 3}
+      down: {fileID: 5725000685289366352, guid: 781f8c33e8ae3514ab8279eba9cff355,
+        type: 3}
+    leftFoot:
+      up: {fileID: 7815725785620641724, guid: 781f8c33e8ae3514ab8279eba9cff355, type: 3}
+      right: {fileID: 925580976559082039, guid: 781f8c33e8ae3514ab8279eba9cff355,
+        type: 3}
+      down: {fileID: 1401472653211120724, guid: 781f8c33e8ae3514ab8279eba9cff355,
+        type: 3}
+    rightFoot:
+      up: {fileID: -6004662636011985807, guid: 781f8c33e8ae3514ab8279eba9cff355, type: 3}
+      right: {fileID: -5879335189423295466, guid: 781f8c33e8ae3514ab8279eba9cff355,
+        type: 3}
+      down: {fileID: -2743909633376204122, guid: 781f8c33e8ae3514ab8279eba9cff355,
+        type: 3}
+  allHeads:
+  - up: {fileID: 21300000, guid: bed4aa7c0790f45458471fa9d473f6cf, type: 3}
+    right: {fileID: 21300000, guid: 99b07111b0f77044e9cbed43b65e5f42, type: 3}
+    down: {fileID: 21300000, guid: b8290aeb14dfd9143a90eb9d480b1064, type: 3}
+  - up: {fileID: 21300000, guid: 67d8ab4dae0440e4da20b0cc397dacb8, type: 3}
+    right: {fileID: 21300000, guid: 4ab9a94ec048fda4e8d40d276e5ee100, type: 3}
+    down: {fileID: 21300000, guid: 38bdf14c7ebc1bb4fb16980808270a5a, type: 3}
+  - up: {fileID: 21300000, guid: baef086310bbb98428f2f1cb2cf15c74, type: 3}
+    right: {fileID: 21300000, guid: 15ef8f76ffc21de49b0b008636201649, type: 3}
+    down: {fileID: 21300000, guid: 1e7bcd1b1472f5346a717fa7300fefd6, type: 3}
+  - up: {fileID: 6550932394820061537, guid: 781f8c33e8ae3514ab8279eba9cff355, type: 3}
+    right: {fileID: 843777423808741289, guid: 781f8c33e8ae3514ab8279eba9cff355, type: 3}
+    down: {fileID: 2166688476657420860, guid: 781f8c33e8ae3514ab8279eba9cff355, type: 3}
+  unemployedClothingGroups:
+  - up: {fileID: 21300000, guid: 1cc7f0ceb181afe4c962f0f95d700c45, type: 3}
+    right: {fileID: 21300000, guid: ba6c27ea0d8d7a743af8508897d7469b, type: 3}
+    down: {fileID: 21300000, guid: e3a0727a1034ff74d86f667aa7818857, type: 3}
+  - up: {fileID: 21300000, guid: ae3ba16de4732894b97189b66b775a4a, type: 3}
+    right: {fileID: 21300000, guid: 1134ff42ff54ef1489078e1b269b6763, type: 3}
+    down: {fileID: 21300000, guid: 0b57207771be88140902023fd3ce58bb, type: 3}
 --- !u!114 &3704443307884447362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,7 +190,7 @@ SortingGroup:
   m_GameObject: {fileID: 3179896000703979151}
   m_Enabled: 1
   m_SortingLayerID: -567436445
-  m_SortingLayer: -3
+  m_SortingLayer: -5
   m_SortingOrder: 0
 --- !u!1001 &2049398077674740228
 PrefabInstance:

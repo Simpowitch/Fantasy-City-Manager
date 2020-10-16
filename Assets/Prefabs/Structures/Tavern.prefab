@@ -1148,12 +1148,24 @@ MonoBehaviour:
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Innkeeper
+    workClothing:
+      up: {fileID: 21300000, guid: 05369ddb72bf513429583db250f36a41, type: 3}
+      right: {fileID: 21300000, guid: 0b2988790ba2f9e4d9d4fa403832cc2f, type: 3}
+      down: {fileID: 21300000, guid: 449216d06d355754d82aaeed8e91a0b5, type: 3}
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Barman
+    workClothing:
+      up: {fileID: 21300000, guid: 05369ddb72bf513429583db250f36a41, type: 3}
+      right: {fileID: 21300000, guid: 0b2988790ba2f9e4d9d4fa403832cc2f, type: 3}
+      down: {fileID: 21300000, guid: 449216d06d355754d82aaeed8e91a0b5, type: 3}
   - workplace: {fileID: 0}
     employee: {fileID: 0}
     employmentName: Waiter
+    workClothing:
+      up: {fileID: 21300000, guid: 05369ddb72bf513429583db250f36a41, type: 3}
+      right: {fileID: 21300000, guid: 0b2988790ba2f9e4d9d4fa403832cc2f, type: 3}
+      down: {fileID: 21300000, guid: 449216d06d355754d82aaeed8e91a0b5, type: 3}
   taskAnimation: 7
   workTaskThoughtHeader: TavernWork
   workTaskDescription: Working at the tavern

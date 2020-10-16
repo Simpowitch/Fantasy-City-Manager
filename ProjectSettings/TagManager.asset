@@ -44,11 +44,11 @@ TagManager:
   - name: Ground
     uniqueID: 76699897
     locked: 0
-  - name: Day Shadows
-    uniqueID: 406158693
-    locked: 0
   - name: StructuresBelowPeople
     uniqueID: 3582299831
+    locked: 0
+  - name: Day Shadows
+    uniqueID: 406158693
     locked: 0
   - name: Objects and People
     uniqueID: 3727530851

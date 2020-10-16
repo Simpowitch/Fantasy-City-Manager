@@ -7,6 +7,8 @@ public class Employment
     [HideInInspector] public Citizen employee;
     public string employmentName = "worker";
 
+    [SerializeField] BodypartSpriteGroup workClothing = null; public BodypartSpriteGroup WorkClothing { get => workClothing; }
+
     public void Employ(Citizen citizen) => employee = citizen;
     public void QuitJob() => employee = null;
 

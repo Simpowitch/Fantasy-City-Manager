@@ -46,7 +46,7 @@ public class PlayerCharacter : MonoBehaviour, IViewable
         }
         else if (ActionDescription != "Idle")
         {
-            unitAnimator.PlayActionAnimation(aim-transform.position, UnitAnimator.ActionAnimation.Idle);
+            unitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.Idle);
             ActionDescription = "Idle";
         }
     }

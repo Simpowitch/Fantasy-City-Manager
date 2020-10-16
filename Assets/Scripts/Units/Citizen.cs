@@ -6,6 +6,8 @@ public class Citizen : Unit, IViewable
     Residence home;
     Employment employment;
 
+    [SerializeField] BodypartSpriteGroup[] unemployedClothingGroups = null;
+
     #region Needs
     public Need Hunger { private set; get; }
     public Need Energy { private set; get; }
@@ -23,6 +25,8 @@ public class Citizen : Unit, IViewable
     public void Setup(City city)
     {
         base.BaseSetup(city);
+        Body.SetBodypartSpriteGroup(Body.Bodypart.Body, Utility.ReturnRandom(unemployedClothingGroups));
+
         LookForHome();
         LookForEmployment();
         City.cityStats.Population++;
@@ -42,7 +46,10 @@ public class Citizen : Unit, IViewable
     {
         base.NewHour(hour);
         if (employment == null)
+        {
+            Body.SetBodypartSpriteGroup(Body.Bodypart.Body, Utility.ReturnRandom(unemployedClothingGroups));
             LookForEmployment();
+        }
         if (!home)
             LookForHome();
     }
@@ -70,10 +77,12 @@ public class Citizen : Unit, IViewable
         {
             employment = Utility.ReturnRandom(unfilledEmployments);
             employment.Employ(this);
+            Body.SetBodypartSpriteGroup(Body.Bodypart.Body, employment.WorkClothing);
         }
     }
     public void QuitJob()
     {
+        Body.SetBodypartSpriteGroup(Body.Bodypart.Body, Utility.ReturnRandom(unemployedClothingGroups));
         employment.QuitJob();
         employment = null;
         LookForEmployment();
@@ -85,7 +94,7 @@ public class Citizen : Unit, IViewable
     protected override void FindNewTask()
     {
         if (employment != null && employment.ShiftActive)
-            currentTask = employment.GetWorkTask(this);
+            CurrentTask = employment.GetWorkTask(this);
         else
             FindNeedFullfillTask();
         base.FindNewTask();
@@ -112,7 +121,7 @@ public class Citizen : Unit, IViewable
         else
             chosenNeed = Utility.ReturnRandom(GetNeeds());
 
-        currentTask = GetTask(chosenNeed);
+        CurrentTask = GetTask(chosenNeed);
     }
 
     private Task GetTask(Need need)
@@ -167,7 +176,7 @@ public class Citizen : Unit, IViewable
     #region Viewable interface
     public InfoChangeHandler InfoChangeHandler { get; set; }
 
-    public string ActionDescription { get => currentTask.Description; }
+    public string ActionDescription { get => CurrentTask.Description; }
     public string Name
     {
         get => UnitName; 

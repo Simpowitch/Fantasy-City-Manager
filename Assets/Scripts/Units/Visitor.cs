@@ -43,7 +43,7 @@ public class Visitor : Unit, IViewable
     protected override void FindNewTask()
     {
         if (Utility.RandomizeBool(leaveRandomizerPercentage))
-            currentTask = City.CreateLeaveCityTask(this);
+            CurrentTask = City.CreateLeaveCityTask(this);
         else
             FindNeedFullfillTask();
         base.FindNewTask();
@@ -70,7 +70,7 @@ public class Visitor : Unit, IViewable
         else
             chosenNeed = Utility.ReturnRandom(GetNeeds());
 
-        currentTask = GetTask(chosenNeed);
+        CurrentTask = GetTask(chosenNeed);
     }
 
     private Task GetTask(Need need)
@@ -128,7 +128,7 @@ public class Visitor : Unit, IViewable
     #region Viewable interface
 
     public InfoChangeHandler InfoChangeHandler { get; set; }
-    public string ActionDescription { get => currentTask.Description; }
+    public string ActionDescription { get => CurrentTask.Description; }
 
     public string Name
     {

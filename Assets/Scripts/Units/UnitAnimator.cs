@@ -17,21 +17,31 @@ public class UnitAnimator : MonoBehaviour
     }
 
     [Header("Renderers and sprites")]
-    [SerializeField] SpriteRenderer body = null;
-    [SerializeField] SpriteRenderer head = null;
-    [SerializeField] SpriteRenderer lHand = null;
-    [SerializeField] SpriteRenderer lFoot = null;
-    [SerializeField] SpriteRenderer rHand = null;
-    [SerializeField] SpriteRenderer rFoot = null;
+    [SerializeField] SpriteRenderer headRenderer = null;
+    [SerializeField] SpriteRenderer bodyRenderer = null;
+    [SerializeField] SpriteRenderer lHandRenderer = null;
+    [SerializeField] SpriteRenderer rHandRenderer = null;
+    [SerializeField] SpriteRenderer lFootRenderer = null;
+    [SerializeField] SpriteRenderer rFootRenderer = null;
     [SerializeField] SpriteRenderer itemRenderer = null;
 
-    [SerializeField] Sprite[] bodies = new Sprite[3];
-    [SerializeField] Sprite[] heads = new Sprite[3];
-    [SerializeField] Sprite[] lHands = new Sprite[3];
-    [SerializeField] Sprite[] lFeet = new Sprite[3];
-    [SerializeField] Sprite[] rHands = new Sprite[3];
-    [SerializeField] Sprite[] rFeet = new Sprite[3];
+    [SerializeField] Body body = null;
+    public Body Body 
+    { 
+        get => body;
+        set
+        {
+            body = value;
 
+            //Change sprites
+            ChangeSprite(Body.Bodypart.Head, headRenderer, BodypartSpriteGroup.SpriteDirection.Down);
+            ChangeSprite(Body.Bodypart.Body, bodyRenderer, BodypartSpriteGroup.SpriteDirection.Down);
+            ChangeSprite(Body.Bodypart.LeftHand, lHandRenderer, BodypartSpriteGroup.SpriteDirection.Down);
+            ChangeSprite(Body.Bodypart.RightHand, rHandRenderer, BodypartSpriteGroup.SpriteDirection.Down);
+            ChangeSprite(Body.Bodypart.LeftFoot, lFootRenderer, BodypartSpriteGroup.SpriteDirection.Down);
+            ChangeSprite(Body.Bodypart.RightFoot, rFootRenderer, BodypartSpriteGroup.SpriteDirection.Down);
+        }
+    }
 
     [SerializeField] int[] headOrderInLayer = new int[4];
     [SerializeField] int[] lHandOrderInLayer = new int[4];
@@ -50,7 +60,6 @@ public class UnitAnimator : MonoBehaviour
 
     string lastAnimationTag = ActionAnimation.Idle.ToString();
     Direction2D lastDirection;
-
 
     public void SetIsCarrying(CityResource cityResource)
     {
@@ -71,9 +80,8 @@ public class UnitAnimator : MonoBehaviour
         lastAnimationTag = "Walking";
     }
 
+    public void PlayActionAnimation(ActionAnimation actionAnimation) => PlayActionAnimation(lastDirection, actionAnimation);
     public void PlayActionAnimation(Vector3 dir, ActionAnimation actionAnimation) => PlayActionAnimation(Utility.GetDirection(dir), actionAnimation);
-
-    public void PlayActionAnimation(ActionAnimation actionAnimation) => PlayActionAnimation(Vector3.zero, actionAnimation);
 
     public void PlayActionAnimation(Direction2D dir, ActionAnimation actionAnimation)
     {
@@ -156,64 +164,63 @@ public class UnitAnimator : MonoBehaviour
         if (direction == lastDirection)
             return;
 
-        int spriteIndex = 0;
-        int animatorDirectionIndex = 0;
+        BodypartSpriteGroup.SpriteDirection spriteDirection = BodypartSpriteGroup.SpriteDirection.Up;
+        int directionIndex = 0;
         bool flip = false;
         switch (direction)
         {
             case Direction2D.N:
-                spriteIndex = 2;
-                animatorDirectionIndex = 0;
+                spriteDirection = BodypartSpriteGroup.SpriteDirection.Up;
+                directionIndex = 0;
                 break;
             case Direction2D.NE:
             case Direction2D.E:
             case Direction2D.SE:
-                spriteIndex = 1;
-                animatorDirectionIndex = 1;
+                spriteDirection = BodypartSpriteGroup.SpriteDirection.Right;
+                directionIndex = 1;
                 break;
             case Direction2D.S:
-                spriteIndex = 0;
-                animatorDirectionIndex = 2;
+                spriteDirection = BodypartSpriteGroup.SpriteDirection.Down;
+                directionIndex = 2;
                 break;
             case Direction2D.SW:
             case Direction2D.W:
             case Direction2D.NW:
-                spriteIndex = 1;
-                animatorDirectionIndex = 3;
+                spriteDirection = BodypartSpriteGroup.SpriteDirection.Right;
+                directionIndex = 3;
                 flip = true;
                 break;
         }
 
-
         //Set orders in layer to correctly place object infront or behind other objects
-        head.sortingOrder = headOrderInLayer[animatorDirectionIndex];
-        lHand.sortingOrder = lHandOrderInLayer[animatorDirectionIndex];
-        rHand.sortingOrder = rHandOrderInLayer[animatorDirectionIndex];
-        lFoot.sortingOrder = lFootOrderInLayer[animatorDirectionIndex];
-        rFoot.sortingOrder = rFootOrderInLayer[animatorDirectionIndex];
+        headRenderer.sortingOrder = headOrderInLayer[directionIndex];
+        lHandRenderer.sortingOrder = lHandOrderInLayer[directionIndex];
+        rHandRenderer.sortingOrder = rHandOrderInLayer[directionIndex];
+        lFootRenderer.sortingOrder = lFootOrderInLayer[directionIndex];
+        rFootRenderer.sortingOrder = rFootOrderInLayer[directionIndex];
 
         //Flip sprite renderer dependent on left/right
-        head.flipX = flip;
-        body.flipX = flip;
-        lFoot.flipX = flip;
-        rFoot.flipX = flip;
-        lHand.flipX = flip;
-        rHand.flipX = flip;
+        headRenderer.flipX = flip;
+        bodyRenderer.flipX = flip;
+        lFootRenderer.flipX = flip;
+        rFootRenderer.flipX = flip;
+        lHandRenderer.flipX = flip;
+        rHandRenderer.flipX = flip;
 
         //Change sprites
-        if (heads.Length > 0)
-            head.sprite = heads[spriteIndex];
-        if (bodies.Length > 0)
-            body.sprite = bodies[spriteIndex];
-        if (lFeet.Length > 0)
-            lFoot.sprite = lFeet[spriteIndex];
-        if (rFeet.Length > 0)
-            rFoot.sprite = rFeet[spriteIndex];
-        if (lHands.Length > 0)
-            lHand.sprite = lHands[spriteIndex];
-        if (rHands.Length > 0)
-            rHand.sprite = rHands[spriteIndex];
+        ChangeSprite(Body.Bodypart.Head, headRenderer, spriteDirection);
+        ChangeSprite(Body.Bodypart.Body, bodyRenderer, spriteDirection);
+        ChangeSprite(Body.Bodypart.LeftHand, lHandRenderer, spriteDirection);
+        ChangeSprite(Body.Bodypart.RightHand, rHandRenderer, spriteDirection);
+        ChangeSprite(Body.Bodypart.LeftFoot, lFootRenderer, spriteDirection);
+        ChangeSprite(Body.Bodypart.RightFoot, rFootRenderer, spriteDirection);
 
         lastDirection = direction;
+    }
+
+    private void ChangeSprite(Body.Bodypart bodypart, SpriteRenderer spriteRenderer, BodypartSpriteGroup.SpriteDirection spriteDirection)
+    {
+        Sprite foundSprite = Body.GetBodypartSpriteGroup(bodypart).GetSprite(spriteDirection);
+        spriteRenderer.sprite = foundSprite ? foundSprite : spriteRenderer.sprite;
     }
 }

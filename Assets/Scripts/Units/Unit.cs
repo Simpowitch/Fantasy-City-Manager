@@ -33,8 +33,10 @@ public abstract class Unit : MonoBehaviour
         Patriotic
     }
     public Personality UnitPersonality { get; private set; }
+    [SerializeField] Body body = new Body(); public Body Body { get => body;}
 
-    public Task currentTask;
+    [SerializeField] BodypartSpriteGroup[] allHeads = null;
+    public Task CurrentTask { get; protected set; }
 
     //public Inventory Inventory { get; private set; } = new Inventory();
     CityResource resourceCarried; 
@@ -80,8 +82,14 @@ public abstract class Unit : MonoBehaviour
         this.City = city;
         this.seeker.City = city;
         UnitName = NameGenerator.GetName();
-
+        RandomizeBody();
+        UnitAnimator.Body = Body;
         ChangeState(new IdleState(this));
+    }
+
+    private void RandomizeBody()
+    {
+        Body.SetBodypartSpriteGroup(Body.Bodypart.Head, Utility.ReturnRandom(allHeads));
     }
 
     protected virtual void NewHour(int hour) { }
@@ -108,7 +116,7 @@ public abstract class Unit : MonoBehaviour
         {
             movementSystem.SetVelocity(Vector3.zero);
             unitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.Idle);
-            if (currentTask != null && currentTask.HasArrived(transform.position))
+            if (CurrentTask != null && CurrentTask.HasArrived(transform.position))
                 ChangeState(new TaskState(this));
             else
                 ChangeState(new IdleState(this));
@@ -129,7 +137,7 @@ public abstract class Unit : MonoBehaviour
 
     protected virtual void FindNewTask()
     {
-        if (currentTask != null)
+        if (CurrentTask != null)
             ChangeState(new MoveState(this));
         else
             ChangeState(new IdleState(this));
@@ -163,7 +171,7 @@ public abstract class Unit : MonoBehaviour
         public override void EnterState()
         {
             base.EnterState();
-            unit.UnitAnimator.PlayActionAnimation(Vector3.zero, UnitAnimator.ActionAnimation.Idle);
+            unit.UnitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.Idle);
         }
 
         public override void DuringState()
@@ -178,7 +186,7 @@ public abstract class Unit : MonoBehaviour
 
         public override void EnterState()
         {
-            Vector3 targetPosition = unit.currentTask.Position;
+            Vector3 targetPosition = unit.CurrentTask.Position;
 
             unit.seeker.FindPathTo(targetPosition);
             base.EnterState();
@@ -192,24 +200,24 @@ public abstract class Unit : MonoBehaviour
         public override void EnterState()
         {
             unit.canvasController.ShowProgressbar(true);
-            unit.currentTask.Arrived();
+            unit.CurrentTask.Arrived();
 
             //Animation
-            if (unit.currentTask.SetAnimationDirection)
-                unit.UnitAnimator.PlayActionAnimation(unit.currentTask.Direction, unit.currentTask.TaskAnimation);
+            if (unit.CurrentTask.SetAnimationDirection)
+                unit.UnitAnimator.PlayActionAnimation(unit.CurrentTask.Direction, unit.CurrentTask.TaskAnimation);
             else
-                unit.UnitAnimator.PlayActionAnimation(unit.currentTask.TaskAnimation);
+                unit.UnitAnimator.PlayActionAnimation(unit.CurrentTask.TaskAnimation);
 
-            unit.SendThought(unit.currentTask.Thought);
+            unit.SendThought(unit.CurrentTask.Thought);
             base.EnterState();
         }
 
         public override void DuringState()
         {
-            if (unit.currentTask.TaskCompleted)
+            if (unit.CurrentTask.TaskCompleted)
                 unit.ChangeState(new IdleState(unit));
             else
-                unit.canvasController.UpdateProgressbar(unit.currentTask.ActionTimer.Progress); //Show progressbar of task
+                unit.canvasController.UpdateProgressbar(unit.CurrentTask.ActionTimer.Progress); //Show progressbar of task
             base.DuringState();
         }
 
