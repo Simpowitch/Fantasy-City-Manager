@@ -291,6 +291,8 @@ public static class Utility
         return angleDegrees;
     }
 
+    public static Direction2D GetDirection(Vector3 dir) => GetDirection(Vector3.zero, dir);
+
     public static Direction2D GetDirection(Transform transform) => GetDirection(transform.position, transform.position + transform.up);
 
     public static Direction2D GetDirection(Vector2 from, Vector2 to)

@@ -71,6 +71,8 @@ public class UnitAnimator : MonoBehaviour
         lastAnimationTag = "Walking";
     }
 
+    public void PlayActionAnimation(Vector3 dir, ActionAnimation actionAnimation) => PlayActionAnimation(Utility.GetDirection(dir), actionAnimation);
+
     public void PlayActionAnimation(ActionAnimation actionAnimation) => PlayActionAnimation(Vector3.zero, actionAnimation);
 
     public void PlayActionAnimation(Direction2D dir, ActionAnimation actionAnimation)
@@ -95,15 +97,16 @@ public class UnitAnimator : MonoBehaviour
                 offset = new Vector3(-1, 0);
                 break;
         }
-        PlayActionAnimation(offset, actionAnimation);
-    }
 
-    public void PlayActionAnimation(Vector3 dir, ActionAnimation actionAnimation)
-    {
+            Vector3 normalizedDir = offset.normalized;
+            animator.SetFloat(xDir, normalizedDir.x);
+            animator.SetFloat(yDir, normalizedDir.y);
+
         switch (actionAnimation)
         {
             case ActionAnimation.Idle:
             case ActionAnimation.Drink:
+            case ActionAnimation.ServingTavern:
                 ChangeSpriteDirection(dir);
                 break;
             case ActionAnimation.Harvest:
@@ -111,15 +114,8 @@ public class UnitAnimator : MonoBehaviour
             case ActionAnimation.Mine:
             case ActionAnimation.PlantSeed:
             case ActionAnimation.Build:
-            case ActionAnimation.ServingTavern:
                 ChangeSpriteDirection(Direction2D.S);
                 break;
-        }
-        if (dir != Vector3.zero)
-        {
-            Vector3 normalizedDir = dir.normalized;
-            animator.SetFloat(xDir, normalizedDir.x);
-            animator.SetFloat(yDir, normalizedDir.y);
         }
         if (lastAnimationTag == actionAnimation.ToString())
             return;
@@ -157,6 +153,9 @@ public class UnitAnimator : MonoBehaviour
     //Exchange sprites dependent on the direction of the action/movement
     public void ChangeSpriteDirection(Direction2D direction)
     {
+        if (direction == lastDirection)
+            return;
+
         int spriteIndex = 0;
         int animatorDirectionIndex = 0;
         bool flip = false;
