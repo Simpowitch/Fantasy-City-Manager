@@ -59,7 +59,13 @@ public class UnitAnimator : MonoBehaviour
     [SerializeField] string isCarrying = "carrying";
 
     string lastAnimationTag = ActionAnimation.Idle.ToString();
-    Direction2D lastDirection;
+    Direction2D lastDirection = Direction2D.S;
+
+    private void Start()
+    {
+        ChangeSpriteDirection(lastDirection);
+        PlayActionAnimation(Direction2D.S, ActionAnimation.Idle);
+    }
 
     public void SetIsCarrying(CityResource cityResource)
     {

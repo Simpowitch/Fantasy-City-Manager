@@ -142,22 +142,43 @@ public class Citizen : Unit, IViewable
         }
     }
 
-    private Task CreateEnergyTask() => home.CreateSatisfyNeedTask(this, Energy);
+    private Task CreateEnergyTask()
+    {
+        if (home)
+            return home.CreateSatisfyNeedTask(this, Energy);
+        else
+            return null;
+    }
 
     private Task CreateHungerTask()
     {
-        INeedProvider source = Utility.ReturnRandom(City.HungerProviders);
-        return source.CreateSatisfyNeedTask(this, Hunger);
+        if (City.HungerProviders.Count > 0)
+        {
+            INeedProvider source = Utility.ReturnRandom(City.HungerProviders);
+            return source.CreateSatisfyNeedTask(this, Hunger);
+        }
+        else
+            return null;
     }
     private Task CreateRecreationTask()
     {
-        INeedProvider source = Utility.ReturnRandom(City.RecreationProviders);
-        return source.CreateSatisfyNeedTask(this, Recreation);
+        if (City.RecreationProviders.Count > 0)
+        {
+            INeedProvider source = Utility.ReturnRandom(City.RecreationProviders);
+            return source.CreateSatisfyNeedTask(this, Recreation);
+        }
+        else
+            return null;
     }
     private Task CreateSocialTask()
     {
-        INeedProvider source = Utility.ReturnRandom(City.SocialProviders);
-        return source.CreateSatisfyNeedTask(this, Social);
+        if (City.SocialProviders.Count > 0)
+        {
+            INeedProvider source = Utility.ReturnRandom(City.SocialProviders);
+            return source.CreateSatisfyNeedTask(this, Social);
+        }
+        else
+            return null;
     }
 
     private void CalculateHappiness()
@@ -179,7 +200,7 @@ public class Citizen : Unit, IViewable
     public string ActionDescription { get => CurrentTask.Description; }
     public string Name
     {
-        get => UnitName; 
+        get => UnitName;
         set
         {
             UnitName = value;

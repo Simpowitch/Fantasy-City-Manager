@@ -4,15 +4,27 @@ using System.Linq;
 
 public class PolygonTriangulator2D : MonoBehaviour {
 	public enum Triangulation {Advanced, Legacy};
-	static float precision = 0.001f;
 
-	public static Mesh Triangulate(Polygon2D polygon, Vector2 UVScale, Vector2 UVOffset, Triangulation triangulation) {
+	public static Mesh TriangulateSimple(Polygon2D polygon, Vector2 UVScale, Vector2 UVOffset) {
 		Mesh result = null;
 		
 		//result = TriangulateAdvanced(polygon, UVScale, UVOffset);
 
+		polygon.Normalize();
+
 		Polygon2 poly = new Polygon2(polygon);
 		result = UnityDefaultTriangulator.Create(poly.points);
+
+		return(result);
+	}
+
+
+	public static Mesh Triangulate(Polygon2D polygon, Vector2 UVScale, Vector2 UVOffset, Triangulation triangulation) {
+		Mesh result = null;
+
+		polygon.Normalize();
+		
+		result = TriangulateAdvanced(polygon, UVScale, UVOffset);
 
 		return(result);
 	}

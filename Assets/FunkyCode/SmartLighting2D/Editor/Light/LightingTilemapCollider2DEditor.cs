@@ -24,7 +24,7 @@ public class LightingTilemapCollider2DEditor : Editor {
 				
 				EditorGUI.BeginDisabledGroup(script.rectangle.colliderType == LightingTilemapCollider.Rectangle.ColliderType.None);
 
-				script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+				script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 				
 				switch(script.rectangle.colliderType) {
 					case LightingTilemapCollider.Rectangle.ColliderType.Grid:
@@ -41,7 +41,7 @@ public class LightingTilemapCollider2DEditor : Editor {
 				
 				EditorGUI.BeginDisabledGroup(script.rectangle.maskType == LightingTilemapCollider.Rectangle.MaskType.None);
 
-				script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+				script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 
 				if (script.rectangle.maskType == LightingTilemapCollider.Rectangle.MaskType.BumpedSprite) {
 					GUIBumpMapMode.Draw(script.bumpMapMode);
@@ -57,7 +57,7 @@ public class LightingTilemapCollider2DEditor : Editor {
 				
 				EditorGUI.BeginDisabledGroup(script.isometric.colliderType == LightingTilemapCollider.Isometric.ColliderType.None);
 
-				script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+				script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 				script.colliderTileType = (LightingTilemapCollider2D.ShadowTileType)EditorGUILayout.EnumPopup("Shadow Tile Type", script.colliderTileType);
 				
 				EditorGUI.EndDisabledGroup();
@@ -68,7 +68,7 @@ public class LightingTilemapCollider2DEditor : Editor {
 				
 				EditorGUI.BeginDisabledGroup(script.isometric.maskType == LightingTilemapCollider.Isometric.MaskType.None);
 
-				script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+				script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 
 				EditorGUI.EndDisabledGroup();
 
@@ -81,7 +81,7 @@ public class LightingTilemapCollider2DEditor : Editor {
 				
 				EditorGUI.BeginDisabledGroup(script.hexagon.colliderType == LightingTilemapCollider.Hexagon.ColliderType.None);
 
-				script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+				script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 				script.colliderTileType = (LightingTilemapCollider2D.ShadowTileType)EditorGUILayout.EnumPopup("Shadow Tile Type", script.colliderTileType);
 					
 				EditorGUI.EndDisabledGroup();
@@ -92,7 +92,7 @@ public class LightingTilemapCollider2DEditor : Editor {
 				
 				EditorGUI.BeginDisabledGroup(script.hexagon.maskType == LightingTilemapCollider.Hexagon.MaskType.None);
 
-				script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+				script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 
 				EditorGUI.EndDisabledGroup();
 			break;
@@ -100,7 +100,7 @@ public class LightingTilemapCollider2DEditor : Editor {
 			case LightingTilemapCollider2D.MapType.SuperTilemapEditor:
 				script.superTilemapEditor.colliderType = (SuperTilemapEditorSupport.TilemapCollider2D.ColliderType)EditorGUILayout.EnumPopup("Shadow Type", script.superTilemapEditor.colliderType);
 			
-				script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+				script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 				
 				EditorGUILayout.Space();
 
@@ -108,7 +108,7 @@ public class LightingTilemapCollider2DEditor : Editor {
 				
 				EditorGUI.BeginDisabledGroup(script.superTilemapEditor.maskType == SuperTilemapEditorSupport.TilemapCollider2D.MaskType.None);
 				
-				script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+				script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 				
 				EditorGUI.EndDisabledGroup();
 			break;

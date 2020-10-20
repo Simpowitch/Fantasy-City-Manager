@@ -15,9 +15,9 @@ namespace LightingTilemapCollider {
 		public ColliderType colliderType = ColliderType.Grid;
 		public MaskType maskType = MaskType.Sprite;
 
-        public RectangleMap map;
-
 		public List<Polygon2D> compositeColliders = new List<Polygon2D>();
+
+		public List<LightingTile> mapTiles = new List<LightingTile>();
 
         public static ITilemap GetITilemap(Tilemap tilemap) {
 			ITilemap iTilemap = (ITilemap) FormatterServices.GetUninitializedObject(typeof(ITilemap));
@@ -53,18 +53,8 @@ namespace LightingTilemapCollider {
 
 			TileBase[] tileArray = tilemap2D.GetTilesBlock(properties.area);
 
-			map = new RectangleMap();
-
 			properties.arraySize = new Vector2Int(properties.area.size.x + diffX, properties.area.size.y + diffY);
-
-			map.map = new LightingTile[properties.arraySize.x, properties.arraySize.y];
-
-			for(int sx = 0; sx <= properties.area.size.x; sx++) {
-				for(int sy = 0; sy <= properties.area.size.y; sy++) {
-					map.map[sx, sy] = null;
-				}
-			}
-
+			
 			TilemapCollider2D tilemapCollider = gameObject.GetComponent<TilemapCollider2D>();
 			if (tilemapCollider != null) {
 				properties.colliderOffset = tilemapCollider.offset;
@@ -72,13 +62,13 @@ namespace LightingTilemapCollider {
 
 			properties.cellAnchor += properties.colliderOffset;
 
-			compositeColliders.Clear();
-
 			InitializeGrid();
 			InitializeCompositeCollider();
         }
 
 		private void InitializeCompositeCollider() {
+			compositeColliders.Clear();
+			
 			CompositeCollider2D compositeCollider2D = gameObject.GetComponent<CompositeCollider2D>();
 
 			if (compositeCollider2D != null) {
@@ -87,6 +77,8 @@ namespace LightingTilemapCollider {
 		}
 
 		private void InitializeGrid() {
+			mapTiles.Clear();
+
 			Tilemap tilemap2D = properties.tilemap;
 
 			ITilemap tilemap = GetITilemap(tilemap2D);
@@ -100,40 +92,20 @@ namespace LightingTilemapCollider {
 					tilebase.GetTileData(position, tilemap, ref tileData);
 					
 					LightingTile lightingTile = new LightingTile();
-					lightingTile.SetOriginalSprite(tileData.sprite);
-					lightingTile.GetShapePolygons();
-					lightingTile.colliderType = tileData.colliderType;
-					//tileData.
-
+				
 					int sx = position.x + properties.area.size.x / 2;
 					int sy = position.y + properties.area.size.y / 2;
 
-					if (sx < 0 || sy < 0) {
-						continue;
-					}
+					lightingTile.position = new Vector3Int(sx, sy,0);
 
-					if (sx >= properties.arraySize.x || sy >= properties.arraySize.y) {
-						continue;
-					}
+					lightingTile.SetOriginalSprite(tileData.sprite);
+					lightingTile.GetShapePolygons();
 
-					map.map[sx, sy] = lightingTile;
+					lightingTile.colliderType = tileData.colliderType;
+
+					mapTiles.Add(lightingTile);
 				}
 			}
 		}
-        
-		public class RectangleMap {
-			public List<Tile> mapTiles = new List<Tile>();
-			public LightingTile[,] map;
-
-			public int width;
-			public int height;
-		}
-
-		public class Tile {
-			public Vector2Int position;
-
-			public LightingTile tile;
-		}
-
     }
 }

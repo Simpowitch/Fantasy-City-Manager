@@ -30,6 +30,8 @@ public class InGameCamera : MonoBehaviour
 
     CameraTransform newCameraTransform;
 
+    float UnitUIZoomThreshold { get => zoomMin * 2; }
+
     //Drag
     Vector3 mouseDownPos = new Vector3();
     Vector3 mouseUpPos = new Vector3();
@@ -138,6 +140,12 @@ public class InGameCamera : MonoBehaviour
 
         Vector3 lerpVector = Vector3.Lerp(transform.localPosition, newCameraTransform.cameraPosition, moveRigidness * Time.unscaledDeltaTime);
         transform.position = lerpVector;
+
+        //Update UI
+        if (activeCamera.orthographicSize < UnitUIZoomThreshold) //Closer than the zoom threshold
+            activeCamera.cullingMask |= 1 << LayerMask.NameToLayer("UnitUI"); //Show
+        else
+            activeCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("UnitUI")); //Hide
     }
 
     #region Tracking

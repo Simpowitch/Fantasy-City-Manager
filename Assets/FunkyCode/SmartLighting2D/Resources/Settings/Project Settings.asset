@@ -13,24 +13,6 @@ MonoBehaviour:
   m_Name: Project Settings
   m_EditorClassIdentifier: 
   renderingMode: 2
-  layers:
-    lightLayers:
-      names:
-      - Light Layer 1
-      - Light Layer 2
-      - Light Layer 3
-    nightLayers:
-      names:
-      - Night Layer 1
-      - Night Layer 2
-      - Night Layer 3
-    dayLayers:
-      names:
-      - Day Layer 1
-      - Day Layer 2
-      - Day Layer 3
-      - Day Layer 4
-      - Day Layer 5
   atlasSettings:
     lightingSpriteAtlas: 0
     spriteAtlasPreloadFoldersCount: 0
@@ -38,11 +20,7 @@ MonoBehaviour:
     - 
   sceneView:
     drawGizmos: 1
-    layer: 8
-  lightingBufferSettings:
-    fixedLightTextureSize: 2
-    lightingBufferPreloadCount: 0
+    layer: 10
   coreAxis: 0
-  triangulation: 0
   disable: 0
   profile: {fileID: 11400000, guid: 744af7d72c977154f8a4489ba6ae519d, type: 2}

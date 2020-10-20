@@ -45,7 +45,10 @@ public class LightingCollider2D : MonoBehaviour {
 	public enum MaskType {None, Sprite, BumpedSprite,  SpriteCustomPhysicsShape, Collider2D, CompositeCollider2D, MeshRenderer, SkinnedMeshRenderer};
 
 	public LightingLayer lightingCollisionLayer = LightingLayer.Layer1;
+	public LightingLayer shadowEffectLayer = LightingLayer.Layer1;
 	public LightingLayer lightingMaskLayer = LightingLayer.Layer1;
+
+	// Mask Effect
 	public MaskEffect maskEffect = MaskEffect.Lit;
 	
 	public LightingColliderShape mainShape = new LightingColliderShape();
@@ -59,11 +62,13 @@ public class LightingCollider2D : MonoBehaviour {
 	public event CollisionEvent2D collisionEvents;
 	// List Manager 
 	public static List<LightingCollider2D> list = new List<LightingCollider2D>();
-	
+
 	public static LayerManager<LightingCollider2D> layerManagerMask = new LayerManager<LightingCollider2D>();
 	public static LayerManager<LightingCollider2D> layerManagerCollision = new LayerManager<LightingCollider2D>();
+	public static LayerManager<LightingCollider2D> layerManagerEffect = new LayerManager<LightingCollider2D>();
 	private int listMaskLayer = -1;
 	private int listCollisionLayer = -1;
+	private int listEffectLayer = -1;
 	
 	public void OnEnable() {
 		list.Add(this);
@@ -87,23 +92,32 @@ public class LightingCollider2D : MonoBehaviour {
 		UpdateLayerList();
 	}
 
+
+
+
+
+
+
+
+
+
+
+
 	// Layer List
 	void ClearLayerList() {
 		layerManagerMask.Remove(listMaskLayer, this);
 		layerManagerCollision.Remove(listCollisionLayer, this);
+		layerManagerEffect.Remove(listEffectLayer, this);
 
 		listMaskLayer = -1;
 		listCollisionLayer = -1;
+		listEffectLayer = -1;
 	}
 
 	void UpdateLayerList() {
 		listMaskLayer = layerManagerMask.Update(listMaskLayer, (int)lightingMaskLayer, this);
 		listCollisionLayer = layerManagerCollision.Update(listCollisionLayer, (int)lightingCollisionLayer, this);
-	}
-
-	
-	static public List<LightingCollider2D> GetList() {
-		return(list);
+		listEffectLayer = layerManagerEffect.Update(listEffectLayer, (int)shadowEffectLayer, this);
 	}
 
 	static public List<LightingCollider2D> GetMaskList(int layer) {
@@ -113,6 +127,19 @@ public class LightingCollider2D : MonoBehaviour {
 	static public List<LightingCollider2D> GetCollisionList(int layer) {
 		return(layerManagerCollision.layerList[layer]);
 	}
+		static public List<LightingCollider2D> GetEffectList(int layer) {
+		return(layerManagerEffect.layerList[layer]);
+	}
+	
+	static public List<LightingCollider2D> GetList() {
+		return(list);
+	}
+	
+
+
+
+
+
 
 
 

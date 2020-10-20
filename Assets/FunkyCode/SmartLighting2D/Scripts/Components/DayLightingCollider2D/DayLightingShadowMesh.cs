@@ -98,7 +98,7 @@ namespace DayLighting {
 
                 polygonsPairs.Add(polygonPairs);
 
-                Mesh mesh = polygonShadowFill.CreateMesh(Vector2.zero, Vector2.zero);
+                Mesh mesh = PolygonTriangulator2D.TriangulateSimple(polygonShadowFill, Vector2.zero, Vector2.zero);
     
                 meshes.Add(new MeshObject(mesh));
             }

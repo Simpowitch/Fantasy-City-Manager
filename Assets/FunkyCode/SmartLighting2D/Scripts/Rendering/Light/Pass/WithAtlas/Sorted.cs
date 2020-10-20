@@ -6,15 +6,15 @@ namespace Rendering.Light.WithAtlas {
         
     public class Sorted {
 
-         public static void Draw(Rendering.Light.SortedPass pass) {
+         public static void Draw(Rendering.Light.Pass pass) {
             Lighting2D.materials.GetAtlasMaterial().SetPass(0);
 
             GL.Begin(GL.TRIANGLES);
         
-            for(int i = 0; i < pass.sortList.count; i ++) {
-                pass.sortObject = pass.sortList.list[i];
+            for(int i = 0; i < pass.sortPass.sortList.count; i ++) {
+                pass.sortPass.sortObject = pass.sortPass.sortList.list[i];
 
-                switch (pass.sortObject.type) {
+                switch (pass.sortPass.sortObject.type) {
                     case Sorting.SortObject.Type.Collider:
                         DrawCollder(pass);
 
@@ -30,14 +30,14 @@ namespace Rendering.Light.WithAtlas {
             GL.End();
         }
 
-        public static void DrawCollder(Rendering.Light.SortedPass pass) {
-            LightingCollider2D collider = (LightingCollider2D)pass.sortObject.lightObject;
+        public static void DrawCollder(Rendering.Light.Pass pass) {
+            LightingCollider2D collider = (LightingCollider2D)pass.sortPass.sortObject.lightObject;
 
             if (pass.drawShadows && (int)collider.lightingCollisionLayer == pass.layerID) {	
                 switch(collider.mainShape.colliderType) {
                     case LightingCollider2D.ColliderType.Collider2D:
                     case LightingCollider2D.ColliderType.SpriteCustomPhysicsShape:
-                        Shadow.Shape.Draw(pass.buffer, collider, pass.lightSizeSquared, pass.z);
+                        Shadow.Shape.Draw(pass.buffer, collider);
                     break;
                 }
             }
@@ -46,7 +46,7 @@ namespace Rendering.Light.WithAtlas {
                 switch(collider.mainShape.maskType) {
                     case LightingCollider2D.MaskType.Collider2D:
                     case LightingCollider2D.MaskType.SpriteCustomPhysicsShape:
-                        Shape.Mask(pass.buffer, collider, pass.layer, pass.z);  
+                     //   Shape.Mask(pass.buffer, collider, pass.layer, pass.z);  
 
                     break;
 
@@ -63,15 +63,15 @@ namespace Rendering.Light.WithAtlas {
             }
         }
 
-        public static void DrawTilemapCollider(Rendering.Light.SortedPass pass) {
-            LightingTile tile = (LightingTile)pass.sortObject.lightObject;
+        public static void DrawTilemapCollider(Rendering.Light.Pass pass) {
+            LightingTile tile = (LightingTile)pass.sortPass.sortObject.lightObject;
 
-            if (pass.drawShadows && (int)pass.sortObject.tilemap.lightingCollisionLayer == pass.layerID) {	
-                Shadow.Tile.Draw(pass.buffer, tile, pass.sortObject.position, pass.sortObject.tilemap, pass.lightSizeSquared, pass.z);
+            if (pass.drawShadows && (int)pass.sortPass.sortObject.tilemap.lightingCollisionLayer == pass.layerID) {	
+                Shadow.Tile.Draw(pass.buffer, tile, pass.sortPass.sortObject.position, pass.sortPass.sortObject.tilemap);
             }
 
-            if (pass.drawMask && (int)pass.sortObject.tilemap.lightingMaskLayer == pass.layerID) {
-                Tile.MaskSprite(pass.buffer, tile, pass.layer, pass.sortObject.tilemap, pass.sortObject.position, pass.z);
+            if (pass.drawMask && (int)pass.sortPass.sortObject.tilemap.lightingMaskLayer == pass.layerID) {
+                Tile.MaskSprite(pass.buffer, tile, pass.layer, pass.sortPass.sortObject.tilemap, pass.sortPass.sortObject.position, pass.z);
 
                 // Partialy Batched
                 if (pass.buffer.lightingAtlasBatches.tilemapList.Count > 0) {
@@ -80,19 +80,20 @@ namespace Rendering.Light.WithAtlas {
             }   
         }
 
-        public static void DrawColliderBatched(Rendering.Light.SortedPass pass) {
+        public static void DrawColliderBatched(Rendering.Light.Pass pass) {
             if (pass.buffer.lightingAtlasBatches.colliderList.Count < 1) {
                 return;
             }
             
             GL.End();
+
                 
             for(int s = 0; s < pass.buffer.lightingAtlasBatches.colliderList.Count; s++) {
-                pass.batch_collider = pass.buffer.lightingAtlasBatches.colliderList[s];
+                PartiallyBatchedCollider batch_collider = pass.buffer.lightingAtlasBatches.colliderList[s];
 
-                if (pass.batch_collider.collider.mainShape.maskType == LightingCollider2D.MaskType.Sprite) {
+                if (batch_collider.collider.mainShape.maskType == LightingCollider2D.MaskType.Sprite) {
                 
-                    WithoutAtlas.SpriteRenderer2D.Mask(pass.buffer, pass.batch_collider.collider, pass.materialWhite, pass.layer, pass.z);
+                    WithoutAtlas.SpriteRenderer2D.Mask(pass.buffer, batch_collider.collider, pass.materialWhite, pass.layer, pass.z);
                 }
             }
 
@@ -102,7 +103,7 @@ namespace Rendering.Light.WithAtlas {
             GL.Begin(GL.TRIANGLES);
         }
 
-        public static void DrawTilemapColliderBatched(Rendering.Light.SortedPass pass) {
+        public static void DrawTilemapColliderBatched(Rendering.Light.Pass pass) {
             if (pass.buffer.lightingAtlasBatches.tilemapList.Count < 1) {
                 return;
             }
@@ -110,11 +111,11 @@ namespace Rendering.Light.WithAtlas {
             GL.End();
 
             for(int s = 0; s < pass.buffer.lightingAtlasBatches.tilemapList.Count; s++) {
-                pass.batch_tilemap = pass.buffer.lightingAtlasBatches.tilemapList[s];
+                PartiallyBatchedTilemap batch_tilemap = pass.buffer.lightingAtlasBatches.tilemapList[s];
 
-                LightingTile tile = (LightingTile)pass.sortObject.lightObject;
+                LightingTile tile = (LightingTile)pass.sortPass.sortObject.lightObject;
                 
-                WithoutAtlas.Tile.MaskSprite(pass.buffer, tile, pass.layer, pass.materialWhite, pass.batch_tilemap.polyOffset, pass.batch_tilemap.tilemap, pass.lightSizeSquared, pass.z);
+                WithoutAtlas.Tile.MaskSprite(pass.buffer, tile, pass.layer, pass.materialWhite, batch_tilemap.polyOffset, batch_tilemap.tilemap, pass.lightSizeSquared, pass.z);
             }
 
             pass.buffer.lightingAtlasBatches.tilemapList.Clear();

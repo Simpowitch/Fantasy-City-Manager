@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Rendering.Day.WithoutAtlas {
 
     public class SpriteRendererShadow {
+        static VirtualSpriteRenderer virtualSpriteRenderer = new VirtualSpriteRenderer();
 
         static public void Draw(DayLightingCollider2D id, Camera camera, Vector2 offset, float z) {
             if (id.mainShape.colliderType != DayLightingCollider2D.ColliderType.Sprite) {
@@ -19,8 +20,7 @@ namespace Rendering.Day.WithoutAtlas {
             material.color = Color.black;
 
             foreach(DayLightingColliderShape shape in id.shapes) {
-                VirtualSpriteRenderer virtualSpriteRenderer = new VirtualSpriteRenderer();
-
+                
                 SpriteRenderer spriteRenderer = shape.spriteShape.GetSpriteRenderer();
                 if (spriteRenderer == null) {
                     continue;

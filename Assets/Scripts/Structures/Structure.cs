@@ -15,7 +15,7 @@ public abstract class Structure : MonoBehaviour
     public ConstructionCost ConstructionCost { get => constructionCost; }
     [Header("References")]
     [SerializeField] Tilemap groundTilemap = null;
-    [SerializeField] Tilemap wallTilemap = null;
+    [SerializeField] Tilemap[] wallTilemaps = null;
     public Bar constructionProgressBar = null;
 
     [Header("Setup")]
@@ -206,17 +206,18 @@ public abstract class Structure : MonoBehaviour
         }
 
         //Wall Tiles
-        if (wallTilemap != null)
+        if (wallTilemaps != null && wallTilemaps.Length > 0)
         {
-            Tilemap tilemap = wallTilemap;
-
-            foreach (var tile in ObjectTiles)
+            foreach (Tilemap tilemap in wallTilemaps)
             {
-                Vector3Int cellTilemapPosition = tilemap.WorldToCell(tile.CenteredWorldPosition);
-                if (tilemap.HasTile(cellTilemapPosition))
+                foreach (var tile in ObjectTiles)
                 {
-                    wallTiles.Add(tile);
-                    StructureTiles.Add(tile);
+                    Vector3Int cellTilemapPosition = tilemap.WorldToCell(tile.CenteredWorldPosition);
+                    if (tilemap.HasTile(cellTilemapPosition))
+                    {
+                        wallTiles.Add(tile);
+                        StructureTiles.Add(tile);
+                    }
                 }
             }
         }

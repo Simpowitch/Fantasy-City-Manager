@@ -13,14 +13,6 @@ public class LightBuffers : LightingMonoBehaviour {
 		//}
 
 		LightingBuffer2D.Clear();
-
-		if (Lighting2D.lightingBufferSettings.fixedLightTextureSize != LightingSettings.LightingSourceTextureSize.Custom) {
-			if (Lighting2D.lightingBufferSettings.lightingBufferPreloadCount > 0) {
-				for(int i = 1; i <= Lighting2D.lightingBufferSettings.lightingBufferPreloadCount; i++) {
-					AddBuffer(LightingRender2D.GetTextureSize(Lighting2D.lightingBufferSettings.fixedLightTextureSize), null);
-				}
-			}
-		}
     }
 
 	static public int GetCount() {
@@ -47,8 +39,10 @@ public class LightBuffers : LightingMonoBehaviour {
 
     // Management
 	static public LightingBuffer2D AddBuffer(int textureSize, LightingSource2D light) {
-        if (Lighting2D.lightingBufferSettings.fixedLightTextureSize != LightingSettings.LightingSourceTextureSize.Custom) {
-            textureSize = LightingRender2D.GetTextureSize(Lighting2D.lightingBufferSettings.fixedLightTextureSize);
+		Get();
+
+        if (Lighting2D.Profile.qualitySettings.fixedLightTextureSize != LightingSettings.LightingSourceTextureSize.Custom) {
+            textureSize = LightingRender2D.GetTextureSize(Lighting2D.Profile.qualitySettings.fixedLightTextureSize);
         }
 
 		LightBuffers lightBuffers = LightBuffers.Get();
@@ -67,8 +61,10 @@ public class LightBuffers : LightingMonoBehaviour {
 	}
 
 	static public LightingBuffer2D PullBuffer(int textureSize, LightingSource2D lightSource) {
-        if (Lighting2D.lightingBufferSettings.fixedLightTextureSize != LightingSettings.LightingSourceTextureSize.Custom) {
-            textureSize = LightingRender2D.GetTextureSize(Lighting2D.lightingBufferSettings.fixedLightTextureSize);
+		Get();
+
+        if (Lighting2D.Profile.qualitySettings.fixedLightTextureSize != LightingSettings.LightingSourceTextureSize.Custom) {
+            textureSize = LightingRender2D.GetTextureSize(Lighting2D.Profile.qualitySettings.fixedLightTextureSize);
         }
 
 		foreach (LightingBuffer2D id in LightingBuffer2D.GetList()) {
@@ -86,6 +82,7 @@ public class LightBuffers : LightingMonoBehaviour {
 	}
 
     static public void FreeBuffer(LightingBuffer2D buffer) {
+		
         if (buffer == null) {
             return;
         }

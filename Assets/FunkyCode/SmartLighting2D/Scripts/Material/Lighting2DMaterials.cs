@@ -18,7 +18,7 @@ public class Lighting2DMaterials {
 	private LightingMaterial occlusionBlur = null;
 	private LightingMaterial shadowBlur = null;
 	private LightingMaterial additive = null;
-	private LightingMaterial multiply = null;
+	private LightingMaterial multiplyHDR = null;
 	private LightingMaterial alphablend = null;
 
 	private LightingMaterial spriteMask = null;
@@ -131,7 +131,7 @@ public class Lighting2DMaterials {
 		occlusionBlur = null;
 		shadowBlur = null;
 		additive = null;
-		multiply = null;
+		multiplyHDR = null;
 		alphablend = null;
 
 		spriteMask = null;
@@ -156,15 +156,15 @@ public class Lighting2DMaterials {
 		return(additive.Get());
 	}
 
-	public Material GetMultiply() {
-		if (multiply == null || multiply.Get() == null) {
+	public Material GetMultiplyHDR() {
+		if (multiplyHDR == null || multiplyHDR.Get() == null) {
 			if (hdr == true) {
-				multiply = LightingMaterial.Load("SmartLighting2D/Multiply HDR");
+				multiplyHDR = LightingMaterial.Load("SmartLighting2D/Multiply HDR");
 			} else {
-				multiply = LightingMaterial.Load("SmartLighting2D/Multiply");
+				multiplyHDR = LightingMaterial.Load("SmartLighting2D/Multiply");
 			}
 		}
-		return(multiply.Get());
+		return(multiplyHDR.Get());
 	}
 
 	public Material GetAlphaBlend() {

@@ -32,46 +32,6 @@ using System;
 
 		public static List<LightingTilemapCollider2D> list = new List<LightingTilemapCollider2D>();
 
-		public bool IsCustomPhysicsShape() {
-			switch(mapType) {
-				case MapType.UnityEngineTilemapRectangle:
-					if (rectangle.maskType == LightingTilemapCollider.Rectangle.MaskType.SpriteCustomPhysicsShape) {
-						return(true);
-					}
-					if (rectangle.colliderType == LightingTilemapCollider.Rectangle.ColliderType.SpriteCustomPhysicsShape) {
-						return(true);
-					}
-					break;
-				case MapType.UnityEngineTilemapIsometric:
-					if (isometric.maskType == LightingTilemapCollider.Isometric.MaskType.SpriteCustomPhysicsShape) {
-						return(true);
-					}
-					if (isometric.colliderType == LightingTilemapCollider.Isometric.ColliderType.SpriteCustomPhysicsShape) {
-						return(true);
-					}
-					break;
-			}
-			return(false);
-		}
-
-		public TilemapProperties GetTilemapProperties() {
-			switch(mapType) {
-				case MapType.UnityEngineTilemapRectangle:
-					return(rectangle.Properties);
-				
-				case MapType.UnityEngineTilemapIsometric:
-					return(isometric.Properties);
-
-				case MapType.UnityEngineTilemapHexagon:
-					return(hexagon.Properties);
-
-				case MapType.SuperTilemapEditor:
-					return(superTilemapEditor.properties);
-			}
-
-			return(null);
-		}
-
 		public void OnEnable() {
 			list.Add(this);
 
@@ -132,6 +92,46 @@ using System;
 
 				break;
 			}
+		}
+
+		public bool IsCustomPhysicsShape() {
+			switch(mapType) {
+				case MapType.UnityEngineTilemapRectangle:
+					if (rectangle.maskType == LightingTilemapCollider.Rectangle.MaskType.SpriteCustomPhysicsShape) {
+						return(true);
+					}
+					if (rectangle.colliderType == LightingTilemapCollider.Rectangle.ColliderType.SpriteCustomPhysicsShape) {
+						return(true);
+					}
+					break;
+				case MapType.UnityEngineTilemapIsometric:
+					if (isometric.maskType == LightingTilemapCollider.Isometric.MaskType.SpriteCustomPhysicsShape) {
+						return(true);
+					}
+					if (isometric.colliderType == LightingTilemapCollider.Isometric.ColliderType.SpriteCustomPhysicsShape) {
+						return(true);
+					}
+					break;
+			}
+			return(false);
+		}
+
+		public TilemapProperties GetTilemapProperties() {
+			switch(mapType) {
+				case MapType.UnityEngineTilemapRectangle:
+					return(rectangle.Properties);
+				
+				case MapType.UnityEngineTilemapIsometric:
+					return(isometric.Properties);
+
+				case MapType.UnityEngineTilemapHexagon:
+					return(hexagon.Properties);
+
+				case MapType.SuperTilemapEditor:
+					return(superTilemapEditor.properties);
+			}
+
+			return(null);
 		}
 	}
 

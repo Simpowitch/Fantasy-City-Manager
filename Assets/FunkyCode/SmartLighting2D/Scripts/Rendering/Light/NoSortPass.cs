@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+
 namespace Rendering.Light {
 
     public class NoSortPass {
@@ -73,3 +75,5 @@ namespace Rendering.Light {
     }
     
 }
+
+*/

@@ -13,7 +13,7 @@ public class LightingTilemapRoom2DEditor : Editor {
 	override public void OnInspectorGUI() {
 		LightingTilemapRoom2D script = target as LightingTilemapRoom2D;
 
-		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Night Layer", (int)script.nightLayer, Lighting2D.ProjectSettings.layers.nightLayers.GetNames());
+		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Night Layer", (int)script.nightLayer, Lighting2D.Profile.layers.nightLayers.GetNames());
 
 		script.mapType = (LightingTilemapRoom2D.MapType)EditorGUILayout.EnumPopup("Map Type", script.mapType);
 

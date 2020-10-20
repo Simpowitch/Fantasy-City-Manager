@@ -12,7 +12,7 @@ public class LightingSpriteRendererColorEditor : Editor {
 	override public void OnInspectorGUI() {
 		LightingSpriteRendererColor script = target as LightingSpriteRendererColor;
 
-		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Layer (Night)", (int)script.nightLayer, Lighting2D.ProjectSettings.layers.nightLayers.GetNames());
+		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Layer (Night)", (int)script.nightLayer, Lighting2D.Profile.layers.nightLayers.GetNames());
 
         script.color = EditorGUILayout.ColorField("Color", script.color);
 

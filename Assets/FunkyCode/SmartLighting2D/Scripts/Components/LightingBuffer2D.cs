@@ -24,6 +24,9 @@ public class LightingBuffer2D {
 
 	public static void Clear() {
 		foreach(LightingBuffer2D buffer in new List<LightingBuffer2D>(list)) {
+			if (buffer.lightSource) {
+				buffer.lightSource.Buffer = null;
+			}
 			buffer.DestroySelf();
 		}
 

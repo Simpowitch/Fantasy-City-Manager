@@ -12,7 +12,7 @@ public class LightingSpriteRenderer2DEditor : Editor {
 	override public void OnInspectorGUI() {
 		LightingSpriteRenderer2D script = target as LightingSpriteRenderer2D;
 
-		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Layer (Night)", (int)script.nightLayer, Lighting2D.ProjectSettings.layers.nightLayers.GetNames());
+		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Layer (Night)", (int)script.nightLayer, Lighting2D.Profile.layers.nightLayers.GetNames());
 
         script.type = (LightingSpriteRenderer2D.Type)EditorGUILayout.EnumPopup("Type", script.type);
 

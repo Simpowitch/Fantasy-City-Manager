@@ -3,15 +3,7 @@ using UnityEngine;
 
 public class City : MonoBehaviour
 {
-    [Header("Setup - Initializers")]
-    [SerializeField] int xSize = 40, ySize = 15;
     public float CellSize { get; } = 1;
-
-    [SerializeField] int startGold = 10;
-    [SerializeField] int startWood = 10;
-    [SerializeField] int startStone = 10;
-    [SerializeField] int startIron = 10;
-    [SerializeField] int startFood = 10;
 
     [Header("Static references")]
     [SerializeField] Transform unitTransformParent = null;
@@ -66,8 +58,10 @@ public class City : MonoBehaviour
         DayNightSystem.OnPartOfTheDayChanged -= PartOfDayChange;
     }
 
-    private void Awake()
+    public void Setup(int xSize, int ySize, int startGold, int startWood, int startStone, int startIron, int startFood, int startCitizens, Transform player)
     {
+        cityStats.Setup(startGold, startWood, startStone, startIron, startFood);
+
         RoadNetwork = GetComponent<RoadNetwork>();
         ResourceObjectNetwork = GetComponent<ResourceObjectNetwork>();
         Pathfinding = new Pathfinding(xSize, ySize, CellSize, Vector3.zero);
@@ -97,17 +91,14 @@ public class City : MonoBehaviour
         {
             ConfirmBuildingPlacements(cityGate);
         }
-    }
 
-    private void Start()
-    {
-        foreach (var residence in residentialBuildings)
+        //Spawn start citizens
+        Vector3[] positions = GridUtilities.GetPositionsAround(player.position, startCitizens / 2, startCitizens);
+        for (int i = 0; i < startCitizens; i++)
         {
-            SpawnCitizen(residence);
+            SpawnCitizen(positions[i]);
         }
     }
-
-    public void Setup() => cityStats.Setup(startGold, startWood, startStone, startIron, startFood);
 
     void ConfirmBuildingPlacements(Structure structure)
     {
@@ -165,21 +156,11 @@ public class City : MonoBehaviour
         }
     }
 
-    //To be used continously in the game
-    void SpawnCitizen()
+    
+    void SpawnCitizen(Vector3 position)
     {
         Citizen citizen = Instantiate(citizenPrefab);
         citizen.transform.SetParent(unitTransformParent);
-        Transform entrance = Utility.ReturnRandom(cityEntrances);
-        citizen.transform.position = entrance.position;
-        citizen.Setup(this);
-    }
-    //To be used at start to make it look like citizens get out of their houses
-    void SpawnCitizen(Residence residence)
-    {
-        Citizen citizen = Instantiate(citizenPrefab);
-        citizen.transform.SetParent(unitTransformParent);
-        Vector3 position = residence.CenterPosition;
         citizen.transform.position = position;
         citizen.Setup(this);
     }

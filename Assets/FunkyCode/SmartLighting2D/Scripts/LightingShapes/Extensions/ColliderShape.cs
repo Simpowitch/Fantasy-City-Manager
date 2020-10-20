@@ -51,6 +51,12 @@ namespace LightingShape {
 			if (polygons_local != null) {
 				return(polygons_local);
 			}
+
+
+			if (transform == null) {
+				Debug.Log("damn");
+				return(polygons_local);
+			}
 			
 			polygons_local = Polygon2DList.CreateFromGameObject (transform.gameObject);
 

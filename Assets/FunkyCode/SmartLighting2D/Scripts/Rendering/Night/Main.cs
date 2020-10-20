@@ -12,16 +12,20 @@ namespace Rendering.Night {
 
 			LightingLayerSetting[] layerSettings = bufferPreset.nightLayers.Get();
 
-			for(int i = 0; i < layerSettings.Length; i++) {
-				LightingLayerSetting nightLayer = layerSettings[i];
+			if (layerSettings.Length > 0) {
 
-				LightingLayerSettingSorting sorting = nightLayer.sorting;
+				for(int i = 0; i < layerSettings.Length; i++) {
+					LightingLayerSetting nightLayer = layerSettings[i];
 
-				if (sorting == LightingLayerSettingSorting.None) {
-					NoSort.Draw(camera, offset, z, nightLayer);
-				} else {
-					Sorted.Draw(camera, offset, z, nightLayer);
+					LightingLayerSettingSorting sorting = nightLayer.sorting;
+
+					if (sorting == LightingLayerSettingSorting.None) {
+						NoSort.Draw(camera, offset, z, nightLayer);
+					} else {
+						Sorted.Draw(camera, offset, z, nightLayer);
+					}
 				}
+
 			}
 		}
 

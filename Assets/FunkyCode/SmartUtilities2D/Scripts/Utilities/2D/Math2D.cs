@@ -3,7 +3,22 @@ using UnityEngine;
 using System.Linq;
 
 
-public class Math2D {
+static public class Math2D {
+
+	static public Vector2 ClosestPointOnLine(Vector2 vPoint, Vector2 vA, Vector2 vB) {
+        Vector2 v = (vB - vA).normalized;
+        float t = Vector2.Dot(v, vPoint - vA);
+    
+        if (t <= 0) {
+            return vA;
+        }
+            
+        if (t >= Vector2.Distance(vA, vB)) {
+            return vB;
+        }   
+        
+        return vA + (v * t);
+    }
 
 	public static Vector3 GetPitchYawRollRad(Quaternion rotation) {
 		float roll = Mathf.Atan2(2*rotation.y*rotation.w - 2*rotation.x*rotation.z, 1 - 2*rotation.y*rotation.y - 2*rotation.z*rotation.z);
@@ -232,6 +247,39 @@ public class Math2D {
 		py = lineA.A.y + r * by_ay;
 
 		return(new Vector2D (px, py));
+	}
+
+	public static Vector2? GetPointLineIntersectLine2(Pair2D lineA, Pair2D lineB) {
+		double ay_cy, ax_cx;
+		double dx_cx = lineB.B.x - lineB.A.x;
+		double dy_cy = lineB.B.y - lineB.A.y;
+		double bx_ax = lineA.B.x - lineA.A.x;
+		double by_ay = lineA.B.y - lineA.A.y;
+		double de = bx_ax * dy_cy - by_ay * dx_cx;
+		double tor = 1E-10;
+
+		if (System.Math.Abs(de) < 0.0001d) {
+			return(null);
+		}	
+
+		if (de > - tor && de < tor) {
+			return(null);
+		}
+
+		ax_cx = lineA.A.x - lineB.A.x;
+		ay_cy = lineA.A.y - lineB.A.y;
+
+		double r = (ay_cy * dx_cx - ax_cx * dy_cy) / de;
+		double s = (ay_cy * bx_ax - ax_cx * by_ay) / de;
+
+		if ((r < 0) || (r > 1) || (s < 0)|| (s > 1)) {
+			return(null);
+		}
+
+		float px = (float)(lineA.A.x + r * bx_ax);
+		float py = (float)(lineA.A.y + r * by_ay);
+
+		return(new Vector2 (px, py));
 	}
 
 

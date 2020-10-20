@@ -17,7 +17,7 @@ public class LightingCollider2DEditor : Editor {
 
 		EditorGUI.BeginDisabledGroup(script.mainShape.colliderType == LightingCollider2D.ColliderType.None);
 		
-		script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+		script.lightingCollisionLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Light)", (int)script.lightingCollisionLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 
 		string shadowDistanceName = "Shadow Distance";
 
@@ -25,13 +25,17 @@ public class LightingCollider2DEditor : Editor {
 			shadowDistanceName = "Shadow Distance (infinite)";
 		}
 
+		script.shadowEffectLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Effect Layer (Light)", (int)script.shadowEffectLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
+
 		script.mainShape.shadowDistance = EditorGUILayout.FloatField(shadowDistanceName, script.mainShape.shadowDistance);
 
 		if (script.mainShape.shadowDistance < 0) {
 			script.mainShape.shadowDistance = 0;
 		}
 
+	
 		EditorGUI.EndDisabledGroup();
+		
 
 		EditorGUILayout.Space();
 
@@ -40,7 +44,7 @@ public class LightingCollider2DEditor : Editor {
 
 		EditorGUI.BeginDisabledGroup(script.mainShape.maskType == LightingCollider2D.MaskType.None);
 
-		script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+		script.lightingMaskLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Light)", (int)script.lightingMaskLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
 
 		script.maskEffect = (MaskEffect)EditorGUILayout.EnumPopup("Mask Effect", script.maskEffect);
 

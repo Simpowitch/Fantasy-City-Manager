@@ -25,19 +25,6 @@ public class ResourceObjectNetwork : MonoBehaviour
     #endregion
 
 
-    private void Start()
-    {
-        treeSpawnTimer = Random.Range(treeMinSpawnTime, treeMaxSpawnTime);
-        for (int i = 0; i < startStone; i++)
-        {
-            SpawnObject(FindFreeObjectTile(CityResource.Type.Stone), stoneBlueprint);
-        }
-        for (int i = 0; i < startTrees; i++)
-        {
-            SpawnObject(FindFreeObjectTile(CityResource.Type.Wood), treeBlueprint);
-        }
-    }
-
     private void Update()
     {
         UpdateSpawnTimer(ref treeSpawnTimer, CityResource.Type.Wood);
@@ -88,6 +75,16 @@ public class ResourceObjectNetwork : MonoBehaviour
     public void Setup(Grid<ObjectTile> objectGrid)
     {
         this.objectGrid = objectGrid;
+
+        treeSpawnTimer = Random.Range(treeMinSpawnTime, treeMaxSpawnTime);
+        for (int i = 0; i < startStone; i++)
+        {
+            SpawnObject(FindFreeObjectTile(CityResource.Type.Stone), stoneBlueprint);
+        }
+        for (int i = 0; i < startTrees; i++)
+        {
+            SpawnObject(FindFreeObjectTile(CityResource.Type.Wood), treeBlueprint);
+        }
     }
 
     //Finds a free tile

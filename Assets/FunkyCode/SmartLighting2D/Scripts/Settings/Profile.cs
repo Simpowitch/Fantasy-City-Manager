@@ -14,6 +14,8 @@ namespace LightingSettings {
 
 		public FogOfWar fogOfWar;
 
+		public Layers layers;
+
 		public bool disable = false;
 
 		public Color DarknessColor
@@ -24,6 +26,8 @@ namespace LightingSettings {
 		}
 
 		public Profile() {
+			layers = new Layers();
+
 			qualitySettings = new QualitySettings();
 
 			bufferPresets = new BufferPresetList();

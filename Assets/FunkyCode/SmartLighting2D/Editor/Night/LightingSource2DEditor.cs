@@ -22,7 +22,7 @@ public class LightingSource2DEditor : Editor {
 
 		script.lightPresetId = EditorGUILayout.Popup("Light Preset", (int)script.lightPresetId, Lighting2D.Profile.lightPresets.GetBufferLayers());
 
-		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Layer (Night)", (int)script.nightLayer, Lighting2D.ProjectSettings.layers.nightLayers.GetNames());
+		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Layer (Night)", (int)script.nightLayer, Lighting2D.Profile.layers.nightLayers.GetNames());
 
 		EditorGUILayout.Space();
 
@@ -48,8 +48,10 @@ public class LightingSource2DEditor : Editor {
 	
 		script.angle = EditorGUILayout.Slider("Spot Angle", script.angle, 0, 360);
 
+		// Only Soft Shadow
 		//script.coreSize = EditorGUILayout.FloatField("Core Size", script.coreSize);
 
+		// Only Legacy Shadow
 		script.outerAngle = EditorGUILayout.Slider("Outer Angle", script.outerAngle, 0, 60);
 
 		EditorGUILayout.Space();
@@ -58,13 +60,12 @@ public class LightingSource2DEditor : Editor {
 		
 		EditorGUILayout.Space();
 
-		if (Lighting2D.lightingBufferSettings.fixedLightTextureSize != LightingSettings.LightingSourceTextureSize.Custom) {
-			EditorGUI.BeginDisabledGroup(true);
-				EditorGUILayout.Popup("Buffer Size", (int)Lighting2D.lightingBufferSettings.fixedLightTextureSize, LightingSourceSettings.LightingSourceTextureSizeArray);
-				EditorGUI.EndDisabledGroup();
-		} else {
-			script.textureSize = (LightingSourceTextureSize)EditorGUILayout.Popup("Buffer Size", (int)Lighting2D.lightingBufferSettings.fixedLightTextureSize, LightingSourceSettings.LightingSourceTextureSizeArray);
-		}
+		EditorGUI.BeginDisabledGroup(Lighting2D.Profile.qualitySettings.fixedLightTextureSize != LightingSettings.LightingSourceTextureSize.Custom);
+		
+		script.textureSize = (LightingSourceTextureSize)EditorGUILayout.Popup("Buffer Size", (int)Lighting2D.Profile.qualitySettings.fixedLightTextureSize, LightingSettings.QualitySettings.LightingSourceTextureSizeArray);
+		
+		EditorGUI.EndDisabledGroup();
+
 
 		EditorGUILayout.Space();
 

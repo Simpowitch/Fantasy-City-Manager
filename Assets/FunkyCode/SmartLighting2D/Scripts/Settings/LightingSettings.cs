@@ -4,19 +4,17 @@ namespace LightingSettings {
 	
 	[System.Serializable]
 	public class QualitySettings {
+		public static string[] LightingSourceTextureSizeArray = new string[]{"Custom", "2048", "1024", "512", "256", "128"};
+
 		public bool HDR = true;
-		public ShadowQuality highQualityShadows = ShadowQuality.Detailed;
+		public int shadowIterations = 1;
+		
+		public LightingSourceTextureSize fixedLightTextureSize = LightingSourceTextureSize.px2048;
 		public UpdateMethod updateMethod = UpdateMethod.LateUpadte;
 
 		public enum UpdateMethod {
 			LateUpadte,
 			OnPreCull
-		}
-
-		public enum ShadowQuality {
-			Default,
-			Detailed,
-			Soft
 		}
 	}
 
@@ -27,11 +25,11 @@ namespace LightingSettings {
 		public LayersList dayLayers = new LayersList();
 
 		public Layers() {
-			lightLayers.names[0] = "Light Layer 1";
+			lightLayers.names[0] = "Default";
 
-			nightLayers.names[0] = "Night Layer 1";
+			nightLayers.names[0] = "Default";
 
-			dayLayers.names[0] = "Day Layer 1";
+			dayLayers.names[0] = "Default";
 		}
 	}
 
@@ -40,12 +38,10 @@ namespace LightingSettings {
 		public string[] names = new string[1];
 
 		public string[] GetNames() {
-			string[] layers = new string[names.Length + 1];
-
-			layers[0] = "Default";
+			string[] layers = new string[names.Length];
 
 			for(int i = 0; i < names.Length; i++) {
-				layers[i + 1] = names[i];
+				layers[i] = names[i];
 			}
 
 			return(layers);
@@ -156,14 +152,6 @@ namespace LightingSettings {
 		
 		public int layer = 0;
 
-	}
-
-	[System.Serializable]
-	public class LightingSourceSettings {
-		public static string[] LightingSourceTextureSizeArray = new string[]{"Custom", "2048", "1024", "512", "256", "128"};
-
-		public LightingSourceTextureSize fixedLightTextureSize = LightingSourceTextureSize.px2048;
-		public int lightingBufferPreloadCount = 0;
 	}
 
 	[System.Serializable]

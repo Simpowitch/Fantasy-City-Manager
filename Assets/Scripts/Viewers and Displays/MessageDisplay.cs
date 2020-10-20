@@ -10,6 +10,7 @@ public class MessageDisplay : MonoBehaviour
 
     [SerializeField] float textPaddingWidth = 1;
     [SerializeField] float textPaddingHeight = 1;
+    [SerializeField] int rowMaxWordCount = 6;
 
     public bool IsShowingMessage { get; private set; }
 
@@ -17,7 +18,7 @@ public class MessageDisplay : MonoBehaviour
     {
         IsShowingMessage = true;
 
-        UpdateUI(message, true);
+        UpdateUI(message);
         Vector2 backgroundSize = new Vector2(chatbubbleText.preferredWidth + textPaddingWidth * 2, chatbubbleText.preferredHeight + textPaddingHeight * 2);
 
         //Rezise to fit text
@@ -25,21 +26,35 @@ public class MessageDisplay : MonoBehaviour
 
         yield return new WaitForSeconds(timeToShow);
         IsShowingMessage = false;
-        UpdateUI("", false);
+        UpdateUI("");
     }
 
     public void ShowMessage(string message)
     {
-        UpdateUI(message, true);
+        UpdateUI(message);
         Vector2 backgroundSize = new Vector2(chatbubbleText.preferredWidth + textPaddingWidth * 2, chatbubbleText.preferredHeight + textPaddingHeight * 2);
 
         //Rezise to fit text
         backgroundRectTransform.sizeDelta = backgroundSize;
     }
 
-    private void UpdateUI(string message, bool status)
+    private void UpdateUI(string message)
     {
-        chatbubbleObject.SetActive(status);
-        chatbubbleText.text = message;
+        chatbubbleObject.SetActive(message != "");
+        if (message != "")
+        {
+            string[] words = message.Split(' ');
+            if (words.Length > rowMaxWordCount)
+            {
+                message = "";
+                for (int i = 0; i < words.Length; i++)
+                {
+                    message += words[i] + " ";
+                    if (i > 0 && i % rowMaxWordCount == 0 && i < words.Length - 2) //Do not make a new row before the last word
+                        message += "\n";
+                }
+            }
+            chatbubbleText.text = message;
+        }
     }
 }

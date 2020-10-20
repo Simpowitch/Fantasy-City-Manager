@@ -18,11 +18,12 @@ namespace Rendering.Night.WithoutAtlas {
 
             // Draw Tilemap Rooms
             #if UNITY_2017_4_OR_NEWER
+            
                 foreach (LightingTilemapRoom2D id in LightingTilemapRoom2D.GetList()) {
                     if ((int)id.nightLayer != layer) {
                         continue;
                     }
-
+                    
                     TilemapRoom.Draw(id, camera, offset, z);
                 }
             #endif

@@ -8,21 +8,29 @@ namespace Rendering.Day {
 	public class Main {
 
 		public static void Draw(Camera camera, Vector2 offset, float z, BufferPreset bufferPreset) {
+			if (Lighting2D.dayLightingSettings.alpha == 0) {
+				return;
+			}
+
 			LightingLayerSetting[] layerSettings = bufferPreset.dayLayers.Get();
 
-			for(int i = 0; i < layerSettings.Length; i++) {
-				LightingLayerSetting dayLayer = layerSettings[i];
+			if (layerSettings.Length > 0) {
+				for(int i = 0; i < layerSettings.Length; i++) {
+					LightingLayerSetting dayLayer = layerSettings[i];
 
-				LightingLayerSettingSorting sorting = dayLayer.sorting;
+					LightingLayerSettingSorting sorting = dayLayer.sorting;
 
-				if (sorting == LightingLayerSettingSorting.None) {
-					NoSort.Draw(camera, offset, z, dayLayer);
-				} else {
-					Sorted.Draw(camera, offset, z, dayLayer);
+					if (sorting == LightingLayerSettingSorting.None) {
+						NoSort.Draw(camera, offset, z, dayLayer);
+					} else {
+						Sorted.Draw(camera, offset, z, dayLayer);
+					}
 				}
+				
+				ShadowDarkness(camera, z);
 			}
+
 			
-			ShadowDarkness(camera, z);
 		}
 
 		static void ShadowDarkness(Camera camera, float z) {

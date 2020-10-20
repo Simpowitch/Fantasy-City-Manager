@@ -284,7 +284,7 @@ public class LightingManager2D : LightingMonoBehaviour {
 		#endif
 	}
 
-	private void OnEnable() {
+	public void UpdateProfile() {
 		if (setProfile == null) {
             setProfile = Lighting2D.ProjectSettings.Profile;
         } 
@@ -294,6 +294,10 @@ public class LightingManager2D : LightingMonoBehaviour {
 		} else {
 			profile = setProfile;
 		}
+	}
+
+	private void OnEnable() {
+		UpdateProfile();
 	
 		#if UNITY_EDITOR
 			#if UNITY_2019_1_OR_NEWER
@@ -302,6 +306,16 @@ public class LightingManager2D : LightingMonoBehaviour {
 				SceneView.onSceneGUIDelegate += OnSceneView;
 			#endif	
 		#endif	
+	}
+
+	public void OnRenderObject() {
+		if (Lighting2D.renderingMode != RenderingMode.OnPostRender) {
+			return;
+		}
+		
+		foreach(LightingMainBuffer2D buffer in LightingMainBuffer2D.list) {
+			Rendering.LightingMainBuffer.DrawPost(buffer);
+		}
 	}
 
 

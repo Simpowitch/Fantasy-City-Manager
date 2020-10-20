@@ -6,7 +6,7 @@ namespace Rendering.Light.WithAtlas {
 
     public class NoSort  {
 
-        public static void Draw(Rendering.Light.NoSortPass pass) {
+        public static void Draw(Rendering.Light.Pass pass) {
             Lighting2D.materials.GetAtlasMaterial().SetPass(0);
 
             GL.Begin(GL.TRIANGLES);
@@ -26,7 +26,7 @@ namespace Rendering.Light.WithAtlas {
         }
 
         public class Shadows {
-            static public void Draw(Rendering.Light.NoSortPass pass) {
+            static public void Draw(Rendering.Light.Pass pass) {
                 int colliderCount = pass.layerCollisionList.Count;
 
                 if (colliderCount > 0) {
@@ -43,7 +43,7 @@ namespace Rendering.Light.WithAtlas {
                             case LightingCollider2D.ColliderType.SpriteCustomPhysicsShape:
                             case LightingCollider2D.ColliderType.MeshRenderer:
                             case LightingCollider2D.ColliderType.SkinnedMeshRenderer:
-                                Shadow.Shape.Draw(pass.buffer, collider, pass.lightSizeSquared, pass.z);
+                                Shadow.Shape.Draw(pass.buffer, collider);
                             break;
                         }
 
@@ -74,7 +74,7 @@ namespace Rendering.Light.WithAtlas {
         }
 
         public class Mask {
-             static public void Draw(Rendering.Light.NoSortPass pass) {
+             static public void Draw(Rendering.Light.Pass pass) {
                 int colliderCount = pass.layerMaskList.Count;
 
                 if (colliderCount > 0) {
@@ -87,11 +87,11 @@ namespace Rendering.Light.WithAtlas {
 
                         switch(collider.mainShape.maskType) {
                             case LightingCollider2D.MaskType.Collider2D:
-                                Shape.Mask(pass.buffer, collider, pass.layer, pass.z);
+                              //  Shape.Mask(pass.buffer, collider, pass.layer, pass.z);
                             break;
 
                             case LightingCollider2D.MaskType.SpriteCustomPhysicsShape:
-                                Shape.Mask(pass.buffer, collider, pass.layer, pass.z);
+                            //    Shape.Mask(pass.buffer, collider, pass.layer, pass.z);
                             break;
 
                             case LightingCollider2D.MaskType.Sprite:
@@ -117,7 +117,7 @@ namespace Rendering.Light.WithAtlas {
             } 
         }
        
-        static public void DrawBatchedColliderMask(Rendering.Light.NoSortPass pass) {
+        static public void DrawBatchedColliderMask(Rendering.Light.Pass pass) {
             // Partialy Batched (Default Edition)
             if (pass.buffer.lightingAtlasBatches.colliderList.Count > 0) {
                 PartiallyBatchedCollider batch;			
@@ -132,7 +132,7 @@ namespace Rendering.Light.WithAtlas {
             }
         }
 
-        static public void DrawBatchedTilemapColliderMask(Rendering.Light.NoSortPass pass) {
+        static public void DrawBatchedTilemapColliderMask(Rendering.Light.Pass pass) {
             if (pass.buffer.lightingAtlasBatches.tilemapList.Count > 0) {
                 PartiallyBatchedTilemap batch;
 

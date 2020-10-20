@@ -6,8 +6,7 @@ namespace Rendering.Universal.WithAtlas {
 	
 	public class Sprite : Base {
 		
-        // static VirtualSpriteRenderer virtualSpriteRenderer = new VirtualSpriteRenderer();
-
+	    // Rendering.Light (because of Color its not universal)
         static public void Draw(VirtualSpriteRenderer spriteRenderer, LayerSetting layerSetting, MaskEffect maskEffect, Vector2 position, Vector2 size, float rotation, float z = 0f) {
 			UnityEngine.Sprite sprite = spriteRenderer.sprite;
 			if (spriteRenderer == null || sprite == null || sprite.texture == null) {

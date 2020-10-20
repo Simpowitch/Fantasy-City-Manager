@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SuperTilemapEditorSupport {
     
-    public class Buffer : Rendering.Light.Base { 
+    public class Buffer { 
 
         public class WithoutAtlas {   
 
@@ -63,7 +63,7 @@ namespace SuperTilemapEditorSupport {
  
         #if (SUPER_TILEMAP_EDITOR)
 
-            static public void Mask_Grid(LightingBuffer2D buffer, LightingTilemapCollider2D id, float z) {
+            static public void MaskGrid(LightingBuffer2D buffer, LightingTilemapCollider2D id, float z) {
                 if (id.mapType != LightingTilemapCollider2D.MapType.SuperTilemapEditor) {
                     return;
                 }
@@ -113,7 +113,7 @@ namespace SuperTilemapEditorSupport {
             }
 
         #else  
-            static public void Mask_Grid(LightingBuffer2D buffer, LightingTilemapCollider2D id, float z) {}
+            static public void MaskGrid(LightingBuffer2D buffer, LightingTilemapCollider2D id, float z) {}
 
         #endif
 

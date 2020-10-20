@@ -6,7 +6,7 @@ namespace Rendering.Light.WithoutAtlas {
 
     public class NoSort {
 
-        public static void Draw(Rendering.Light.NoSortPass pass) {
+        public static void Draw(Rendering.Light.Pass pass) {
             if (pass.drawShadows) {
                 Shadow.Draw(pass);
             }
@@ -18,7 +18,7 @@ namespace Rendering.Light.WithoutAtlas {
 
         public class Shadow {
 
-            public static void Draw(Rendering.Light.NoSortPass pass) {
+            public static void Draw(Rendering.Light.Pass pass) {
                 Material material = Lighting2D.materials.GetAtlasMaterial();
                 material.color = Color.white;
 
@@ -32,7 +32,7 @@ namespace Rendering.Light.WithoutAtlas {
                 GL.End();
             }
 
-            public static void DrawCollider(Rendering.Light.NoSortPass pass) {
+            public static void DrawCollider(Rendering.Light.Pass pass) {
                 int colliderCount = pass.layerCollisionList.Count;
 
                 if (colliderCount < 1) {
@@ -42,23 +42,19 @@ namespace Rendering.Light.WithoutAtlas {
                 for(int id = 0; id < colliderCount; id++) {
                     LightingCollider2D collider = pass.layerCollisionList[id];
 
-                    if ((int)collider.lightingCollisionLayer != pass.layerID) {
-                        continue;
-                    }
-
                     switch(collider.mainShape.colliderType) {
                         case LightingCollider2D.ColliderType.Collider2D:
                         case LightingCollider2D.ColliderType.CompositeCollider2D:
                         case LightingCollider2D.ColliderType.SpriteCustomPhysicsShape:
                         case LightingCollider2D.ColliderType.MeshRenderer:
                         case LightingCollider2D.ColliderType.SkinnedMeshRenderer:
-                             Light.Shadow.Shape.Draw(pass.buffer, collider, pass.lightSizeSquared, pass.z);
+                             Light.Shadow.Shape.Draw(pass.buffer, collider);
                         break;
                     }
                 }
             }
 
-            public static void DrawTilemapCollider(Rendering.Light.NoSortPass pass) {
+            public static void DrawTilemapCollider(Rendering.Light.Pass pass) {
                 #if UNITY_2017_4_OR_NEWER
                     for(int id = 0; id < pass.tilemapList.Count; id++) {
                         if ((int)pass.tilemapList[id].lightingCollisionLayer != pass.layerID) {
@@ -68,19 +64,16 @@ namespace Rendering.Light.WithoutAtlas {
                         switch(pass.tilemapList[id].mapType) {
                             case LightingTilemapCollider2D.MapType.UnityEngineTilemapRectangle:
                                 Light.Shadow.TilemapRectangle.Draw(pass.buffer, pass.tilemapList[id], pass.lightSizeSquared, pass.z);
-                                Light.Shadow.TilemapCollider.Rectangle.Draw(pass.buffer, pass.tilemapList[id], pass.lightSizeSquared, pass.z);
+                                Light.Shadow.TilemapCollider.Rectangle.Draw(pass.buffer, pass.tilemapList[id]);
                             break;
 
                             case LightingTilemapCollider2D.MapType.UnityEngineTilemapIsometric:
-                                Light.Shadow.TilemapIsometric.Draw(pass.buffer, pass.tilemapList[id], pass.lightSizeSquared, pass.z);
-                        
+                                Light.Shadow.TilemapIsometric.Draw(pass.buffer, pass.tilemapList[id]);
                             break;
 
                             case LightingTilemapCollider2D.MapType.UnityEngineTilemapHexagon:
-                                Light.Shadow.TilemapHexagon.Draw(pass.buffer, pass.tilemapList[id], pass.lightSizeSquared, pass.z);
-                        
+                                Light.Shadow.TilemapHexagon.Draw(pass.buffer, pass.tilemapList[id]);
                             break;
-
 
                             case LightingTilemapCollider2D.MapType.SuperTilemapEditor:
                                 SuperTilemapEditorSupport.Buffer.Shadow_Grid(pass.buffer, pass.tilemapList[id], pass.lightSizeSquared, pass.z);
@@ -95,7 +88,7 @@ namespace Rendering.Light.WithoutAtlas {
 
         public class Mask {
 
-           static public void Draw(Rendering.Light.NoSortPass pass) {
+           static public void Draw(Rendering.Light.Pass pass) {
                 Lighting2D.materials.GetSpriteMask().SetPass(0);
 
                 GL.Begin(GL.TRIANGLES);
@@ -108,12 +101,14 @@ namespace Rendering.Light.WithoutAtlas {
 
                 GL.End();
 
+                DrawMesh(pass);
+
                 DrawSprite(pass);
 
                 DrawTilemapSprite(pass);
             }
 
-            static public void DrawCollider(Rendering.Light.NoSortPass pass) {
+            static public void DrawCollider(Rendering.Light.Pass pass) {
                 int colliderCount = pass.layerMaskList.Count;
 
                 if (colliderCount < 1) {
@@ -122,9 +117,6 @@ namespace Rendering.Light.WithoutAtlas {
 
                 for(int id = 0; id < colliderCount; id++) {
                     LightingCollider2D collider = pass.layerMaskList[id];
-                    if ((int)collider.lightingMaskLayer != pass.layerID) {
-                        continue;
-                    }
 
                     switch(collider.mainShape.maskType) {
                         case LightingCollider2D.MaskType.SpriteCustomPhysicsShape:
@@ -138,7 +130,21 @@ namespace Rendering.Light.WithoutAtlas {
                         case LightingCollider2D.MaskType.CompositeCollider2D:
                             Light.Shape.Mask(pass.buffer, collider, pass.layer, pass.z);
                         break;
+                    }
+                }
+            }
 
+             static public void DrawMesh(Rendering.Light.Pass pass) {
+                int colliderCount = pass.layerMaskList.Count;
+
+                if (colliderCount < 1) {
+                    return;
+                }
+
+                for(int id = 0; id < colliderCount; id++) {
+                    LightingCollider2D collider = pass.layerMaskList[id];
+
+                    switch(collider.mainShape.maskType) {
                         case LightingCollider2D.MaskType.MeshRenderer:
                             Mesh.Mask(pass.buffer, collider, pass.materialWhite, pass.layer, pass.z);
                         break;
@@ -150,7 +156,7 @@ namespace Rendering.Light.WithoutAtlas {
                 }
             }
 
-            static public void DrawSprite(Rendering.Light.NoSortPass pass) {
+            static public void DrawSprite(Rendering.Light.Pass pass) {
                 int colliderCount = pass.layerMaskList.Count;
 
                 if (colliderCount < 1) {
@@ -160,20 +166,12 @@ namespace Rendering.Light.WithoutAtlas {
                 for(int id = 0; id < colliderCount; id++) {
                     LightingCollider2D collider = pass.layerMaskList[id];
 
-                    if ((int)collider.lightingMaskLayer != pass.layerID) {
-                        continue;
-                    }
-
                     switch(collider.mainShape.maskType) {
-                        
                         case LightingCollider2D.MaskType.Sprite:
-
                             SpriteRenderer2D.Mask(pass.buffer, collider, pass.materialWhite, pass.layer, pass.z);
-
                         break;
 
                         case LightingCollider2D.MaskType.BumpedSprite:
-
                             if (collider.normalMapMode.type == NormalMapType.ObjectToLight) {
                                 SpriteRenderer2D.MaskNormalMap(pass.buffer, collider, pass.materialNormalMap_ObjectToLight, pass.layer, pass.z);
                             } else {
@@ -185,7 +183,7 @@ namespace Rendering.Light.WithoutAtlas {
                 }
             }
 
-            static public void DrawTilemapCollider(Rendering.Light.NoSortPass pass) {
+            static public void DrawTilemapCollider(Rendering.Light.Pass pass) {
                 #if UNITY_2017_4_OR_NEWER
                     for(int id = 0; id < pass.tilemapList.Count; id++) {
                         if ((int)pass.tilemapList[id].lightingMaskLayer != pass.layerID) {
@@ -206,14 +204,14 @@ namespace Rendering.Light.WithoutAtlas {
                             break;
 
                             case LightingTilemapCollider2D.MapType.SuperTilemapEditor:
-                                SuperTilemapEditorSupport.Buffer.Mask_Grid(pass.buffer, pass.tilemapList[id], pass.z);
+                                SuperTilemapEditorSupport.Buffer.MaskGrid(pass.buffer, pass.tilemapList[id], pass.z);
                             break;
                         }
                     }
                 #endif
             }
 
-            static public void DrawTilemapSprite(Rendering.Light.NoSortPass pass) {
+            static public void DrawTilemapSprite(Rendering.Light.Pass pass) {
                 #if UNITY_2017_4_OR_NEWER
                     for(int id = 0; id < pass.tilemapList.Count; id++) {
                         if ((int)pass.tilemapList[id].lightingMaskLayer != pass.layerID) {

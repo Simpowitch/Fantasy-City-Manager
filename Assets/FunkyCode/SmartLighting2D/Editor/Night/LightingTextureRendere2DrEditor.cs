@@ -12,7 +12,7 @@ public class LightingTextureRenderer2DEditor : Editor {
 	override public void OnInspectorGUI() {
 		LightingTextureRenderer2D script = target as LightingTextureRenderer2D;
 
-		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Layer (Night)", (int)script.nightLayer, Lighting2D.ProjectSettings.layers.nightLayers.GetNames());
+		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Layer (Night)", (int)script.nightLayer, Lighting2D.Profile.layers.nightLayers.GetNames());
 
 		script.color = EditorGUILayout.ColorField("Color", script.color);
 

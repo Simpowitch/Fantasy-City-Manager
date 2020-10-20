@@ -10,7 +10,7 @@ public class LightingRoom2DEditor :Editor {
     override public void OnInspectorGUI() {
 		LightingRoom2D script = target as LightingRoom2D;
 
-		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Night Layer", (int)script.nightLayer, Lighting2D.ProjectSettings.layers.nightLayers.GetNames());
+		script.nightLayer = (LightingLayer)EditorGUILayout.Popup("Night Layer", (int)script.nightLayer, Lighting2D.Profile.layers.nightLayers.GetNames());
 
 		script.shape.type = (LightingRoom2D.RoomType)EditorGUILayout.EnumPopup("Room Type", script.shape.type);
 

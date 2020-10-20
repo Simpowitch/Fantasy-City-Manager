@@ -26,27 +26,11 @@ namespace EventHandling {
                     continue;
                 }
 
-                
-
                 LightingBuffer2D buffer2D = lightingSource.GetBuffer();
 
-                int tilemapSize = Rendering.Light.Rectangle.Light.GetSize(id, buffer2D);
-			    Vector2Int tilemapLightPosition = Rendering.Light.Rectangle.Light.GetPosition(id, buffer2D);
-
-                TilemapProperties properties = id.rectangle.Properties;
                 Vector2 scale = Vector2.one;
 
-                for(int x = tilemapLightPosition.x - tilemapSize; x < tilemapLightPosition.x + tilemapSize; x++) {
-                    for(int y = tilemapLightPosition.y - tilemapSize; y < tilemapLightPosition.y + tilemapSize; y++) {
-                        if (x < 0 || y < 0 || x >= properties.arraySize.x || y >= properties.arraySize.y) {
-                            continue;
-                        }
-
-                        LightingTile tile = id.rectangle.map.map[x, y];
-                        if (tile == null) {
-                            continue;
-                        }
-
+                foreach(LightingTile tile in id.rectangle.mapTiles) {
                         switch(id.colliderTileType) {
                             case LightingTilemapCollider2D.ShadowTileType.AllTiles:
                             break;
@@ -64,7 +48,7 @@ namespace EventHandling {
                             continue;
                         }
 
-                        Vector2 tilePosition = Rendering.Light.Rectangle.GetTilePosition(x, y, id);
+                        Vector2 tilePosition = Rendering.Light.Rectangle.GetTilePosition(tile.position.x, tile.position.y, id);
 
                         tilePosition += offset;
     
@@ -72,42 +56,8 @@ namespace EventHandling {
                             continue;
                         }
 
-                        if (x-1 > 0 && y-1 > 0 && x + 1 < properties.area.size.x && y + 1 < properties.area.size.y) {
-                            if (tilePosition.x > 0 && tilePosition.y > 0) {
-                                LightingTile tileA = id.rectangle.map.map[x - 1, y];
-                                LightingTile tileB = id.rectangle.map.map[x, y - 1];
-                                LightingTile tileC = id.rectangle.map.map[x - 1, y - 1];
-                                if (tileA != null && tileB != null && tileC != null) {
-                                    continue;
-                                }
-                            } else if (tilePosition.x < 0 && tilePosition.y > 0) {
-                                LightingTile tileA = id.rectangle.map.map[x + 1, y];
-                                LightingTile tileB = id.rectangle.map.map[x, y - 1];
-                                LightingTile tileC = id.rectangle.map.map[x + 1, y - 1];
-                                if (tileA != null && tileB != null && tileC != null) {
-                                    continue;
-                                }
-                            } else if (tilePosition.x > 0 && tilePosition.y < 0) {
-                                LightingTile tileA = id.rectangle.map.map[x - 1, y];
-                                LightingTile tileB = id.rectangle.map.map[x, y + 1];
-                                LightingTile tileC = id.rectangle.map.map[x - 1, y + 1];
-                                if (tileA != null && tileB != null && tileC != null) {
-                                    continue;
-                                }
-                            } else if (tilePosition.x < 0 && tilePosition.y < 0) {
-                                LightingTile tileA = id.rectangle.map.map[x + 1, y];
-                                LightingTile tileB = id.rectangle.map.map[x, y + 1];
-                                LightingTile tileC = id.rectangle.map.map[x + 1, y + 1];
-                                if (tileA != null && tileB != null && tileC != null) {
-                                    continue;
-                                }
-                            }
-                        }
-
-
                         removePointsColliding.Clear();
                         removeCollisions.Clear();
-
 
                         for(int i = 0; i < polygons.Count; i++) {
 
@@ -184,10 +134,12 @@ namespace EventHandling {
                         }
 
                     }
-                }            
+                       
             }
             
             return(collisions);
         }
     }
 }
+
+

@@ -14,16 +14,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bufferPresets:
     list:
-    - name: Main
+    - name: Day Shadows
       sortingLayer:
-        name: Day Shadows
-        Order: 28
-      darknessColor: {r: 1, g: 1, b: 1, a: 1}
+        name: Default
+        Order: 17
+      darknessColor: {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 1}
       lightingResolution: 1
       dayLayers:
         list:
         - layer: 0
-          type: 1
+          type: 0
+          sorting: 0
+      nightLayers:
+        list:
+        - layer: 0
+          type: 0
+          sorting: 0
+    - name: 'Preset (Id: 2)'
+      sortingLayer:
+        name: Default
+        Order: 0
+      darknessColor: {r: 0.13305447, g: 0.17439865, b: 0.24528301, a: 1}
+      lightingResolution: 1
+      dayLayers:
+        list:
+        - layer: 0
+          type: 0
           sorting: 0
       nightLayers:
         list:
@@ -36,23 +52,26 @@ MonoBehaviour:
       layerSetting:
         list:
         - layerID: 0
-          type: 1
+          type: 0
           sorting: 0
           sortingIgnore: 0
-          effect: 0
+          shadowEffect: 0
+          shadowEffectLayer: 0
+          maskEffect: 0
           maskEffectDistance: 1
   qualitySettings:
     HDR: 1
-    highQualityShadows: 1
+    shadowIterations: 1
+    fixedLightTextureSize: 1
     updateMethod: 0
   dayLightingSettings:
     enable: 1
-    alpha: 0.25
-    direction: 0
-    height: 0.01
+    alpha: 0.5
+    direction: 450
+    height: 2
     softness:
       enable: 1
-      intensity: 0.1
+      intensity: 0.5
     bumpMap:
       height: 1
       strength: 1
@@ -63,4 +82,14 @@ MonoBehaviour:
     sortingLayer:
       name: Default
       Order: 0
+  layers:
+    lightLayers:
+      names:
+      - Default
+    nightLayers:
+      names:
+      - Default
+    dayLayers:
+      names:
+      - Default
   disable: 0

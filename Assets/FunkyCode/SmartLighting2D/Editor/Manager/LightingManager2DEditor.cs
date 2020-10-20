@@ -12,7 +12,18 @@ public class LightingManager2DEditor : Editor {
 	override public void OnInspectorGUI() {
 		LightingManager2D script = target as LightingManager2D;
 
-		script.setProfile = (LightingSettings.Profile)EditorGUILayout.ObjectField("Profile", script.setProfile, typeof(LightingSettings.Profile), true);
+		LightingSettings.Profile newProfile = (LightingSettings.Profile)EditorGUILayout.ObjectField("Profile", script.setProfile, typeof(LightingSettings.Profile), true);
+		if (newProfile != script.setProfile) {
+			script.setProfile = newProfile;
+
+			
+		//	LightingMainBuffer2D.Clear();
+		
+			script.UpdateProfile();
+
+
+		//	LightingSource2D.ForceUpdateAll();
+		}
 		
 		EditorGUILayout.Space();
 
@@ -46,7 +57,7 @@ public class LightingManager2DEditor : Editor {
 			
 				if (cameraSetting.renderShader == CameraSettings.RenderShader.Custom) {
 				cameraSetting.customMaterial = (Material)EditorGUILayout.ObjectField(cameraSetting.customMaterial, typeof(Material), true);
-			}
+				}
 			}
 
 			

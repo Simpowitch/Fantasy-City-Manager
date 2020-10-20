@@ -12,7 +12,7 @@ public struct CameraSettings {
 
 	public enum RenderMode { Draw, Hidden, Disabled }
 	public enum CameraType {MainCamera, Custom, SceneView};
-	public enum RenderShader {Multiply, Additive, Custom};
+	public enum RenderShader {MultiplyHDR, Multiply, Additive, Custom};
 	
 	public CameraType cameraType;
 	public Camera customCamera;

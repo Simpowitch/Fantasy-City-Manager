@@ -90,12 +90,16 @@ public class LightingMainBuffer2D {
 	public Material GetMaterial() {
 		if (material == null || material.Get() == null) {
 			switch(cameraSettings.renderShader) {
+				case CameraSettings.RenderShader.MultiplyHDR:
+
+					material = LightingMaterial.Load("SmartLighting2D/Multiply HDR");
+
+				break;
+				
 				case CameraSettings.RenderShader.Multiply:
-					if (Lighting2D.commonSettings.HDR) {
-						material = LightingMaterial.Load("SmartLighting2D/Multiply HDR");
-					} else {
-						material = LightingMaterial.Load("SmartLighting2D/Multiply");
-					}
+				
+					material = LightingMaterial.Load("SmartLighting2D/Multiply");
+					
 				break;
 
 				case CameraSettings.RenderShader.Additive:
@@ -142,11 +146,11 @@ public class LightingMainBuffer2D {
 	}
 
 	// Apply Render to Specified Camera (Post Render Mode)
-	private void OnRenderObject() {
+	public void OnRenderObject() {
 		if (Lighting2D.disable) {
 			return;
 		}
 		
-		Rendering.LightingMainBuffer.DrawPost(this);
+		
 	}
 }

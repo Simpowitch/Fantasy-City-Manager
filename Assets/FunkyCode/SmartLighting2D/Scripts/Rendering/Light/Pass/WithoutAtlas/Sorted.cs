@@ -6,11 +6,11 @@ namespace Rendering.Light.WithoutAtlas {
         
     public class Sorted {
 
-        public static void Draw(Rendering.Light.SortedPass pass) {
-            for(int i = 0; i < pass.sortList.count; i ++) {
-                pass.sortObject = pass.sortList.list[i];
+        public static void Draw(Rendering.Light.Pass pass) {
+            for(int i = 0; i < pass.sortPass.sortList.count; i ++) {
+                pass.sortPass.sortObject = pass.sortPass.sortList.list[i];
 
-                switch (pass.sortObject.type) {
+                switch (pass.sortPass.sortObject.type) {
                     case Sorting.SortObject.Type.Collider:
                         DrawCollider(pass);
                     break;
@@ -23,8 +23,8 @@ namespace Rendering.Light.WithoutAtlas {
             }
         }
 
-        public static void DrawCollider(Rendering.Light.SortedPass pass) {
-            LightingCollider2D collider = (LightingCollider2D)pass.sortObject.lightObject;
+        public static void DrawCollider(Rendering.Light.Pass pass) {
+            LightingCollider2D collider = (LightingCollider2D)pass.sortPass.sortObject.lightObject;
 
             if ((int)collider.lightingCollisionLayer == pass.layerID && pass.drawShadows) {	
                 // Shadows
@@ -38,7 +38,7 @@ namespace Rendering.Light.WithoutAtlas {
                         Lighting2D.materials.GetAtlasMaterial().SetPass(0);
                         GL.Begin(GL.TRIANGLES);
 
-                            Light.Shadow.Shape.Draw(pass.buffer, collider, pass.lightSizeSquared, pass.z);
+                            Light.Shadow.Shape.Draw(pass.buffer, collider);
 
                         GL.End();
 
@@ -98,24 +98,24 @@ namespace Rendering.Light.WithoutAtlas {
             }
         }
 
-        static public void DrawTile(Rendering.Light.SortedPass pass) {
+        static public void DrawTile(Rendering.Light.Pass pass) {
             #if UNITY_2017_4_OR_NEWER
 
-                LightingTile tile = (LightingTile)pass.sortObject.lightObject;
+                LightingTile tile = (LightingTile)pass.sortPass.sortObject.lightObject;
 
                 Lighting2D.materials.GetAtlasMaterial().SetPass(0);
                                     
                 GL.Begin(GL.TRIANGLES);
 
-                    if ((int)pass.sortObject.tilemap.lightingCollisionLayer == pass.layerID && pass.drawShadows) {	
-                        Light.Shadow.Tile.Draw(pass.buffer, tile, pass.sortObject.position, pass.sortObject.tilemap, pass.lightSizeSquared, pass.z);
+                    if ((int)pass.sortPass.sortObject.tilemap.lightingCollisionLayer == pass.layerID && pass.drawShadows) {	
+                        Light.Shadow.Tile.Draw(pass.buffer, tile, pass.sortPass.sortObject.position, pass.sortPass.sortObject.tilemap);
                     }
 
                 GL.End();  
 
                 // sprite mask, but what about shape mask?
-                if ((int)pass.sortObject.tilemap.lightingMaskLayer == pass.layerID && pass.drawMask) {
-                    Tile.MaskSprite(pass.buffer, tile, pass.layer, pass.materialWhite, pass.sortObject.position, pass.sortObject.tilemap, pass.lightSizeSquared, pass.z);
+                if ((int)pass.sortPass.sortObject.tilemap.lightingMaskLayer == pass.layerID && pass.drawMask) {
+                    Tile.MaskSprite(pass.buffer, tile, pass.layer, pass.materialWhite, pass.sortPass.sortObject.position + ShadowEngine.lightOffset, pass.sortPass.sortObject.tilemap, pass.lightSizeSquared, pass.z);
                 }    
 
              #endif     

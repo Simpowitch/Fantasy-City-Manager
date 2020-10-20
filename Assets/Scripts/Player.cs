@@ -7,7 +7,6 @@ public class Player : MonoBehaviour
     public delegate void CityHandler(City city);
     public CityHandler OnActiveCityChanged;
 
-    [SerializeField] City defaultCity = null;
     private City activeCity;
     public City ActiveCity
     {
@@ -19,16 +18,5 @@ public class Player : MonoBehaviour
         }
     }
 
-
-    private void Start()
-    {
-        //IF NO LOADING
-        CreateNewCity();
-    }
-
-    public void CreateNewCity()
-    {
-        defaultCity.Setup();
-        ActiveCity = defaultCity;
-    }
+    public Transform playerCharacter;
 }

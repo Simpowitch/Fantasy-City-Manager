@@ -98,7 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nightLayer: 0
   color: {r: 0.9811321, g: 0.7770712, b: 0.763617, a: 0.5}
-  size: 10
+  size: 25
   coreSize: 0.2
   angle: 360
   outerAngle: 0
@@ -118,8 +118,8 @@ MonoBehaviour:
     intensity: 1
     depth: 1
   whenInsideCollider: 1
-  lightSprite: 0
-  sprite: {fileID: 21300000, guid: 6592d6be03fd808449716a11558d506f, type: 3}
+  lightSprite: 1
+  sprite: {fileID: 21300000, guid: 4b8f7314cdf26b148af1b178e90065d5, type: 3}
   spriteFlipX: 0
   spriteFlipY: 0
   eventHandling:

@@ -1,4 +1,6 @@
-﻿### Beta 1.1.7 - 14.10.2020
+﻿### Beta 1.1.7 - 18.10.2020
+ [ADDED] Lighting Collider 2D: Shadow effect layer
+ [ADDED] Lighting Preset: Shadow Effects (Perpendicular Shadow Collision)
  [ADDED] Lighting Collider: Shadow Distance
  [ADDED] Lighting Manager: Custom material mode
  [ADDED] Mesh Mode: Custom material option

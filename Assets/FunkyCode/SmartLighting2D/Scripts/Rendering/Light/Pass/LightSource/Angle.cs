@@ -7,13 +7,14 @@ namespace Rendering.Light.LightSource {
     public class Angle {
 
         public static void Draw(LightingSource2D lightSource, float z) {
+            Rect penumbraRect = ShadowEngine.Penumbra.uvRect;
+
             float size = lightSource.Buffer.lightSource.size;
 
             float squaredSize = Mathf.Sqrt((float)((size * size) + (size * size)));
             float shadowAngle = 360 - lightSource.angle;
-
             int step = 5;
-
+      
             for(int i = 0; i < shadowAngle; i += step) {
                 GL.Color(Color.black);
                 float rotation = i - shadowAngle / 2 - 90 + lightSource.transform.eulerAngles.z;
@@ -44,13 +45,13 @@ namespace Rendering.Light.LightSource {
                     pos1 = new Vector2(Mathf.Cos(angle1) * squaredSize, Mathf.Sin(angle1) * squaredSize);
                     pos2 = new Vector2(Mathf.Cos(angle2) * squaredSize, Mathf.Sin(angle2) * squaredSize);
 
-                    GL.TexCoord3(Penumbra.uvRect.x, Penumbra.uvRect.y, 0);
+                    GL.TexCoord3(penumbraRect.x, penumbraRect.y, 0);
                     GL.Vertex3(pos0.x, pos0.y, z);
 
-                    GL.TexCoord3(Penumbra.uvRect.width, Penumbra.uvRect.y, 0);
+                    GL.TexCoord3(penumbraRect.width, penumbraRect.y, 0);
                     GL.Vertex3(pos2.x, pos2.y, z);
                     
-                    GL.TexCoord3(Penumbra.uvRect.x, Penumbra.uvRect.height, 0);
+                    GL.TexCoord3(penumbraRect.x, penumbraRect.height, 0);
                     GL.Vertex3(pos1.x, pos1.y, z);
 
                 } else if (i + step >= shadowAngle) {
@@ -64,13 +65,13 @@ namespace Rendering.Light.LightSource {
                     pos1 = new Vector2(Mathf.Cos(angle1) * squaredSize, Mathf.Sin(angle1) * squaredSize);
                     pos2  = new Vector2(Mathf.Cos(angle2) * squaredSize, Mathf.Sin(angle2) * squaredSize);
 
-                    GL.TexCoord3(Penumbra.uvRect.x, Penumbra.uvRect.y, 0);
+                    GL.TexCoord3(penumbraRect.x, penumbraRect.y, 0);
                     GL.Vertex3(pos0.x, pos0.y, z);
 
-                    GL.TexCoord3(Penumbra.uvRect.width, Penumbra.uvRect.y, 0);
+                    GL.TexCoord3(penumbraRect.width, penumbraRect.y, 0);
                     GL.Vertex3(pos2.x, pos2.y, z);
                     
-                    GL.TexCoord3(Penumbra.uvRect.x, Penumbra.uvRect.height, 0);
+                    GL.TexCoord3(penumbraRect.x, penumbraRect.height, 0);
                     GL.Vertex3(pos1.x, pos1.y, z);
                 }
             }

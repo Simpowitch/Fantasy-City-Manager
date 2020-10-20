@@ -20,7 +20,7 @@ public class DayLightingCollider2DEditor : Editor {
 
 		EditorGUI.BeginDisabledGroup(script.mainShape.colliderType == DayLightingCollider2D.ColliderType.None);
 		
-		script.collisionDayLayer =  (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Day)", (int)script.collisionDayLayer, Lighting2D.ProjectSettings.layers.dayLayers.GetNames());
+		script.collisionDayLayer =  (LightingLayer)EditorGUILayout.Popup("Shadow Layer (Day)", (int)script.collisionDayLayer, Lighting2D.Profile.layers.dayLayers.GetNames());
 		
 		script.mainShape.height = EditorGUILayout.FloatField("Shadow Height", script.mainShape.height);
 
@@ -33,7 +33,7 @@ public class DayLightingCollider2DEditor : Editor {
 		
 		EditorGUI.BeginDisabledGroup(script.mainShape.maskType == DayLightingCollider2D.MaskType.None);
 
-		script.maskDayLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Day)", (int)script.maskDayLayer, Lighting2D.ProjectSettings.layers.dayLayers.GetNames());
+		script.maskDayLayer = (LightingLayer)EditorGUILayout.Popup("Mask Layer (Day)", (int)script.maskDayLayer, Lighting2D.Profile.layers.dayLayers.GetNames());
 		
 		if (script.mainShape.maskType == DayLightingCollider2D.MaskType.BumpedSprite) {
 			GUIBumpMapMode.DrawDay(script.normalMapMode);

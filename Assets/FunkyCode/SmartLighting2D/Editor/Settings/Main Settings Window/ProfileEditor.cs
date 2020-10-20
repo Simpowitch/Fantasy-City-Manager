@@ -23,33 +23,55 @@ public class ProfileEditor {
 			return;
 		}
 
+		// Common Settings
+
 		CommonSettings(profile.bufferPresets.list[0]);
 
 		EditorGUILayout.Space();
+
+		// Sorting Layer
 
 		SortingLayer(profile.bufferPresets.list[0].sortingLayer);
 
 		EditorGUILayout.Space();
 
+		// Quality Settings
+
 		QualitySettings.Draw(profile);
 
 		EditorGUILayout.Space();
+
+		// Layers
+
+		Layers.Draw(profile);
+		
+		EditorGUILayout.Space();
+
+		// Day Lighting
 
 		DayLighting.Draw(profile);
 		
 		EditorGUILayout.Space();
 		
+		// Fog of War
+
 		FogOfWar.Draw(profile);
 
 		EditorGUILayout.Space();
+
+		// Buffer Presets
 
 		BufferPresets.Draw(profile.bufferPresets);
 
 		EditorGUILayout.Space();
 
+		// Light Presets
+
 		LightPresets.Draw(profile.lightPresets);
 
 		EditorGUILayout.Space();
+
+		// Disable
 
 		profile.disable = EditorGUILayout.Toggle("Disable", profile.disable);
 
@@ -147,12 +169,14 @@ public class ProfileEditor {
 		for(int i = 0; i < layerSetting.Length; i++) {
 			LayerSetting layer = layerSetting[i];
 
-			layer.layerID = (LightingLayer)EditorGUILayout.Popup("Layer (Id: " + (i + 1) +")", (int)layer.layerID, Lighting2D.ProjectSettings.layers.lightLayers.GetNames());
+			layer.layerID = (LightingLayer)EditorGUILayout.Popup("Layer (Id: " + (i + 1) +")", (int)layer.layerID, Lighting2D.Profile.layers.lightLayers.GetNames());
 			
 			layer.type = (LightingLayerType)EditorGUILayout.EnumPopup("Type", layer.type);
-			
-			
 
+			bool shadowEnabled = layer.type != LightingLayerType.MaskOnly;
+			bool maskEnabled = layer.type != LightingLayerType.ShadowOnly;
+			
+			EditorGUILayout.Space();
 
 			layer.sorting = (LightingLayerSorting)EditorGUILayout.EnumPopup("Sorting", layer.sorting);
 			
@@ -162,14 +186,39 @@ public class ProfileEditor {
 			
 			EditorGUI.EndDisabledGroup();
 
+			EditorGUILayout.Space();
 
-			layer.effect = (LightingLayerEffect)EditorGUILayout.EnumPopup("Mask Effect", layer.effect);
+			EditorGUI.BeginDisabledGroup(shadowEnabled == false);
+
+			layer.shadowEffect = (LightingLayerShadowEffect)EditorGUILayout.EnumPopup("Shadow Effect", layer.shadowEffect);
+
+			EditorGUI.EndDisabledGroup();
+
+			EditorGUI.BeginDisabledGroup(shadowEnabled == false || layer.shadowEffect != LightingLayerShadowEffect.Projected);
+
+			layer.shadowEffectLayer = (LightingLayer)EditorGUILayout.Popup("Shadow Effect Layer (Light)", (int)layer.shadowEffectLayer, Lighting2D.Profile.layers.lightLayers.GetNames());
+
+			EditorGUI.EndDisabledGroup();
+
+			EditorGUILayout.Space();
+
+			EditorGUI.BeginDisabledGroup(maskEnabled == false);
+
+			layer.maskEffect = (LightingLayerMaskEffect)EditorGUILayout.EnumPopup("Mask Effect", layer.maskEffect);
+
+			EditorGUI.EndDisabledGroup();
 	
-			EditorGUI.BeginDisabledGroup(layer.effect != LightingLayerEffect.AboveLit);
+			EditorGUI.BeginDisabledGroup(maskEnabled == false || layer.maskEffect != LightingLayerMaskEffect.AboveLit);
 		
 			layer.maskEffectDistance = EditorGUILayout.FloatField("Mask Effect Distance", layer.maskEffectDistance);
+
+			if (layer.maskEffectDistance < 0) {
+				layer.maskEffectDistance = 0;
+			}
 	
 			EditorGUI.EndDisabledGroup();
+
+			EditorGUILayout.Space();
 
 			EditorGUILayout.Space();
 		}
@@ -222,11 +271,11 @@ public class ProfileEditor {
 				
 				EditorGUILayout.Space();
 
-				LayerSettings.DrawList(bufferList.list[i].dayLayers, "Day Layers (" + bufferList.list[i].dayLayers.list.Length + ")", Lighting2D.ProjectSettings.layers.dayLayers, true);
+				LayerSettings.DrawList(bufferList.list[i].dayLayers, "Day Layers (" + bufferList.list[i].dayLayers.list.Length + ")", Lighting2D.Profile.layers.dayLayers, true);
 
 				EditorGUILayout.Space();
 				
-				LayerSettings.DrawList(bufferList.list[i].nightLayers, "Night Layers (" + bufferList.list[i].nightLayers.list.Length  + ")", Lighting2D.ProjectSettings.layers.nightLayers, false);
+				LayerSettings.DrawList(bufferList.list[i].nightLayers, "Night Layers (" + bufferList.list[i].nightLayers.list.Length  + ")", Lighting2D.Profile.layers.nightLayers, false);
 
 				EditorGUILayout.Space();
 
@@ -238,6 +287,65 @@ public class ProfileEditor {
 			GUIFoldoutHeader.End();
 		}
 	}
+
+	public class Layers {
+
+        public static void Draw(LightingSettings.Profile profile) {
+            bool foldout = GUIFoldoutHeader.Begin("Layers", profile.layers);
+    
+            if (foldout == false) {
+                GUIFoldoutHeader.End();
+                return;
+            }
+
+            EditorGUI.indentLevel++;
+
+                EditorGUILayout.Space();
+
+                DrawList(profile.layers.lightLayers, "Light Layers", "Light Layer");
+
+                EditorGUILayout.Space();
+
+                DrawList(profile.layers.nightLayers, "Night Layers", "Night Layer");
+
+                EditorGUILayout.Space();
+
+                DrawList(profile.layers.dayLayers, "Day Layers", "Day Layer");
+
+            EditorGUI.indentLevel--;
+
+            GUIFoldoutHeader.End();
+        }
+
+        public static void DrawList(LightingSettings.LayersList layerList, string name, string singular) {
+            bool foldout = GUIFoldout.Draw(name, layerList);
+
+            if (foldout == false) {
+                return;
+            }
+            
+            EditorGUI.indentLevel++;
+
+            int lightLayerCount = EditorGUILayout.IntSlider ("Count", layerList.names.Length, 1, 10);
+
+            if (lightLayerCount != layerList.names.Length) {
+                int oldCount = layerList.names.Length;
+
+                System.Array.Resize(ref layerList.names, lightLayerCount);
+
+                for(int i = oldCount; i < lightLayerCount; i++) {
+                    layerList.names[i] = singular + " " + (i);
+                }
+
+            }
+
+            for(int i = 0; i < lightLayerCount; i++) {
+                layerList.names[i] = EditorGUILayout.TextField(" ", layerList.names[i]);
+            }
+
+            EditorGUI.indentLevel--;
+        }
+    }
 
 	public class QualitySettings {
 
@@ -253,11 +361,19 @@ public class ProfileEditor {
 
 				EditorGUILayout.Space();
 
-				profile.qualitySettings.HDR = EditorGUILayout.Toggle("HDR", profile.qualitySettings.HDR);
-
-				profile.qualitySettings.highQualityShadows = (LightingSettings.QualitySettings.ShadowQuality)EditorGUILayout.EnumPopup("Shadow Quality", profile.qualitySettings.highQualityShadows);
-
 				profile.qualitySettings.updateMethod = (LightingSettings.QualitySettings.UpdateMethod)EditorGUILayout.EnumPopup("Update Method", profile.qualitySettings.updateMethod);
+
+				int oldIterations = profile.qualitySettings.shadowIterations;
+				profile.qualitySettings.shadowIterations = EditorGUILayout.IntSlider("Shadow Iterations", profile.qualitySettings.shadowIterations, 1, 5);
+
+				if (oldIterations != profile.qualitySettings.shadowIterations) {
+					LightingSource2D.ForceUpdateAll();
+				}
+
+               	profile.qualitySettings.fixedLightTextureSize = (LightingSourceTextureSize)EditorGUILayout.Popup("Light Resolution", (int)profile.qualitySettings.fixedLightTextureSize, LightingSettings.QualitySettings.LightingSourceTextureSizeArray);
+				
+				profile.qualitySettings.HDR = EditorGUILayout.Toggle("Light HDR", profile.qualitySettings.HDR);
+				
 
 			EditorGUI.indentLevel--;
 
@@ -350,7 +466,10 @@ public class ProfileEditor {
 
 					profile.dayLightingSettings.softness.enable = EditorGUILayout.Toggle("Enable", profile.dayLightingSettings.softness.enable);
 					profile.dayLightingSettings.softness.intensity = EditorGUILayout.FloatField("Intensity", profile.dayLightingSettings.softness.intensity);
-							
+
+					if (profile.dayLightingSettings.softness.intensity < 0) {
+						profile.dayLightingSettings.softness.intensity = 0;
+					}		
 				EditorGUI.indentLevel--;
 			}	
 		}
@@ -360,7 +479,7 @@ public class ProfileEditor {
 		bufferPreset.darknessColor = EditorGUILayout.ColorField("Darkness Color", bufferPreset.darknessColor);
 		bufferPreset.darknessColor.a = EditorGUILayout.Slider("Darkness Alpha", bufferPreset.darknessColor.a, 0, 1);
 	
-		bufferPreset.lightingResolution = EditorGUILayout.Slider("Lighting Resolution", bufferPreset.lightingResolution, 0.25f, 1.0f);
+		bufferPreset.lightingResolution = EditorGUILayout.Slider("Resolution", bufferPreset.lightingResolution, 0.25f, 1.0f);
 	}
 
 	static void SortingLayer(LightingSettings.SortingLayer sortingLayer) {

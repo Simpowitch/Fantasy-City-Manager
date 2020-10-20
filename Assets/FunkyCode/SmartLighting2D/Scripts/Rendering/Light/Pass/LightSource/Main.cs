@@ -10,7 +10,7 @@ namespace Rendering.Light.LightSource {
             Vector2 size = new Vector2(buffer.lightSource.size, buffer.lightSource.size);
             float z = 0;
 
-            Material material = Lighting2D.materials.GetMultiply();
+            Material material = Lighting2D.materials.GetMultiplyHDR();
 
             if (buffer.lightSource != null) {
                 UnityEngine.Sprite lightSprite = buffer.lightSource.GetSprite();

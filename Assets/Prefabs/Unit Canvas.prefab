@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3453156393392959852}
   - component: {fileID: 8720936172541260259}
   - component: {fileID: 2167875383307092115}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Text Chatbubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,13 +60,14 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 22
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -77,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: f
+  m_Text: test
 --- !u!1 &1187422064608498378
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,7 +91,7 @@ GameObject:
   - component: {fileID: 6462566027460303218}
   - component: {fileID: 599765911107603633}
   - component: {fileID: 4310596979780486108}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,6 +141,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -179,13 +181,13 @@ GameObject:
   - component: {fileID: 7897492272421616729}
   - component: {fileID: 3445596832666490269}
   - component: {fileID: 3844514447198656814}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: ChatbubbleBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3855675498149519407
 RectTransform:
   m_ObjectHideFlags: 0
@@ -229,6 +231,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -258,8 +261,8 @@ MonoBehaviour:
   chatbubbleObject: {fileID: 1234276681855135190}
   chatbubbleText: {fileID: 2167875383307092115}
   backgroundRectTransform: {fileID: 3855675498149519407}
-  textPaddingWidth: 0.5
-  textPaddingHeight: 0.2
+  textPaddingWidth: 1
+  textPaddingHeight: 0.3
 --- !u!1 &2817931944568696706
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,7 +275,7 @@ GameObject:
   - component: {fileID: 4243090701660460642}
   - component: {fileID: 4427642150740204698}
   - component: {fileID: 8846727803573133868}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: TaskProgressbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -322,6 +325,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -369,7 +373,7 @@ GameObject:
   - component: {fileID: 3879913676940835159}
   - component: {fileID: 6070407530262322101}
   - component: {fileID: 1166082529849229055}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Unit Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -484,7 +488,7 @@ GameObject:
   - component: {fileID: 6158521202354434550}
   - component: {fileID: 6287233858434687947}
   - component: {fileID: 7053877381551257168}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -533,6 +537,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.9411765, b: 0.47058824, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -559,7 +564,7 @@ GameObject:
   - component: {fileID: 7841474977762081127}
   - component: {fileID: 7683005589049113852}
   - component: {fileID: 5292123005242777782}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: NameBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,8 +612,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.29411766}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -638,8 +644,8 @@ MonoBehaviour:
   chatbubbleObject: {fileID: 7093522591015598749}
   chatbubbleText: {fileID: 7474097408419989221}
   backgroundRectTransform: {fileID: 1131568230805150397}
-  textPaddingWidth: 0.4
-  textPaddingHeight: 0.2
+  textPaddingWidth: 0.6
+  textPaddingHeight: 0.3
 --- !u!1 &7994942416379334892
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +657,7 @@ GameObject:
   - component: {fileID: 8718976949637961169}
   - component: {fileID: 4985328399280404317}
   - component: {fileID: 7474097408419989221}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: NameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -700,13 +706,14 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 8
+    m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1

@@ -4,8 +4,8 @@ using UnityEngine;
 using LightingSettings;
 
 public class Lighting2D {
-	public const int VERSION = 116;
-	public const string VERSION_STRING = "1.1.6";
+	public const int VERSION = 117;
+	public const string VERSION_STRING = "1.1.7";
 
 	static public Lighting2DMaterials materials = new Lighting2DMaterials();
 
@@ -31,11 +31,6 @@ public class Lighting2D {
 	// Disable
 	static public bool disable = false;
 
-	// Light Source Buffers
-	static public LightingSourceSettings lightingBufferSettings {
-		get => ProjectSettings.lightingBufferSettings;
-	}
-	
 	static public RenderingMode renderingMode {
 		get {
 			if (projectSettings == null) {
@@ -48,13 +43,6 @@ public class Lighting2D {
 	// Atlas
 	static public AtlasSettings atlasSettings {
 		get => ProjectSettings.atlasSettings;
-	}
-	
-	// Utilities
-	static public PolygonTriangulator2D.Triangulation triangulation {
-		get {
-			return(ProjectSettings.triangulation);
-		}
 	}
 
 	static public CoreAxis coreAxis {
