@@ -6,8 +6,8 @@ public class CityResource
     public enum Type { Gold, Wood, Stone, Iron, Food }
     public Type type;
     public string ResourceName { get => type.ToString(); }
-    public delegate void ResourceHandler(int value);
-    public ResourceHandler OnValueChanged;
+    //public delegate void ResourceHandler(int value);
+    //public ResourceHandler OnValueChanged;
     [SerializeField] int value;
     public int Value
     {
@@ -15,7 +15,7 @@ public class CityResource
         set
         {
             this.value = value;
-            OnValueChanged?.Invoke(value);
+            //OnValueChanged?.Invoke(value);
         }
     }
     public Sprite Sprite
@@ -54,7 +54,7 @@ public class CityResource
     {
         this.type = type;
         this.value = startValue;
-        OnValueChanged = null;
+        //OnValueChanged = null;
     }
 
 }

@@ -5,7 +5,7 @@ public class CityStats
     public delegate void CityStatsHandler(CityStats cityStats);
     public CityStatsHandler OnCityStatsChanged;
 
-    public Inventory Inventory { get; private set; } = new Inventory();
+    public CityResourceGroup Inventory { get; private set; } = new CityResourceGroup();
 
     public List<Citizen> Citizens { get; private set; } = new List<Citizen>();
 
@@ -45,7 +45,7 @@ public class CityStats
         Inventory.Add(new CityResource(CityResource.Type.Iron, startIron));
         Inventory.Add(new CityResource(CityResource.Type.Food, startFood));
 
-        Inventory.OnInventoryChanged += SendValuesToListeners;
+        Inventory.OnValuesChanged += SendValuesToListeners;
         SendValuesToListeners(Inventory);
     }
 
@@ -73,7 +73,7 @@ public class CityStats
         OnCityStatsChanged?.Invoke(this);
     }
 
-    public void SendValuesToListeners(Inventory inventory)
+    public void SendValuesToListeners(CityResourceGroup inventory)
     {
         OnCityStatsChanged?.Invoke(this);
     }

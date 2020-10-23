@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5491331008730578678}
   - component: {fileID: -2008270640805511909}
   m_Layer: 0
-  m_Name: SqualidHome
+  m_Name: Home Squalid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -144,5 +144,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ab3541a12511af45b6a5022c9a2ebd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dailyUpkeep: 1
+  upkeep:
+    gold:
+      type: 0
+      value: 0
+    wood:
+      type: 1
+      value: 0
+    stone:
+      type: 2
+      value: 0
+    iron:
+      type: 3
+      value: 0
+    food:
+      type: 4
+      value: 1
+  income:
+    gold:
+      type: 0
+      value: 2
+    wood:
+      type: 1
+      value: 0
+    stone:
+      type: 2
+      value: 0
+    iron:
+      type: 3
+      value: 0
+    food:
+      type: 4
+      value: 0
   capacity: 8

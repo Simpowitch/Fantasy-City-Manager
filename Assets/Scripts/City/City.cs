@@ -17,12 +17,14 @@ public class City : MonoBehaviour
 
     private void OnEnable()
     {
-        DayNightSystem.OnPartOfTheDayChanged += PartOfDayChange;
+        //DayNightSystem.OnPartOfTheDayChanged += PartOfDayChange;
+        Date.OndayChanged += SimulateBudget;
     }
 
     private void OnDisable()
     {
-        DayNightSystem.OnPartOfTheDayChanged -= PartOfDayChange;
+        //DayNightSystem.OnPartOfTheDayChanged -= PartOfDayChange;
+        Date.OndayChanged -= SimulateBudget;
     }
 
     private void Awake()
@@ -40,31 +42,35 @@ public class City : MonoBehaviour
     }
    
 
-    void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay)
+    //void PartOfDayChange(DayNightSystem.PartOfTheDay partOfDay)
+    //{
+    //    switch (partOfDay)
+    //    {
+    //        case DayNightSystem.PartOfTheDay.Night:
+    //            break;
+    //        case DayNightSystem.PartOfTheDay.Morning:
+    //            break;
+    //        case DayNightSystem.PartOfTheDay.Day:
+    //            break;
+    //        case DayNightSystem.PartOfTheDay.Evening:
+    //            SimulateBudget();
+    //            break;
+    //    }
+    //}
+
+
+    void SimulateBudget(int day)
     {
-        switch (partOfDay)
-        {
-            case DayNightSystem.PartOfTheDay.Night:
-                break;
-            case DayNightSystem.PartOfTheDay.Morning:
-                break;
-            case DayNightSystem.PartOfTheDay.Day:
-                break;
-            case DayNightSystem.PartOfTheDay.Evening:
-                SimulateBudget();
-                break;
-        }
-    }
-
-
-    void SimulateBudget()
-    {
-        int change = 0;
-
         //Incomes
-
+        CityResourceGroup incomes = CityResourceGroup.CombineIncomes(cityStats.Districts);
         //Expenses
+        CityResourceGroup upkeeps = CityResourceGroup.CombineUpkeeps(cityStats.Districts);
 
-        cityStats.Inventory.Add(new CityResource(CityResource.Type.Gold, change));
+        CityResourceGroup change = incomes;
+        change.Remove(upkeeps);
+
+        cityStats.Inventory.Add(change);
+
+        //cityStats.Inventory.Add(new CityResource(CityResource.Type.Gold, change));
     }
 }

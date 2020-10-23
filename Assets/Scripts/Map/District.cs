@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public abstract class District
+public abstract class District : IHasIncome, IHasUpkeep
 {
     public enum DistrictCategory
     {
@@ -17,6 +17,9 @@ public abstract class District
 
     public int HouseCapacity { protected set; get; }
     public int PopulationCapacity { get; set; }
+
+    public CityResourceGroup Upkeep => CityResourceGroup.CombineUpkeeps(Structures);
+    public CityResourceGroup Income => CityResourceGroup.CombineIncomes(Structures);
 
     public HexCell HexCell { get; private set; }
 

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Structure : MonoBehaviour
+public abstract class Structure : MonoBehaviour, IHasIncome, IHasUpkeep
 {
     [Header("Structure")]
-    public int dailyUpkeep = 1;
+    [SerializeField] CityResourceGroup upkeep = new CityResourceGroup();
+    [SerializeField] CityResourceGroup income = new CityResourceGroup();
 
     public District District { get; private set; }
 
@@ -13,4 +14,6 @@ public abstract class Structure : MonoBehaviour
     {
         District = district;
     }
+    public CityResourceGroup Upkeep => upkeep;
+    public CityResourceGroup Income => income;
 }

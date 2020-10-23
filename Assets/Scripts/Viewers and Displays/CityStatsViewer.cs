@@ -26,7 +26,7 @@ public class CityStatsViewer : MonoBehaviour
 
     void PrintCityStats(CityStats cityStats)
     {
-        Inventory inventory = cityStats.Inventory;
+        CityResourceGroup inventory = cityStats.Inventory;
 
         ChangeGoldText(inventory.GetCityResourceOfType(CityResource.Type.Gold).Value);
         ChangeWoodText(inventory.GetCityResourceOfType(CityResource.Type.Wood).Value);
