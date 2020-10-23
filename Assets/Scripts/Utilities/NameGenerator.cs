@@ -88,9 +88,8 @@ public static class NameGenerator
 "Garner","Weber","Hamilton","Beattie"
     };
 
-    public static string GetName()
+    public static string GetName(bool female)
     {
-        bool female = Utility.RandomizeBool(50);
         string name = "";
         name += female ? Utility.ReturnRandom(englishFemaleFirstNames) : Utility.ReturnRandom(englishMaleFirstNames);
         name += " " + Utility.ReturnRandom(englishLastNames);

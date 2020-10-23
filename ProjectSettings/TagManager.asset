@@ -59,11 +59,11 @@ TagManager:
   - name: Night Shadows
     uniqueID: 2453175523
     locked: 0
-  - name: UI
-    uniqueID: 2600557619
-    locked: 0
   - name: WorldUI
     uniqueID: 1702405107
+    locked: 0
+  - name: UI
+    uniqueID: 2600557619
     locked: 0
   - name: Default
     uniqueID: 0

@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class DayNightSystem : MonoBehaviour
 {
     const int MORNINGHOUR = 6, DAYHOUR = 9, EVENINGHOUR = 18, NIGHTHOUR = 20;
 
-    public delegate void PartOfTheDayHandler(PartOfTheDay partOfTheDay);
-    public static event PartOfTheDayHandler OnPartOfTheDayChanged;
+    public delegate void PartOfTheDayChangeHandler(PartOfTheDay partOfTheDay);
+    public static event PartOfTheDayChangeHandler OnPartOfTheDayChanged;
+
+    public UnityEvent NightStarted, MorningStarted, DayStarted, EveningStarted;
 
     public enum PartOfTheDay { Night, Morning, Day, Evening }
     public const int PARTSOFTHEDAY = 4;
@@ -19,7 +22,22 @@ public class DayNightSystem : MonoBehaviour
         {
             partOfTheDay = value;
             Debug.Log($"Part of the day changed to {partOfTheDay}");
-            OnPartOfTheDayChanged?.Invoke(partOfTheDay);
+            switch (value)
+            {
+                case PartOfTheDay.Night:
+                    NightStarted?.Invoke();
+                    break;
+                case PartOfTheDay.Morning:
+                    MorningStarted?.Invoke();
+                    break;
+                case PartOfTheDay.Day:
+                    DayStarted?.Invoke();
+                    break;
+                case PartOfTheDay.Evening:
+                    EveningStarted?.Invoke();
+                    break;
+            }
+            OnPartOfTheDayChanged?.Invoke(value);
         }
     }
 
@@ -36,7 +54,7 @@ public class DayNightSystem : MonoBehaviour
     }
 
 
-    private void NewTimeSet(int day, int hour, int minute)
+    private void NewTimeSet(int hour, int minute)
     {
         if (hour >= MORNINGHOUR && hour < DAYHOUR)
         {

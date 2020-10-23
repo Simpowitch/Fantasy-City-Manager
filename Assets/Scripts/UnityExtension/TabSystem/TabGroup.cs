@@ -68,6 +68,8 @@ public class TabGroup : MonoBehaviour
 
     private void ResetTabs()
     {
+        if (tabButtons == null)
+            return;
         foreach (var tabButton in tabButtons)
         {
             if (selectedButton == tabButton)
@@ -75,6 +77,7 @@ public class TabGroup : MonoBehaviour
                 continue;
             }
             tabButton.background.sprite = tabIdle;
+            tabButton.Deselect();
         }
     }
 }

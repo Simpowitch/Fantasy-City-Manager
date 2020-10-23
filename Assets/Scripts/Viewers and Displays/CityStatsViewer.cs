@@ -7,60 +7,43 @@ public class CityStatsViewer : MonoBehaviour
     [SerializeField] Text population = null;
     [SerializeField] Text visitors = null;
     [SerializeField] Text gold = null, wood = null, stone = null, iron = null, food = null;
-    [SerializeField] Player player = null;
-    City city;
+    [SerializeField] City city = null;
 
     private void OnEnable()
     {
-        if (city != null)
-        {
-            Subscribe(); 
-        }
+        Subscribe();
     }
 
     private void Subscribe()
     {
-        city.cityStats.Inventory.OnInventoryChanged += ChangeCityInventory;
-
-        city.cityStats.OnPopulationChanged += ChangePopulationText;
-        city.cityStats.OnVisitorsChanged += ChangeVisitorsText;
-
-        city.cityStats.SendValuesToListeners();
+        city.cityStats.OnCityStatsChanged += PrintCityStats;
     }
 
     private void OnDisable()
     {
-        city.cityStats.Inventory.OnInventoryChanged -= ChangeCityInventory;
-
-        city.cityStats.OnPopulationChanged -= ChangePopulationText;
-        city.cityStats.OnVisitorsChanged -= ChangeVisitorsText;
+        city.cityStats.OnCityStatsChanged -= PrintCityStats;
     }
 
-    private void Awake()
+    void PrintCityStats(CityStats cityStats)
     {
-        player.OnActiveCityChanged += SetCity;
-    }
+        Inventory inventory = cityStats.Inventory;
 
-    private void SetCity(City city)
-    {
-        this.city = city;
-        Subscribe();
-    }
-
-    void ChangeCityInventory(Inventory inventory)
-    {
         ChangeGoldText(inventory.GetCityResourceOfType(CityResource.Type.Gold).Value);
         ChangeWoodText(inventory.GetCityResourceOfType(CityResource.Type.Wood).Value);
         ChangeStoneText(inventory.GetCityResourceOfType(CityResource.Type.Stone).Value);
         ChangeIronText(inventory.GetCityResourceOfType(CityResource.Type.Iron).Value);
         ChangeFoodText(inventory.GetCityResourceOfType(CityResource.Type.Food).Value);
+
+        ChangePopulationText(cityStats.Population, cityStats.PopulationCapacity);
+        ChangeVisitorsText(cityStats.Visitors);
     }
+
     void ChangeGoldText(int newValue) => gold.text = newValue.ToString();
     void ChangeWoodText(int newValue) => wood.text = newValue.ToString();
     void ChangeStoneText(int newValue) => stone.text = newValue.ToString();
     void ChangeIronText(int newValue) => iron.text = newValue.ToString();
     void ChangeFoodText(int newValue) => food.text = newValue.ToString();
 
-    void ChangePopulationText(int newValue) => population.text = newValue.ToString();
+    void ChangePopulationText(int citizens, int populationCapacity) => population.text = $"{citizens} / {populationCapacity}";
     void ChangeVisitorsText(int newValue) => visitors.text = newValue.ToString();
 }

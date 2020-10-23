@@ -5,9 +5,8 @@ public class Clock : MonoBehaviour
     public delegate void TimeValueChangeHandler(int newValue);
     public static event TimeValueChangeHandler OnMinuteChanged;
     public static event TimeValueChangeHandler OnHourChanged;
-    public static event TimeValueChangeHandler OnDayChanged;
 
-    public delegate void TimeSetHandler(int day, int hour, int minute);
+    public delegate void TimeSetHandler(int hour, int minute);
     public static event TimeSetHandler OnTimeSet;
 
     public delegate void TimeHandler(string newTime);
@@ -24,7 +23,8 @@ public class Clock : MonoBehaviour
     [Header("StartTime")]
     [SerializeField] int startMinute = 0;
     [SerializeField] int startHour = 6;
-    [SerializeField] int startDay = 1;
+
+    [SerializeField] Date date = null;
 
     float secondsTimer; //Used with delta time
 
@@ -54,25 +54,23 @@ public class Clock : MonoBehaviour
             if (hour >= HOURSPERDAY)
             {
                 hour = 0;
-                day++;
-                OnDayChanged?.Invoke(day);
+                if (date)
+                    date.Day++;
             }
             OnHourChanged?.Invoke(hour);
         }
     }
-    int day; //Not part of a clock, but useful for tracking the number of days gone by
 
     private void Start()
     {
-        SetValues(startDay, startHour, startMinute);
+        SetValues(startHour, startMinute);
     }
 
-    public void SetValues(int day, int hour, int minute)
+    public void SetValues(int hour, int minute)
     {
-        this.day = day;
         this.Hour = hour;
         this.Minute = minute;
-        OnTimeSet?.Invoke(this.day, Hour, Minute);
+        OnTimeSet?.Invoke(Hour, Minute);
     }
 
     //Starting and stopping the clock

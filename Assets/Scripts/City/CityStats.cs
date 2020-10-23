@@ -1,20 +1,28 @@
-﻿
+﻿using System.Collections.Generic;
+
 public class CityStats
 {
-    public delegate void StatsHandler(int newStat);
-    public event StatsHandler OnPopulationChanged;
-    public event StatsHandler OnVisitorsChanged;
+    public delegate void CityStatsHandler(CityStats cityStats);
+    public CityStatsHandler OnCityStatsChanged;
 
-    public Inventory Inventory { get; private set; }
+    public Inventory Inventory { get; private set; } = new Inventory();
 
-    int population;
-    public int Population
+    public List<Citizen> Citizens { get; private set; } = new List<Citizen>();
+
+    public List<District> Districts { get; private set; } = new List<District>();
+
+    public int Population => Citizens.Count;
+
+    public int PopulationCapacity
     {
-        get => population;
-        set
+        get
         {
-            population = value;
-            OnPopulationChanged?.Invoke(value);
+            int populationSpace = 0;
+            foreach (var district in Districts)
+            {
+                populationSpace += district.PopulationCapacity;
+            }
+            return populationSpace;
         }
     }
 
@@ -25,22 +33,48 @@ public class CityStats
         set
         {
             visitors = value;
-            OnVisitorsChanged?.Invoke(value);
+            OnCityStatsChanged?.Invoke(this);
         }
     }
 
     public void Setup(int startGold, int startWood, int startStone, int startIron, int startFood)
     {
-        OnPopulationChanged?.Invoke(population);
-        OnVisitorsChanged?.Invoke(visitors);
-
-        Inventory = new Inventory();
         Inventory.Add(new CityResource(CityResource.Type.Gold, startGold));
         Inventory.Add(new CityResource(CityResource.Type.Wood, startWood));
         Inventory.Add(new CityResource(CityResource.Type.Stone, startStone));
         Inventory.Add(new CityResource(CityResource.Type.Iron, startIron));
         Inventory.Add(new CityResource(CityResource.Type.Food, startFood));
+
+        Inventory.OnInventoryChanged += SendValuesToListeners;
+        SendValuesToListeners(Inventory);
     }
 
-    public void SendValuesToListeners() => Inventory.SendValuesToListeners();
+    public void AddCitizen(Citizen newCitizen)
+    {
+        Citizens.Add(newCitizen);
+        OnCityStatsChanged?.Invoke(this);
+    }
+
+    public void RemoveCitizen(Citizen citizenToRemove)
+    {
+        Citizens.Remove(citizenToRemove);
+        OnCityStatsChanged?.Invoke(this);
+    }
+
+    public void AddDistrict(District newDistrict)
+    {
+        Districts.Add(newDistrict);
+        OnCityStatsChanged?.Invoke(this);
+    }
+
+    public void RemoveDistrict(District districtToRemove)
+    {
+        Districts.Remove(districtToRemove);
+        OnCityStatsChanged?.Invoke(this);
+    }
+
+    public void SendValuesToListeners(Inventory inventory)
+    {
+        OnCityStatsChanged?.Invoke(this);
+    }
 }
