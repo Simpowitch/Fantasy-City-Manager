@@ -2,11 +2,10 @@
 
 public class PlayerCharacter : MonoBehaviour, IViewable
 {
-    [SerializeField] UnitAnimator unitAnimator = null;
+    [SerializeField] UnitAnimator unitAnimator = null; public UnitAnimator UnitAnimator => unitAnimator;
     IMoveVelocity movement = null;
     string playerName = "Player Playsson";
     string actionDescription;
-    public bool CanMove { get; set; } = true;
     Need moving;
 
     private void Awake()
@@ -21,22 +20,8 @@ public class PlayerCharacter : MonoBehaviour, IViewable
     }
 
 
-    private void Update()
+    public void SetAim(Vector3 aim)
     {
-        Vector3 aim = transform.position;
-
-        if (CanMove)
-        {
-            if (Input.GetKey(KeyCode.W)) //Up
-                aim += new Vector3(0, 1);
-            if (Input.GetKey(KeyCode.D)) //Right
-                aim += new Vector3(1, 0);
-            if (Input.GetKey(KeyCode.S)) //Down
-                aim += new Vector3(0, -1);
-            if (Input.GetKey(KeyCode.A)) //Left
-                aim += new Vector3(-1, 0);
-        }
-
         movement.MoveTowards(aim);
         if (aim != transform.position) //Target aim is different from current position
         {
@@ -50,6 +35,7 @@ public class PlayerCharacter : MonoBehaviour, IViewable
             ActionDescription = "Idle";
         }
     }
+
 
     private void PlayerCharacterInfoChanged() => InfoChangeHandler?.Invoke(this);
 

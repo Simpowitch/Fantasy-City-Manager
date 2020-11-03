@@ -8,9 +8,9 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] Player player = null;
     [SerializeField] ConstructionSystem constructionSystem = null;
     [SerializeField] MouseTooltip mouseTooltip = null;
+    [SerializeField] PlayerTaskSystem playerTaskSystem = null;
     City city;
     Grid<ObjectTile> ObjectGrid { get => city.ObjectGrid; }
-    [SerializeField] ObjectViewer objectViewer = null;
     [SerializeField] InGameCamera playerCamera = null;
     [SerializeField] PlayerCharacter playerCharacter = null;
     [SerializeField] GameObject UI = null;
@@ -30,9 +30,9 @@ public class PlayerInput : MonoBehaviour
     List<ObjectTile> selectedObjectTiles;
 
     bool canMultiSelect = false;
-    public enum InputMode { Selection, BuildRoad, BuildStructure, RemoveRoad, RemoveStructure, Harvest, CancelHarvest, MAX = 6 }
-    InputMode mode;
-    InputMode Mode
+    public enum MouseMode { PlayerInteraction, BuildRoad, BuildStructure, RemoveRoad, RemoveStructure, Harvest, CancelHarvest, MAX = 6 }
+    MouseMode mode;
+    MouseMode Mode
     {
         get => mode;
         set
@@ -40,43 +40,43 @@ public class PlayerInput : MonoBehaviour
             mode = value;
             AllowedConstruction = true;
             constructionSystem.ClearPreviews();
-            canvasGrid.SetGridOutlines(value != InputMode.Selection);
+            canvasGrid.SetGridOutlines(value != MouseMode.PlayerInteraction);
             Color modeObjectColor = modeObjectRenderer.color;
             switch (value)
             {
-                case InputMode.Selection:
+                case MouseMode.PlayerInteraction:
                     canMultiSelect = false;
                     modeObjectColor.a = 1;
                     modeObjectRenderer.sprite = normal;
                     mouseTooltip.Hide();
                     constructionSystem.ConstructionMode = ConstructionSystem.Mode.Off;
                     break;
-                case InputMode.BuildRoad:
+                case MouseMode.BuildRoad:
                     canMultiSelect = true;
                     modeObjectRenderer.sprite = build;
                     modeObjectColor.a = 0.5f;
                     constructionSystem.ConstructionMode = ConstructionSystem.Mode.Road;
                     break;
-                case InputMode.BuildStructure:
+                case MouseMode.BuildStructure:
                     canMultiSelect = false;
                     modeObjectRenderer.sprite = build;
                     modeObjectColor.a = 0.5f;
                     constructionSystem.ConstructionMode = ConstructionSystem.Mode.Structure;
                     break;
-                case InputMode.RemoveRoad:
+                case MouseMode.RemoveRoad:
                     canMultiSelect = true;
                     modeObjectColor.a = 1;
                     modeObjectRenderer.sprite = remove;
                     constructionSystem.ConstructionMode = ConstructionSystem.Mode.Off;
                     break;
-                case InputMode.RemoveStructure:
+                case MouseMode.RemoveStructure:
                     canMultiSelect = false;
                     modeObjectColor.a = 1;
                     modeObjectRenderer.sprite = remove;
                     constructionSystem.ConstructionMode = ConstructionSystem.Mode.Off;
                     break;
-                case InputMode.Harvest:
-                case InputMode.CancelHarvest:
+                case MouseMode.Harvest:
+                case MouseMode.CancelHarvest:
                     canMultiSelect = true;
                     modeObjectColor.a = 1;
                     modeObjectRenderer.sprite = build;
@@ -140,36 +140,42 @@ public class PlayerInput : MonoBehaviour
             LeftClickUp();
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
-            Mode = InputMode.Selection;
+            Mode = MouseMode.PlayerInteraction;
 
         if (Input.GetKeyDown(KeyCode.R))
             constructionSystem.ChangeFacingRotationDirection();
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            playerCamera.ToggleTracking();
-            playerCharacter.CanMove = playerCamera.IsTracking;
-        }
 
         if (Input.GetKeyDown(KeyCode.P))
             PauseGame(!gamePaused);
         if (Input.GetKeyDown(KeyCode.U))
             ToggleUIState();
+
+
+        //Player character movement
+        Vector3 aim = playerCharacter.transform.position;
+
+        if (Input.GetKey(KeyCode.W)) //Up
+            aim += new Vector3(0, 1);
+        if (Input.GetKey(KeyCode.D)) //Right
+            aim += new Vector3(1, 0);
+        if (Input.GetKey(KeyCode.S)) //Down
+            aim += new Vector3(0, -1);
+        if (Input.GetKey(KeyCode.A)) //Left
+            aim += new Vector3(-1, 0);
+
+        playerCharacter.SetAim(aim);
     }
 
     void Hoover()
     {
         Vector3 centeredWorldPosition = ObjectGrid.GetWorldPosition(Utility.GetMouseWorldPosition(), true);
 
-        //Debug.Log(ObjectGrid.GetGridObject(centeredWorldPosition).ToString());
-        //Debug.Log(Utility.GetDirection(playerCharacter.transform.position, centeredWorldPosition));
-
         selectionObject.transform.position = centeredWorldPosition;
         switch (Mode)
         {
-            case InputMode.Selection:
+            case MouseMode.PlayerInteraction:
                 break;
-            case InputMode.BuildRoad:
+            case MouseMode.BuildRoad:
                 constructionSystem.ClearPreviews();
                 if (selectedObjectTiles != null)
                 {
@@ -194,9 +200,9 @@ public class PlayerInput : MonoBehaviour
                 }
                 mouseTooltip.SetUp(AllowedConstruction ? MouseTooltip.ColorText.Allowed : MouseTooltip.ColorText.Forbidden, roadTooltip);
                 break;
-            case InputMode.RemoveRoad:
+            case MouseMode.RemoveRoad:
                 break;
-            case InputMode.BuildStructure:
+            case MouseMode.BuildStructure:
                 constructionSystem.ShowStructurePreview(centeredWorldPosition);
                 AllowedConstruction = constructionSystem.CanConstructPreviewStructure(out string structureExplanation, out string structureConstructionCost);
                 string structureTooltip = "";
@@ -210,7 +216,7 @@ public class PlayerInput : MonoBehaviour
                 }
                 mouseTooltip.SetUp(AllowedConstruction ? MouseTooltip.ColorText.Allowed : MouseTooltip.ColorText.Forbidden, structureTooltip);
                 break;
-            case InputMode.RemoveStructure:
+            case MouseMode.RemoveStructure:
                 break;
         }
     }
@@ -234,14 +240,12 @@ public class PlayerInput : MonoBehaviour
         //Handle changes
         switch (Mode)
         {
-            case InputMode.Selection:
-                IViewable unit = GetViewableUnderMouse();
-                if (unit != null)
-                    objectViewer.ShowViewable(unit);
-                else
-                    objectViewer.Hide();
+            case MouseMode.PlayerInteraction:
+                ObjectTile tileUnderMouse = ObjectGrid.GetGridObject(worldPosition);
+                if (tileUnderMouse.ResourceObject != null)
+                    InteractWithResourceObject(tileUnderMouse.ResourceObject);
                 break;
-            case InputMode.BuildRoad:
+            case MouseMode.BuildRoad:
                 if (allowedConstruction)
                 {
                     foreach (var objectTile in selectedObjectTiles)
@@ -250,7 +254,7 @@ public class PlayerInput : MonoBehaviour
                     }
                 }
                 break;
-            case InputMode.RemoveRoad:
+            case MouseMode.RemoveRoad:
                 if (allowedConstruction)
                 {
                     foreach (var objectTile in selectedObjectTiles)
@@ -259,19 +263,19 @@ public class PlayerInput : MonoBehaviour
                     }
                 }
                 break;
-            case InputMode.BuildStructure:
+            case MouseMode.BuildStructure:
                 if (allowedConstruction)
                 {
                     constructionSystem.BuildStructure(worldPosition);
                 }
                 break;
-            case InputMode.RemoveStructure:
+            case MouseMode.RemoveStructure:
                 if (allowedConstruction)
                 {
                     constructionSystem.RemoveStructure(worldPosition);
                 }
                 break;
-            case InputMode.Harvest:
+            case MouseMode.Harvest:
                 foreach (var objectTile in selectedObjectTiles)
                 {
                     ResourceObject resourceObject = objectTile.ResourceObject;
@@ -279,7 +283,7 @@ public class PlayerInput : MonoBehaviour
                         resourceObject.MarkForHarvest(true);
                 }
                 break;
-            case InputMode.CancelHarvest:
+            case MouseMode.CancelHarvest:
                 foreach (var objectTile in selectedObjectTiles)
                 {
                     ResourceObject resourceObject = objectTile.ResourceObject;
@@ -294,12 +298,12 @@ public class PlayerInput : MonoBehaviour
         //Reset modes
         switch (Mode)
         {
-            case InputMode.Selection:
+            case MouseMode.PlayerInteraction:
                 break;
-            case InputMode.BuildRoad:
-            case InputMode.RemoveRoad:
-            case InputMode.BuildStructure:
-            case InputMode.RemoveStructure:
+            case MouseMode.BuildRoad:
+            case MouseMode.RemoveRoad:
+            case MouseMode.BuildStructure:
+            case MouseMode.RemoveStructure:
                 constructionSystem.ClearPreviews();
                 break;
         }
@@ -307,11 +311,11 @@ public class PlayerInput : MonoBehaviour
 
     public void SetMode(int intMode)
     {
-        if (intMode < 0 || intMode > (int)InputMode.MAX)
+        if (intMode < 0 || intMode > (int)MouseMode.MAX)
         {
             throw new System.ArgumentOutOfRangeException();
         }
-        Mode = (InputMode)intMode;
+        Mode = (MouseMode)intMode;
     }
 
     public void SetNewSelectedObjectTiles(List<ObjectTile> newObjectTiles)
@@ -334,33 +338,33 @@ public class PlayerInput : MonoBehaviour
         selectedObjectTiles = newObjectTiles;
     }
 
-    private List<Unit> GetUnitsInselectedArea(Vector3 lowerLeft, Vector3 upperRight)
+    private void InteractWithResourceObject(ResourceObject resource)
     {
-        List<Unit> units = new List<Unit>();
-        Collider2D[] allColliders = Physics2D.OverlapBoxAll((lowerLeft + upperRight / 2), upperRight - lowerLeft, 0);
-        foreach (var collider in allColliders)
+        switch (resource.Type)
         {
-            Unit unit = collider.GetComponent<Unit>();
-            if (unit)
-                units.Add(unit);
-        }
-        return units;
-    }
+            case CityResource.Type.Gold:
+                break;
+            case CityResource.Type.Wood:
+                if (resource.CanBeHarvested)
+                {
+                    resource.StartHarvesting();
+                    playerCharacter.UnitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.ChopWood);
 
-    private IViewable GetViewableUnderMouse()
-    {
-        ObjectTile objectTile = ObjectGrid.GetGridObject(Utility.GetMouseWorldPosition());
-        if (objectTile != null)
-        {
-            Collider2D[] allColliders = Physics2D.OverlapBoxAll(objectTile.CenteredWorldPosition, new Vector2(ObjectGrid.cellSize / 2, ObjectGrid.cellSize / 2), 0);
-            foreach (var collider in allColliders)
-            {
-                IViewable viewable = collider.GetComponent<IViewable>();
-                if (viewable != null)
-                    return viewable;
-            }
+                    //Start Task
+                    playerTaskSystem.StartTask(() =>
+                    {
+                        city.cityStats.Inventory.Add(resource.Harvest());
+                        playerCharacter.UnitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.Idle);
+                        });
+                }
+                break;
+            case CityResource.Type.Stone:
+                break;
+            case CityResource.Type.Iron:
+                break;
+            case CityResource.Type.Food:
+                break;
         }
-        return null;
     }
 
     private void GetMouseSelectedArea(out Vector3 lowerLeft, out Vector3 upperRight)

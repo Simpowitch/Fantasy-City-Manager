@@ -58,7 +58,7 @@ public class City : MonoBehaviour
         DayNightSystem.OnPartOfTheDayChanged -= PartOfDayChange;
     }
 
-    public void Setup(int xSize, int ySize, int startGold, int startWood, int startStone, int startIron, int startFood, int startCitizens, Transform player)
+    public void Setup(int xSize, int ySize, int startGold, int startWood, int startStone, int startIron, int startFood)
     {
         cityStats.Setup(startGold, startWood, startStone, startIron, startFood);
 
@@ -90,13 +90,6 @@ public class City : MonoBehaviour
         foreach (var cityGate in cityGates)
         {
             ConfirmBuildingPlacements(cityGate);
-        }
-
-        //Spawn start citizens
-        Vector3[] positions = GridUtilities.GetPositionsAround(player.position, startCitizens / 2, startCitizens);
-        for (int i = 0; i < startCitizens; i++)
-        {
-            SpawnCitizen(positions[i]);
         }
     }
 

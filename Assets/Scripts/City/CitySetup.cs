@@ -12,8 +12,6 @@ public class CitySetup : MonoBehaviour
     [Header("Settings")]
     [SerializeField] int xSize = 50, ySize = 30;
 
-    [SerializeField] int startCitizens = 5;
-
     [SerializeField] int startGold = 10;
     [SerializeField] int startWood = 10;
     [SerializeField] int startStone = 10;
@@ -25,7 +23,7 @@ public class CitySetup : MonoBehaviour
     private void Start()
     {
         SetupMap();
-        city.Setup(xSize, ySize, startGold, startWood, startStone, startIron, startFood, startCitizens, player.playerCharacter.transform);
+        city.Setup(xSize, ySize, startGold, startWood, startStone, startIron, startFood);
         player.ActiveCity = city;
         SetupCameraRestraints();
     }
