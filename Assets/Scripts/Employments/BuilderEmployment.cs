@@ -5,31 +5,30 @@ using UnityEngine;
 [System.Serializable]
 public class BuilderEmployment : Employment
 {
-    const float BUILDTIME = 2f;
-    public List<Structure> unfinishedStructures;
-    List<Structure> AvailableForConstruction
+    ConstructionArea targetBlueprint;
+    public override bool ShiftActive => AvailableForConstruction.Count > 0;
+
+    public List<ConstructionArea> unfinishedConstructions;
+    List<ConstructionArea> AvailableForConstruction
     {
         get
         {
-            List<Structure> available = new List<Structure>();
-            available.PopulateListWithMatchingConditions(unfinishedStructures, (structure) => structure.constructionArea.CanBeWorkedOn); //Where the last tick is not being worked on by anyone
+            List<ConstructionArea> available = new List<ConstructionArea>();
+            available.PopulateListWithMatchingConditions(unfinishedConstructions, (blueprint) => !blueprint.occupied); //Where the last tick is not being worked on by anyone
             return available;
         }
     }
 
-    Structure targetStructure;
-
-    public override bool ShiftActive => AvailableForConstruction.Count > 0;
-
     public override Task GetWorkTask(Citizen citizen)
     {
-        if (AvailableForConstruction.Count > 0) //At least 1 unfinished structure with atleast 1 tick left
+        ConstructionArea blueprint = Utility.ReturnRandom(AvailableForConstruction);
+
+        if (blueprint != null)
         {
-            if (targetStructure == null)
-                targetStructure = Utility.GetClosest(unfinishedStructures, citizen);
-            targetStructure.constructionArea.OccupyTick();
-            ActionTimer onTaskEndTimer = new ActionTimer(BUILDTIME, WorkAction, false);
-            Vector3 pos = targetStructure.GetRandomLocation();
+            targetBlueprint = blueprint;
+            blueprint.occupied = true;
+            ActionTimer onTaskEndTimer = new ActionTimer(blueprint.DefaultTimeToComplete, () => targetBlueprint.CompleteConstruction(), false);
+            Vector3 pos = Utility.ReturnRandom(blueprint.ObjectTiles).CenteredWorldPosition;
             Vector3 dir = pos - citizen.transform.position;
             return new Task("Constructing", ThoughtFileReader.GetText(citizen.UnitPersonality, "constructing"), onTaskEndTimer, pos, UnitAnimator.ActionAnimation.Build);
         }
@@ -38,13 +37,5 @@ public class BuilderEmployment : Employment
             Debug.LogError("Tried to get task when unfinished structures are less than 1");
             return new Task("Practicing hammering nails", ThoughtFileReader.GetText(citizen.UnitPersonality, ""), new ActionTimer(3, null, false), citizen.transform.position, UnitAnimator.ActionAnimation.Build);
         }
-    }
-
-    private void WorkAction()
-    {
-        targetStructure.constructionArea.AddConstructionTick();
-        targetStructure.constructionProgressBar.SetNewValues(targetStructure.constructionArea.GetConstructionTickNormalized);
-        if (targetStructure.constructionArea.IsFinished)
-            targetStructure = null;
     }
 }

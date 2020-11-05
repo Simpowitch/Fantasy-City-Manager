@@ -52,7 +52,7 @@ public class Farmland : Structure
         farmTiles = new List<FarmTile>();
         foreach (var objectTile in StructureTiles)
         {
-            farmTiles.Add(new FarmTile(objectTile));
+            farmTiles.Add(new FarmTile(objectTile, this));
         }
     }
 
@@ -72,16 +72,38 @@ public class FarmTile
 {
     public ObjectTile ObjectTile { get; private set; }
     public Citizen plantingSeedOccupiedBy;
+    Farmland farmland;
 
     public GrowingResource Crop { get; set; }
 
     public bool Filled { get => Crop != null; }
     public bool Harvestable { get => Crop != null && Crop.CanBeHarvested && Crop.MarkedForHarvest; }
 
-    public FarmTile(ObjectTile objectTile)
+    public FarmTile(ObjectTile objectTile, Farmland farmland)
     {
         ObjectTile = objectTile;
         ObjectTile.FarmTile = this;
+        this.farmland = farmland;
+    }
+
+    // Player Interaction with the farmtile to plant a seed - Returns true if possible
+    public bool PlayerInteraction(PlayerCharacter playerCharacter, PlayerInput playerInput, PlayerTaskSystem playerTaskSystem)
+    {
+        if (Crop != null)
+            return false;
+
+        playerCharacter.MoveTo(ObjectTile.CenteredWorldPosition, UnitAnimator.ActionAnimation.PlantSeed, true);
+
+        //Start Task
+        playerTaskSystem.StartTask(() =>
+        {
+            farmland.PlantSeed(this);
+            playerCharacter.UnitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.Idle);
+            playerInput.inputEnabled = true;
+            playerCharacter.SetColliderState(true);
+        });
+
+        return true;
     }
 
     public void DeSpawn() => ObjectTile.FarmTile = null;

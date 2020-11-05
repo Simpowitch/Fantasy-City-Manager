@@ -1,32 +1,43 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class ConstructionArea
 {
-    [SerializeField] int constructionTick = 0;
-    [SerializeField] int constructionTickMax = 10;
     private Action onConstructionComplete;
-    int ticksOccupied;
-    public bool IsFinished { get => constructionTick >= constructionTickMax; }
-    public bool CanBeWorkedOn { get => constructionTick + ticksOccupied < constructionTickMax; }
-    public void Setup(Action onConstructionComplete)
+    [SerializeField] float defaultTimeToComplete = 2f; public float DefaultTimeToComplete => defaultTimeToComplete; //To be used by AI primarily
+
+    public bool occupied;
+    public List<ObjectTile> ObjectTiles { get; private set; }
+
+    public void Setup(Action onConstructionComplete, List<ObjectTile> objectTiles)
     {
         this.onConstructionComplete = onConstructionComplete;
+        ObjectTiles = objectTiles;
     }
 
+    public void CompleteConstruction() => onConstructionComplete?.Invoke();
 
-    public void OccupyTick() => ticksOccupied++;
-
-    public void AddConstructionTick()
+    // Player Interaction with the constructionarea - Returns true if possible
+    public bool PlayerInteraction(PlayerCharacter playerCharacter, PlayerInput playerInput, PlayerTaskSystem playerTaskSystem, Vector3 position)
     {
-        ticksOccupied--;
-        constructionTick++;
-        if (IsFinished)
-        {
-            onConstructionComplete();
-        }
-    }
+        if (occupied)
+            return false;
 
-    public float GetConstructionTickNormalized => constructionTick * 1f / constructionTickMax;
+        playerCharacter.MoveTo(position, UnitAnimator.ActionAnimation.Build, true);
+
+        occupied = true;
+
+        //Start Task
+        playerTaskSystem.StartTask(() =>
+        {
+            CompleteConstruction();
+            playerCharacter.UnitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.Idle);
+            playerInput.inputEnabled = true;
+            playerCharacter.SetColliderState(true);
+        });
+
+        return true;
+    }
 }

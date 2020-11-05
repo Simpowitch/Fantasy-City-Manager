@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public enum Facing { Down, Left, Up, Right, MAX = 3, Invalid }
 public class ConstructionSystem : MonoBehaviour
 {
     public enum Mode { Off, Road, Structure }
@@ -43,7 +42,6 @@ public class ConstructionSystem : MonoBehaviour
     List<Vector3Int> roadPreviews = new List<Vector3Int>();
     Structure structurePreview;
     int constructionIndex = 0;
-    Facing constructionFacing;
 
     private void Awake()
     {
@@ -72,29 +70,6 @@ public class ConstructionSystem : MonoBehaviour
         }
     }
 
-    public void ChangeFacingRotationDirection()
-    {
-        if ((int)constructionFacing + 1 > (int)Facing.MAX)
-        {
-            constructionFacing = 0;
-            if (structurePreview)
-                structurePreview.FacingDirecion = constructionFacing;
-        }
-        else
-        {
-            constructionFacing++;
-            if (structurePreview)
-                structurePreview.FacingDirecion = constructionFacing;
-        }
-    }
-
-    public void SetFacingRotationDirection(Facing newDirection)
-    {
-        constructionFacing = newDirection;
-        if (structurePreview)
-            structurePreview.FacingDirecion = constructionFacing;
-    }
-
     #region Previews & Allowed Construction Checks
     public void ShowRoadPreview(Vector3 tilePosition)
     {
@@ -116,8 +91,7 @@ public class ConstructionSystem : MonoBehaviour
         }
         //Move preview object
         Vector3 lowerLeftPosition = ObjectGrid.GetWorldPosition(worldPosition, false);
-        structurePreview.FacingDirecion = constructionFacing;
-        structurePreview.AnchorPoint = lowerLeftPosition;
+        structurePreview.LowerLeftCorner = lowerLeftPosition;
     }
 
     public void ClearPreviews()
@@ -269,8 +243,7 @@ public class ConstructionSystem : MonoBehaviour
     {
         Vector3 lowerLeftPosition = ObjectGrid.GetWorldPosition(worldPosition, false);
         Structure spawnedBuilding = Instantiate(structures[constructionIndex], structureParent);
-        spawnedBuilding.AnchorPoint = lowerLeftPosition;
-        spawnedBuilding.FacingDirecion = constructionFacing;
+        spawnedBuilding.LowerLeftCorner = lowerLeftPosition;
 
         spawnedBuilding.BuildConstructionArea(city);
 

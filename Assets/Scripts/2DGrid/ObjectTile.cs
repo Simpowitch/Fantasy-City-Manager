@@ -10,6 +10,8 @@ public class ObjectTile
 
     public Structure Structure { get; set; }
 
+    public ConstructionArea ConstructionBlueprint { get; set; }
+
     public ResourceObject ResourceObject {get; set;}
 
     public FarmTile FarmTile { get; set; }
@@ -25,6 +27,8 @@ public class ObjectTile
     {
         get
         {
+            if (ConstructionBlueprint != null)
+                return false;
             if (Structure != null)
                 return false;
             if (HasRoad)
@@ -60,6 +64,25 @@ public class ObjectTile
         if (HasRoad)
             text = "R";
         CanvasTileObject.SetText(text);
+    }
+
+    /// <summary>
+    /// Interaction from player. Returns true if interaction is possible
+    /// </summary>
+    /// <returns>Returns true if interaction is possible</returns>
+    public bool PlayerInteraction(PlayerCharacter playerCharacter, PlayerInput playerInput, PlayerTaskSystem playerTaskSystem)
+    {
+        if (!playerCharacter.IsWithinInteractionRange(this))
+            return false;
+
+        if (ResourceObject != null)
+            return ResourceObject.PlayerInteraction(playerCharacter, playerInput, playerTaskSystem);
+        if (ConstructionBlueprint != null)
+            return ConstructionBlueprint.PlayerInteraction(playerCharacter, playerInput, playerTaskSystem, CenteredWorldPosition);
+        if (FarmTile != null)
+            return FarmTile.PlayerInteraction(playerCharacter, playerInput, playerTaskSystem);
+
+        return false;
     }
 
     public override string ToString()

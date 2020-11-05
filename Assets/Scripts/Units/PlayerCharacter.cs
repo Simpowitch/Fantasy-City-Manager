@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerCharacter : MonoBehaviour, IViewable
 {
@@ -7,6 +8,10 @@ public class PlayerCharacter : MonoBehaviour, IViewable
     string playerName = "Player Playsson";
     string actionDescription;
     Need moving;
+    [SerializeField] City city = null; public City City => city;
+
+    const float DISTANCETOARRIVAL = 0.1f;
+    
 
     private void Awake()
     {
@@ -36,9 +41,37 @@ public class PlayerCharacter : MonoBehaviour, IViewable
         }
     }
 
+    public void SetColliderState(bool state) => GetComponent<Collider2D>().enabled = state;
+
+    public void MoveTo(Vector3 position, UnitAnimator.ActionAnimation animationOnArrival, bool ignoreCollisions)
+    {
+        StopCoroutine(AutoMoveTo(Vector3.zero, UnitAnimator.ActionAnimation.Idle, false));
+        StartCoroutine(AutoMoveTo(position, animationOnArrival, ignoreCollisions));
+    }
+
+    //Checks wheter or not the other tile is a neighbor of the tile this transform is on
+    public bool IsWithinInteractionRange(ObjectTile otherTile)
+    {
+        ObjectTile onTile = otherTile.grid.GetGridObject(this.transform.position);
+        return (onTile.GetNeighbors().Contains(otherTile) || onTile == otherTile);
+    }
 
     private void PlayerCharacterInfoChanged() => InfoChangeHandler?.Invoke(this);
 
+    IEnumerator AutoMoveTo(Vector3 movementTarget, UnitAnimator.ActionAnimation animationOnArrival, bool ignoreCollisions)
+    {
+        SetColliderState(!ignoreCollisions);
+        movement.MoveTowards(movementTarget);
+        unitAnimator.PlayWalkAnimation(movementTarget - transform.position);
+        bool hasArrived = Vector2.Distance(movementTarget, this.transform.position) < DISTANCETOARRIVAL;
+        while (!hasArrived)
+        {
+            yield return new WaitForEndOfFrame();
+            hasArrived = Vector2.Distance(movementTarget, this.transform.position) < DISTANCETOARRIVAL;
+        }
+        movement.SetVelocity(Vector3.zero);
+        unitAnimator.PlayActionAnimation(animationOnArrival);
+    }
 
     #region Viewable interface
     public InfoChangeHandler InfoChangeHandler { get; set; }

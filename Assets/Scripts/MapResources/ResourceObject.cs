@@ -57,4 +57,39 @@ public class ResourceObject : MonoBehaviour, IViewable
     public virtual string GetPrimaryStatName() => "Harvestable";
 
     public Need[] GetNeeds() => null;
+
+    public bool Interactable() => CanBeHarvested;
+
+    // Player Interaction with the resource object - Returns true if possible
+    public bool PlayerInteraction(PlayerCharacter playerCharacter, PlayerInput playerInput, PlayerTaskSystem playerTaskSystem)
+    {
+        if (!Interactable())
+            return false;
+
+        StartHarvesting();
+        switch (Type)
+        {
+            case CityResource.Type.Wood:
+                playerCharacter.MoveTo(transform.position, UnitAnimator.ActionAnimation.ChopWood, true);
+                break;
+            case CityResource.Type.Gold:
+            case CityResource.Type.Stone:
+            case CityResource.Type.Iron:
+                playerCharacter.MoveTo(transform.position, UnitAnimator.ActionAnimation.Mine, true);
+                break;
+            case CityResource.Type.Food:
+                playerCharacter.MoveTo(transform.position, UnitAnimator.ActionAnimation.Harvest, true);
+                break;
+        }
+
+        //Start Task
+        playerTaskSystem.StartTask(() =>
+        {
+            playerCharacter.City.cityStats.Inventory.Add(Harvest());
+            playerCharacter.UnitAnimator.PlayActionAnimation(UnitAnimator.ActionAnimation.Idle);
+            playerInput.inputEnabled = true;
+            playerCharacter.SetColliderState(true);
+        });
+        return true;
+    }
 }

@@ -17,10 +17,9 @@ public class City : MonoBehaviour
     public List<Commercial> commercialBuidlings = null;
     public List<Tavern> taverns = null;
     public List<Workplace> workplaces = null;
-    public List<CityGate> cityGates = null;
     public List<Farmland> farmlands = null;
     public Transform[] cityEntrances = null;
-    public List<Structure> unfinishedStructures = null;
+    public List<ConstructionArea> unfinishedConstructions = null;
 
     public List<INeedProvider> HungerProviders { get; private set; } = new List<INeedProvider>();
     public List<INeedProvider> EnergyProviders { get; private set; } = new List<INeedProvider>();
@@ -87,26 +86,22 @@ public class City : MonoBehaviour
         {
             ConfirmBuildingPlacements(commercialBuidling);
         }
-        foreach (var cityGate in cityGates)
-        {
-            ConfirmBuildingPlacements(cityGate);
-        }
     }
 
     void ConfirmBuildingPlacements(Structure structure)
     {
-        structure.AnchorPoint = structure.transform.position;
+        structure.LowerLeftCorner = structure.transform.position;
         structure.Load(this);
     }
-    public void AddConstructionArea(Structure unfinishedStructure)
+    public void AddConstructionArea(ConstructionArea unfinishedConstruction)
     {
-        unfinishedStructures.Add(unfinishedStructure);
+        unfinishedConstructions.Add(unfinishedConstruction);
         UpdateBuildersWorkingAreas();
     }
 
-    public void RemoveConstructionArea(Structure constructedStructure)
+    public void RemoveConstructionArea(ConstructionArea unfinishedConstruction)
     {
-        unfinishedStructures.Remove(constructedStructure);
+        unfinishedConstructions.Remove(unfinishedConstruction);
         UpdateBuildersWorkingAreas();
     }
 
@@ -114,7 +109,7 @@ public class City : MonoBehaviour
     {
         foreach (var builder in BuilderEmployments)
         {
-            builder.unfinishedStructures = unfinishedStructures;
+            builder.unfinishedConstructions = unfinishedConstructions;
         }
     }
 

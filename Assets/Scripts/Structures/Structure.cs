@@ -16,7 +16,6 @@ public abstract class Structure : MonoBehaviour
     [Header("References")]
     [SerializeField] Tilemap groundTilemap = null;
     [SerializeField] Tilemap[] wallTilemaps = null;
-    public Bar constructionProgressBar = null;
 
     [Header("Setup")]
     [SerializeField] protected int xSize = 1;
@@ -47,105 +46,29 @@ public abstract class Structure : MonoBehaviour
     bool analyzeTilesFlag = true;
 
     protected City city;
-    Vector3 rotationOffset;
 
-    [SerializeField] Facing facingDirection = Facing.Down;
-    public Facing FacingDirecion
-    {
-        get => facingDirection;
-        set
-        {
-            facingDirection = value;
-            transform.eulerAngles = new Vector3(0, 0, -(int)value * 90);
 
-            switch (value)
-            {
-                case Facing.Down:
-                    rotationOffset = new Vector3(0, 0);
-                    break;
-                case Facing.Left:
-                    rotationOffset = new Vector3(0, CellSize);
-                    break;
-                case Facing.Up:
-                    rotationOffset = new Vector3(CellSize, CellSize);
-                    break;
-                case Facing.Right:
-                    rotationOffset = new Vector3(CellSize, 0);
-                    break;
-            }
-            transform.position = anchorPoint + rotationOffset;
-
-            analyzeTilesFlag = true;
-        }
-    }
-
-    Vector3 anchorPoint;
-    public Vector3 AnchorPoint
+    Vector3 lowerLeftCorner;
+    public Vector3 LowerLeftCorner
     {
         set
         {
-            anchorPoint = value;
-            transform.position = value + rotationOffset;
-
+            this.transform.position = value;
+            lowerLeftCorner = value;
             analyzeTilesFlag = true;
         }
+        get => lowerLeftCorner;
     }
 
-    public Vector2 LowerLeftCorner
-    {
-        get
-        {
-            switch (facingDirection)
-            {
-                case Facing.Down:
-                    return anchorPoint + rotationOffset;
-                case Facing.Left:
-                    return anchorPoint + new Vector3(0, -xSize * CellSize) + rotationOffset;
-                case Facing.Up:
-                    return anchorPoint + new Vector3(-xSize * CellSize, -ySize * CellSize) + rotationOffset;
-                case Facing.Right:
-                    return anchorPoint + new Vector3(-ySize * CellSize, 0) + rotationOffset;
-                default:
-                    return anchorPoint;
-            }
-        }
-    }
 
-    public Vector2 UpperRightCorner
-    {
-        get
-        {
-            Vector2 corner = LowerLeftCorner;
-            switch (facingDirection)
-            {
-                case Facing.Down:
-                case Facing.Up:
-                    return corner + new Vector2(xSize * CellSize, ySize * CellSize);
-                case Facing.Left:
-                case Facing.Right:
-                    return corner + new Vector2(ySize * CellSize, xSize * CellSize);
-                default:
-                    return corner;
-            }
-        }
-    }
+    public Vector2 UpperRightCorner => LowerLeftCorner + new Vector3(xSize * CellSize, ySize * CellSize);
 
     public Vector2 CenterPosition
     {
         get
         {
             Vector2 corner = LowerLeftCorner;
-            switch (facingDirection)
-            {
-                case Facing.Down:
-                case Facing.Up:
-                    return corner + new Vector2(xSize * CellSize / 2, ySize * CellSize / 2);
-                case Facing.Left:
-                case Facing.Right:
-                    return corner + new Vector2(ySize * CellSize / 2, xSize * CellSize / 2);
-                default:
-                    return corner;
-            }
+            return corner + new Vector2(xSize * CellSize / 2, ySize * CellSize / 2);
         }
     }
 
@@ -154,23 +77,33 @@ public abstract class Structure : MonoBehaviour
     //Called from the construction system when a new building is placed
     public void BuildConstructionArea(City city)
     {
-        constructionProgressBar.gameObject.SetActive(true);
         SetTransparent(true);
         this.city = city;
-        constructionArea.Setup(() => Constructed(city, true));
-        city.AddConstructionArea(this);
-        ChangeTiles(true);
+        constructionArea.Setup(() => Constructed(city, true), StructureTiles);
+        ChangeTilesSettings(true);
+
+        //Add construction blueprint to tiles
+        city.AddConstructionArea(constructionArea);
+        foreach (var tile in StructureTiles)
+        {
+            tile.ConstructionBlueprint = constructionArea;
+        }
     }
 
     //Is called when the construction progress is finished or when loaded
     protected virtual void Constructed(City city, bool addToCityList)
     {
-        constructionProgressBar.gameObject.SetActive(false);
         SetTransparent(false);
         this.city = city;
         DayNightSystem.OnPartOfTheDayChanged += PartOfDayChange;
-        city.RemoveConstructionArea(this);
-        ChangeTiles(true);
+        ChangeTilesSettings(true);
+
+        //Remove Constructionarea
+        city.RemoveConstructionArea(constructionArea);
+        foreach (var tile in StructureTiles)
+        {
+            tile.ConstructionBlueprint = null;
+        }
     }
 
     public void MakePreview(City city)
@@ -238,7 +171,7 @@ public abstract class Structure : MonoBehaviour
     }
 
     //Change tiles to walkable or not, and set tiles construction field to match this structure
-    private void ChangeTiles(bool constructed)
+    private void ChangeTilesSettings(bool constructed)
     {
         //Change tiles construction field
         foreach (ObjectTile tile in StructureTiles)
@@ -320,7 +253,7 @@ public abstract class Structure : MonoBehaviour
     {
         DayNightSystem.OnPartOfTheDayChanged -= PartOfDayChange;
 
-        ChangeTiles(false);
+        ChangeTilesSettings(false);
 
         Destroy(this.gameObject);
     }
