@@ -17,6 +17,8 @@ public class ResourceObject : MonoBehaviour, IViewable
     public HarvestMarkMode HarvestMode { get => harvestMode; }
     public InfoChangeHandler InfoChangeHandler { get; set; }
     [SerializeField] string objectName = "";
+    [SerializeField] protected float timeToDespawn = 0.1f;
+
     public string Name { get => objectName; set => objectName = value; }
     public string ActionDescription => CanBeHarvested ? "Harvestable" : "Not Harvestable";
 
@@ -47,7 +49,7 @@ public class ResourceObject : MonoBehaviour, IViewable
     {
         network.RemoveStatic(this);
         ObjectTile.ResourceObject = null;
-        GameObject.Destroy(this.gameObject, 0.01f);
+        GameObject.Destroy(this.gameObject, timeToDespawn);
     }
 
     public virtual string GetSpeciality() => "";
