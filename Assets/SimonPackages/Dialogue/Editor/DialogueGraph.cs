@@ -9,6 +9,8 @@ public class DialogueGraph : EditorWindow
 {
     private DialogueGraphView graphView;
     private string fileName = "New Narrative";
+    TextField fileNameTextField;
+    public static DialogueGraph OpenGraph { get; private set; }
 
     [MenuItem("Graph/Dialogue Graph")]
     public static void OpenDialogueGraphWindow()
@@ -22,12 +24,14 @@ public class DialogueGraph : EditorWindow
         ConstructGraphView();
         GenerateToolbar();
         GenerateMinimap();
+        OpenGraph = this;
     }
    
 
     private void OnDisable()
     {
         rootVisualElement.Remove(graphView);
+        OpenGraph = null;
     }
 
     private void ConstructGraphView()
@@ -45,7 +49,7 @@ public class DialogueGraph : EditorWindow
     {
         var toolbar = new Toolbar();
 
-        var fileNameTextField = new TextField("File Name: ");
+        fileNameTextField = new TextField("File Name: ");
         fileNameTextField.SetValueWithoutNotify(fileName);
         fileNameTextField.MarkDirtyRepaint();
         fileNameTextField.RegisterValueChangedCallback(evt => fileName = evt.newValue);
@@ -79,5 +83,15 @@ public class DialogueGraph : EditorWindow
             saveUtility.SaveGraph(fileName);
         else
             saveUtility.LoadGraph(fileName);
+    }
+
+    public void LoadExistingFile(string fileName)
+    {
+        this.fileName = fileName;
+        fileNameTextField.SetValueWithoutNotify(fileName);
+        fileNameTextField.MarkDirtyRepaint();
+        fileNameTextField.RegisterValueChangedCallback(evt => fileName = evt.newValue);
+
+        RequestDataOperation(false);
     }
 }
