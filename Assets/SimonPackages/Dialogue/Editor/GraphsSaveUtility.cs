@@ -46,6 +46,7 @@ public class GraphsSaveUtility
 
         foreach (var dialogueNode in nodes.Where(node => !node.entryPoint))
         {
+
             dialogueContainer.dialogueNodeDatas.Add(new DialogueNodeData
             {
                 GUID = dialogueNode.GUID,
@@ -53,6 +54,11 @@ public class GraphsSaveUtility
                 position = dialogueNode.GetPosition().position
             });
         }
+
+        DialogueNode entryNode = nodes.Find(node => node.entryPoint);
+        var connectedPort = edges.Find(x => x.output.node == entryNode);
+        var firstDialogueNode = connectedPort.input.node as DialogueNode;
+        dialogueContainer.dialogueStart = dialogueContainer.GetNodeByID(firstDialogueNode.GUID);
 
         //Auto creates resources folder at root of project under assets if it does not exist yet
         if (!AssetDatabase.IsValidFolder("Assets/Resources"))
