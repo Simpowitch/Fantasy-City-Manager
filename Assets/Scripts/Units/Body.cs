@@ -55,17 +55,17 @@ public class Body
 public class BodypartSpriteGroup
 {
     public enum SpriteDirection { Up, Right, Down }
-    [SerializeField] Sprite up = null, right = null, down = null;
+    [SerializeField] Sprite back = null, side = null, front = null;
     public Sprite GetSprite(SpriteDirection dir)
     {
         switch (dir)
         {
             case SpriteDirection.Up:
-                return up;
+                return back;
             case SpriteDirection.Right:
-                return right;
+                return side;
             case SpriteDirection.Down:
-                return down;
+                return front;
             default:
                 return null;
         }
