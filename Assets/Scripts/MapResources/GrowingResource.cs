@@ -17,10 +17,8 @@ public class GrowingResource : ResourceObject
         CanBeHarvested = false;
         growTimer = new ActionTimer(timeToHarvestable, FullyGrown, true);
         base.Spawned(network, objectTile);
-        //InvokeRepeating("InfoChanged", 0, 0.1f);
     }
 
-    //private void InfoChanged() => InfoChangeHandler?.Invoke(this);
 
     public override void StartHarvesting()
     {
